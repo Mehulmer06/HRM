@@ -55,7 +55,7 @@ class CI_Javascript {
 	 *
 	 * @var	string
 	 */
-	protected $_javascript_location = 'js';
+	protected $_javascript_location = 'vendor';
 
 	// --------------------------------------------------------------------
 
@@ -81,9 +81,9 @@ class CI_Javascript {
 
 		$this->CI =& get_instance();
 
-		// load the requested js library
+		// load the requested vendor library
 		$this->CI->load->library('Javascript/'.$js_library_driver, array('autoload' => $autoload));
-		// make js to refer to current library
+		// make vendor to refer to current library
 		$this->js =& $this->CI->$js_library_driver;
 
 		log_message('info', 'Javascript Class Initialized and loaded. Driver used: '.$js_library_driver);
@@ -634,7 +634,7 @@ class CI_Javascript {
 	/**
 	 * External
 	 *
-	 * Outputs a <script> tag with the source as an external js file
+	 * Outputs a <script> tag with the source as an external vendor file
 	 *
 	 * @param	string	$external_file
 	 * @param	bool	$relative

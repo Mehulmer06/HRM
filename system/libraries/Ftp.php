@@ -631,7 +631,7 @@ class CI_FTP {
 	 */
 	protected function _settype($ext)
 	{
-		return in_array($ext, array('txt', 'text', 'php', 'phps', 'php4', 'js', 'css', 'htm', 'html', 'phtml', 'shtml', 'log', 'xml'), TRUE)
+		return in_array($ext, array('txt', 'text', 'php', 'phps', 'php4', 'vendor', 'css', 'htm', 'html', 'phtml', 'shtml', 'log', 'xml'), TRUE)
 			? 'ascii'
 			: 'binary';
 	}

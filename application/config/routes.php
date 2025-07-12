@@ -56,5 +56,9 @@ $route['login/authenticate'] = 'admin/LoginController/authenticate';
 $route['logout'] = 'admin/LoginController/logout';
 $route['dashboard'] = 'admin/DashboardController/index';
 
+$route['project-staff'] = 'ProjectStaffController/index';
+$route['project-staff/create'] = 'ProjectStaffController/create';
+$route['project-staff/toggle-status'] = 'ProjectStaffController/toggle_status';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
