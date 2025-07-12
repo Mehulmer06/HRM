@@ -58,6 +58,9 @@ $route['dashboard'] = 'admin/DashboardController/index';
 
 $route['project-staff'] = 'ProjectStaffController/index';
 $route['project-staff/create'] = 'ProjectStaffController/create';
+$route['project-staff/store'] = 'ProjectStaffController/store';
+$route['project-staff/edit/(:num)'] = 'ProjectStaffController/edit/$1';
+$route['project-staff/update/(:num)'] = 'ProjectStaffController/update/$1';
 $route['project-staff/toggle-status'] = 'ProjectStaffController/toggle_status';
 
 $route['404_override'] = '';
