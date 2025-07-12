@@ -48,7 +48,7 @@ return array(
 	'php3'	=>	'application/x-httpd-php',
 	'phtml'	=>	'application/x-httpd-php',
 	'phps'	=>	'application/x-httpd-php-source',
-	'js'	=>	array('application/x-javascript', 'text/plain'),
+	'vendor'	=>	array('application/x-javascript', 'text/plain'),
 	'swf'	=>	'application/x-shockwave-flash',
 	'sit'	=>	'application/x-stuffit',
 	'tar'	=>	'application/x-tar',

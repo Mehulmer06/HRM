@@ -54,7 +54,7 @@ class CI_Jquery extends CI_Javascript {
 	 *
 	 * @var	string
 	 */
-	protected $_javascript_folder = 'js';
+	protected $_javascript_folder = 'vendor';
 
 	/**
 	 * JQuery code for load
@@ -798,7 +798,7 @@ class CI_Jquery extends CI_Javascript {
 	public function corner($element = '', $corner_style = '')
 	{
 		// may want to make this configurable down the road
-		$corner_location = '/plugins/jquery.corner.js';
+		$corner_location = '/plugins/jquery.corner.vendor';
 
 		if ($corner_style !== '')
 		{
@@ -1015,7 +1015,7 @@ class CI_Jquery extends CI_Javascript {
 	/**
 	 * Script Tag
 	 *
-	 * Outputs the script tag that loads the jquery.js file into an HTML document
+	 * Outputs the script tag that loads the jquery.vendor file into an HTML document
 	 *
 	 * @param	string	$library_src
 	 * @param	bool	$relative
