@@ -14,7 +14,8 @@ class ProjectStaff extends CI_Model
     /**
      * Update user
      */
-    public function updateUser($id, $data) {
+    public function updateUser($id, $data)
+    {
         $this->db->where('id', $id);
         return $this->db->update('users', $data);
     }
@@ -27,4 +28,24 @@ class ProjectStaff extends CI_Model
         $query = $this->db_ihrms->get('user');
         return $query->result();
     }
+    public function insertContract($data)
+    {
+        return $this->db->insert('contract_details', $data);
+    }
+    public function getSelectedReportingOfficer($user_id)
+    {
+        $this->db->select('reporting_officer_id');
+        $this->db->from('users');
+        $this->db->where('id', $user_id);
+        $query = $this->db->get()->row();
+
+        return $query ? $query->reporting_officer_id : '';
+    }
+    public function updateContract($userId, $data)
+    {
+        $this->db->where('user_id', $userId);
+        return $this->db->update('contract_details', $data);
+    }
+
+
 }

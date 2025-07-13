@@ -43,14 +43,14 @@ $total_inactive = count($inactive_users);
     <ul class="nav nav-tabs" id="staffTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button"
-                    role="tab">
+                role="tab">
                 <i class="fas fa-user-check me-2"></i>
                 Active Staff (<?php echo $total_active; ?>)
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="inactive-tab" data-bs-toggle="tab" data-bs-target="#inactive" type="button"
-                    role="tab">
+                role="tab">
                 <i class="fas fa-user-times me-2"></i>
                 Inactive Staff (<?php echo $total_inactive; ?>)
             </button>
@@ -92,76 +92,78 @@ $total_inactive = count($inactive_users);
             <div class="table-container">
                 <table id="activeStaffTable" class="table table-striped table-hover">
                     <thead>
-                    <tr>
-                        <th>Sr No.</th>
-                        <th>Staff</th>
-                        <th>Mobile</th>
-                        <th>Email</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Staff</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <?php if (!empty($active_users)): ?>
-                        <?php foreach ($active_users as $index => $user): ?>
-                            <tr>
-                                <td><?php echo($index + 1); ?></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <?php
-                                        // Generate initials from name
-                                        $initials = '';
-                                        if (!empty($user->name)) {
-                                            $name_parts = explode(' ', trim($user->name));
-                                            $initials = strtoupper(substr($name_parts[0], 0, 1));
-                                            if (isset($name_parts[1])) {
-                                                $initials .= strtoupper(substr($name_parts[1], 0, 1));
+                        <?php if (!empty($active_users)): ?>
+                            <?php foreach ($active_users as $index => $user): ?>
+                                <tr>
+                                    <td><?php echo ($index + 1); ?></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <?php
+                                            // Generate initials from name
+                                            $initials = '';
+                                            if (!empty($user->name)) {
+                                                $name_parts = explode(' ', trim($user->name));
+                                                $initials = strtoupper(substr($name_parts[0], 0, 1));
+                                                if (isset($name_parts[1])) {
+                                                    $initials .= strtoupper(substr($name_parts[1], 0, 1));
+                                                }
                                             }
-                                        }
 
-                                        // Generate random color for avatar
-                                        $colors = ['3498db', 'e74c3c', '2ecc71', '9b59b6', 'f39c12', '1abc9c'];
-                                        $color = $colors[($user->id - 1) % count($colors)];
+                                            // Generate random color for avatar
+                                            $colors = ['3498db', 'e74c3c', '2ecc71', '9b59b6', 'f39c12', '1abc9c'];
+                                            $color = $colors[($user->id - 1) % count($colors)];
 
-                                        $avatar_url = !empty($user->photo) ? $user->photo :
-                                            "https://placehold.co/40x40/{$color}/ffffff?text={$initials}";
-                                        ?>
-                                        <img src="<?php echo $avatar_url; ?>"
-                                             class="staff-photo me-3"
-                                             alt="<?php echo htmlspecialchars($user->name); ?>">
-                                        <div>
-                                            <p class="staff-name"><?php echo htmlspecialchars($user->name); ?></p>
-                                            <p class="staff-department"><?php echo !empty($user->role) ? htmlspecialchars($user->role) : 'Staff Member'; ?></p>
+                                            $avatar_url = !empty($user->photo) ? $user->photo :
+                                                "https://placehold.co/40x40/{$color}/ffffff?text={$initials}";
+                                            ?>
+                                            <img src="<?php echo $avatar_url; ?>" class="staff-photo me-3"
+                                                alt="<?php echo htmlspecialchars($user->name); ?>">
+                                            <div>
+                                                <p class="staff-name"><?php echo htmlspecialchars($user->name); ?></p>
+                                                <p class="staff-department">
+                                                    <?php echo !empty($user->role) ? htmlspecialchars($user->role) : 'Staff Member'; ?>
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td><?php echo !empty($user->mobile) ? htmlspecialchars($user->mobile) : 'N/A'; ?></td>
-                                <td><?php echo htmlspecialchars($user->email); ?></td>
-                                <td><?php echo !empty($user->department) ? htmlspecialchars($user->department) : 'Not Assigned'; ?></td>
-                                <td><span class="status-badge status-active">Active</span></td>
-                                <td>
-                                    <button class="action-btn btn-view" data-action="view"
+                                    </td>
+                                    <td><?php echo !empty($user->mobile) ? htmlspecialchars($user->mobile) : 'N/A'; ?></td>
+                                    <td><?php echo htmlspecialchars($user->email); ?></td>
+                                    <td><?php echo !empty($user->department) ? htmlspecialchars($user->department) : 'Not Assigned'; ?>
+                                    </td>
+                                    <td><span class="status-badge status-active">Active</span></td>
+                                    <td>
+                                        <button class="action-btn btn-view" data-action="view"
                                             data-id="<?php echo $user->id; ?>" title="View Details">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="action-btn btn-edit" data-action="edit"
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn btn-edit" data-action="edit"
                                             data-id="<?php echo $user->id; ?>" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn btn-contracts" data-action="contracts"
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn btn-contracts" data-action="contracts"
                                             data-id="<?php echo $user->id; ?>" title="View Contracts">
-                                        <i class="fas fa-file-contract"></i>
-                                    </button>
-                                    <button class="action-btn btn-toggle" data-id="<?php echo $user->id; ?>"
-                                            data-status="deactivate"
-                                            data-name="<?php echo htmlspecialchars($user->name); ?>" title="Deactivate">
-                                        <i class="fas fa-user-times"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                                            <i class="fas fa-file-contract"></i>
+                                        </button>
+                                        <button class="action-btn btn-toggle" data-id="<?php echo $user->id; ?>"
+                                            data-status="deactivate" data-name="<?php echo htmlspecialchars($user->name); ?>"
+                                            title="Deactivate">
+                                            <i class="fas fa-user-times"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -201,72 +203,74 @@ $total_inactive = count($inactive_users);
             <div class="table-container">
                 <table id="inactiveStaffTable" class="table table-striped table-hover">
                     <thead>
-                    <tr>
-                        <th>Sr No.</th>
-                        <th>Staff</th>
-                        <th>Mobile</th>
-                        <th>Email</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
+                        <tr>
+                            <th>Sr No.</th>
+                            <th>Staff</th>
+                            <th>Mobile</th>
+                            <th>Email</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <?php if (!empty($inactive_users)): ?>
-                        <?php foreach ($inactive_users as $index => $user): ?>
-                            <tr>
-                                <td><?php echo($index + 1); ?></td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <?php
-                                        // Generate initials from name
-                                        $initials = '';
-                                        if (!empty($user->name)) {
-                                            $name_parts = explode(' ', trim($user->name));
-                                            $initials = strtoupper(substr($name_parts[0], 0, 1));
-                                            if (isset($name_parts[1])) {
-                                                $initials .= strtoupper(substr($name_parts[1], 0, 1));
+                        <?php if (!empty($inactive_users)): ?>
+                            <?php foreach ($inactive_users as $index => $user): ?>
+                                <tr>
+                                    <td><?php echo ($index + 1); ?></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <?php
+                                            // Generate initials from name
+                                            $initials = '';
+                                            if (!empty($user->name)) {
+                                                $name_parts = explode(' ', trim($user->name));
+                                                $initials = strtoupper(substr($name_parts[0], 0, 1));
+                                                if (isset($name_parts[1])) {
+                                                    $initials .= strtoupper(substr($name_parts[1], 0, 1));
+                                                }
                                             }
-                                        }
 
-                                        $avatar_url = !empty($user->photo) ? $user->photo :
-                                            "https://placehold.co/40x40/95a5a6/ffffff?text={$initials}";
-                                        ?>
-                                        <img src="<?php echo $avatar_url; ?>"
-                                             class="staff-photo me-3"
-                                             alt="<?php echo htmlspecialchars($user->name); ?>">
-                                        <div>
-                                            <p class="staff-name"><?php echo htmlspecialchars($user->name); ?></p>
-                                            <p class="staff-department"><?php echo !empty($user->role) ? 'Former ' . htmlspecialchars($user->role) : 'Former Staff Member'; ?></p>
+                                            $avatar_url = !empty($user->photo) ? $user->photo :
+                                                "https://placehold.co/40x40/95a5a6/ffffff?text={$initials}";
+                                            ?>
+                                            <img src="<?php echo $avatar_url; ?>" class="staff-photo me-3"
+                                                alt="<?php echo htmlspecialchars($user->name); ?>">
+                                            <div>
+                                                <p class="staff-name"><?php echo htmlspecialchars($user->name); ?></p>
+                                                <p class="staff-department">
+                                                    <?php echo !empty($user->role) ? 'Former ' . htmlspecialchars($user->role) : 'Former Staff Member'; ?>
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td><?php echo !empty($user->mobile) ? htmlspecialchars($user->mobile) : 'N/A'; ?></td>
-                                <td><?php echo htmlspecialchars($user->email); ?></td>
-                                <td><?php echo !empty($user->department) ? htmlspecialchars($user->department) : 'Not Assigned'; ?></td>
-                                <td><span class="status-badge status-inactive">Inactive</span></td>
-                                <td>
-                                    <button class="action-btn btn-view" data-action="view"
+                                    </td>
+                                    <td><?php echo !empty($user->mobile) ? htmlspecialchars($user->mobile) : 'N/A'; ?></td>
+                                    <td><?php echo htmlspecialchars($user->email); ?></td>
+                                    <td><?php echo !empty($user->department) ? htmlspecialchars($user->department) : 'Not Assigned'; ?>
+                                    </td>
+                                    <td><span class="status-badge status-inactive">Inactive</span></td>
+                                    <td>
+                                        <button class="action-btn btn-view" data-action="view"
                                             data-id="<?php echo $user->id; ?>" title="View Details">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="action-btn btn-edit" data-action="edit"
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="action-btn btn-edit" data-action="edit"
                                             data-id="<?php echo $user->id; ?>" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn btn-contracts" data-action="contracts"
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn btn-contracts" data-action="contracts"
                                             data-id="<?php echo $user->id; ?>" title="View Contracts">
-                                        <i class="fas fa-file-contract"></i>
-                                    </button>
-                                    <button class="action-btn btn-toggle activate" data-id="<?php echo $user->id; ?>"
-                                            data-status="activate"
-                                            data-name="<?php echo htmlspecialchars($user->name); ?>" title="Activate">
-                                        <i class="fas fa-user-check"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
+                                            <i class="fas fa-file-contract"></i>
+                                        </button>
+                                        <button class="action-btn btn-toggle activate" data-id="<?php echo $user->id; ?>"
+                                            data-status="activate" data-name="<?php echo htmlspecialchars($user->name); ?>"
+                                            title="Activate">
+                                            <i class="fas fa-user-check"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -334,7 +338,7 @@ $total_inactive = count($inactive_users);
         // Tab switching with table refresh
         $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
             setTimeout(() => {
-                $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
             }, 100);
         });
     });

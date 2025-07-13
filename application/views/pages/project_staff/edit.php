@@ -53,12 +53,12 @@
         <div>
             <h1 class="page-title">
                 <i class="fas fa-user-plus"></i>
-                Add New Staff Member
+                Edit New Staff Member
             </h1>
             <nav class="breadcrumb-nav">
                 <a href="dashboard.html">Dashboard</a> /
                 <a href="project-staff-listing.html">Project Staff</a> /
-                <span class="text-muted">Add New</span>
+                <span class="text-muted">Edit New</span>
             </nav>
         </div>
         <a href="<?= base_url('project-staff') ?>" class="btn btn-secondary">
@@ -69,7 +69,16 @@
 </div>
 
 <!-- Create Form -->
-<form id="createStaffForm" action="<?= base_url('project-staff/store'); ?>" enctype="multipart/form-data" method="post">
+<form id="createStaffForm" action="<?= base_url('project-staff/update/' . $user['id']); ?>"
+    enctype="multipart/form-data" method="post">
+
+    <?php if ($this->session->flashdata('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <?= $this->session->flashdata('error') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
 
     <?php if ($this->session->flashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -78,33 +87,29 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
+
     <!-- Personal Information -->
     <div class="form-card">
-        <h3 class="form-section-title">
-            <i class="fas fa-user"></i>
-            Personal Information
-        </h3>
-        <div class="col-md-12">
-            <label for="name" class="form-label">Employee Id *</label>
-            <input type="number" class="form-control <?= form_error('employee_id') ? 'is-invalid' : '' ?>"
-                id="employee_id" name="employee_id" placeholder="Enter employee id"
-                value="<?= set_value('employee_id') ?>">
-            <?php if (form_error('employee_id')): ?>
-                <div class="invalid-feedback">
-                    <?= form_error('employee_id') ?>
-                </div>
-            <?php endif; ?>
+        <h3 class="form-section-title"><i class="fas fa-user"></i> Personal Information</h3>
 
+        <div class="col-md-12">
+            <label for="employee_id" class="form-label">Employee Id *</label>
+            <input type="number" class="form-control" id="employee_id" name="employee_id"
+                value="<?= set_value('employee_id', $user['employee_id'] ?? '') ?>">
+            <small class="text-danger"><?= form_error('employee_id') ?></small>
         </div>
+
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="name" class="form-label">Full Name *</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter full name">
+                <input type="text" class="form-control" id="name" name="name"
+                    value="<?= set_value('name', $user['name'] ?? '') ?>">
                 <small class="text-danger"><?= form_error('name') ?></small>
             </div>
             <div class="col-md-6">
                 <label for="email" class="form-label">Email Address *</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email address">
+                <input type="email" class="form-control" id="email" name="email"
+                    value="<?= set_value('email', $user['email'] ?? '') ?>">
                 <small class="text-danger"><?= form_error('email') ?></small>
             </div>
         </div>
@@ -112,16 +117,20 @@
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="dob" class="form-label">Date of Birth *</label>
-                <input type="date" class="form-control" id="dob" name="dob">
+                <input type="date" class="form-control" id="dob" name="dob"
+                    value="<?= set_value('dob', $user['dob'] ?? '') ?>">
                 <small class="text-danger"><?= form_error('dob') ?></small>
             </div>
             <div class="col-md-6">
                 <label for="gender" class="form-label">Gender *</label>
                 <select class="form-select select2" id="gender" name="gender">
                     <option value="">Select Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="male" <?= set_select('gender', 'male', ($user['gender'] ?? '') == 'male') ?>>Male
+                    </option>
+                    <option value="female" <?= set_select('gender', 'female', ($user['gender'] ?? '') == 'female') ?>>
+                        Female</option>
+                    <option value="other" <?= set_select('gender', 'other', ($user['gender'] ?? '') == 'other') ?>>Other
+                    </option>
                 </select>
             </div>
         </div>
@@ -129,54 +138,48 @@
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="mobile" class="form-label">Mobile Number *</label>
-                <input type="tel" class="form-control" id="mobile" name="mobile" placeholder="+91 XXXXX XXXXX">
+                <input type="tel" class="form-control" id="mobile" name="mobile"
+                    value="<?= set_value('mobile', $user['phone'] ?? '') ?>">
             </div>
             <div class="col-md-6">
                 <label for="pan" class="form-label">PAN Number *</label>
-                <input type="text" class="form-control" id="pan" name="pan" placeholder="ABCDE1234F"
-                    style="text-transform: uppercase;">
+                <input type="text" class="form-control" id="pan" name="pan"
+                    value="<?= set_value('pan', $user['pan_number'] ?? '') ?>" style="text-transform: uppercase;">
             </div>
         </div>
 
         <div class="row form-row">
             <div class="col-12">
                 <label for="address" class="form-label">Address *</label>
-                <textarea class="form-control" id="address" name="address" rows="3"
-                    placeholder="Enter complete address"></textarea>
+                <textarea class="form-control" id="address" name="address"
+                    rows="3"><?= set_value('address', $user['address'] ?? '') ?></textarea>
             </div>
         </div>
     </div>
 
     <!-- Professional Information -->
     <div class="form-card">
-        <h3 class="form-section-title">
-            <i class="fas fa-briefcase"></i>
-            Professional Information
-        </h3>
-
+        <h3 class="form-section-title"><i class="fas fa-briefcase"></i> Professional Information</h3>
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="department" class="form-label">Department *</label>
                 <select class="form-select select2" id="department" name="department">
                     <option value="">Select Department</option>
-                    <option value="library_science">Library Science</option>
-                    <option value="computer_science">Computer Science</option>
+                    <option value="library_science" <?= set_select('department', 'library_science', ($user['department'] ?? '') == 'library_science') ?>>Library Science</option>
+                    <option value="computer_science" <?= set_select('department', 'computer_science', ($user['department'] ?? '') == 'computer_science') ?>>Computer Science</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label for="reporting_officer" class="form-label">Reporting Officer *</label>
                 <select class="form-select select2" id="reporting_officer" name="reporting_officer">
                     <option value="">Select Reporting Officer</option>
-                    <?php if (!empty($reportingOfficers)): ?>
-                        <?php foreach ($reportingOfficers as $officer): ?>
-                            <option
-                                value="<?php echo $officer->id; ?>,'.',<?php echo $officer->name; ?> ,'.',<?php echo $officer->designation; ?>">
-                                <?php echo $officer->name; ?> - <?php echo $officer->designation; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <option value="">No reporting officers found</option>
-                    <?php endif; ?>
+                    <?php foreach ($reportingOfficers as $officer): ?>
+                        <option value="<?= $officer->id ?>,'.',<?= $officer->name ?>,'.',<?= $officer->designation ?>"
+                            <?= set_select('reporting_officer', $officer->id, $selectedReportingOfficer == $officer->id) ?>>
+                            <?= $officer->name ?> - <?= $officer->designation ?>
+                        </option>
+                    <?php endforeach; ?>
+
                 </select>
             </div>
         </div>
@@ -185,58 +188,52 @@
             <div class="col-md-6">
                 <label for="role" class="form-label">Role/Position *</label>
                 <select class="form-select select2" id="role" name="role">
-                    <option value="">Select Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="admin_purchase">Admin Purchase</option>
-                    <option value="admin_finance">Admin Finance</option>
-                    <option value="employee">Employee</option>
-                    <option value="director">Director</option>
+                    <?php
+                    $roles = ['admin', 'admin_purchase', 'admin_finance', 'employee', 'director'];
+                    foreach ($roles as $role): ?>
+                        <option value="<?= $role ?>" <?= set_select('role', $role, ($user['role'] ?? '') == $role) ?>>
+                            <?= ucfirst(str_replace('_', ' ', $role)) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
             <div class="col-md-6">
-                <label for="role" class="form-label">Sub Role *</label>
+                <label for="sub_role" class="form-label">Sub Role *</label>
                 <select class="form-select select2" id="sub_role" name="sub_role">
-                    <option value="">Select Sub Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="admin_purchase">Admin Purchase</option>
-                    <option value="admin_finance">Admin Finance</option>
-                    <option value="employee">Employee</option>
-                    <option value="director">Director</option>
+                    <?php foreach ($roles as $sub): ?>
+                        <option value="<?= $sub ?>" <?= set_select('sub_role', $sub, ($user['sub_role'] ?? '') == $sub) ?>>
+                            <?= ucfirst(str_replace('_', ' ', $sub)) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
     </div>
 
-    <!-- Security Information -->
+    <!-- Security Info -->
     <div class="form-card">
-        <h3 class="form-section-title">
-            <i class="fas fa-lock"></i>
-            Security Information
-        </h3>
-
+        <h3 class="form-section-title"><i class="fas fa-lock"></i> Security Information</h3>
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="password" class="form-label">Password *</label>
                 <input type="password" class="form-control" id="password" name="password"
-                    placeholder="Enter secure password">
-                <div class="form-text">Password must be at least 8 characters long</div>
+                    value="<?= set_value('password', $user['password'] ?? '') ?>">
+                <div class=" form-text">Password must be at least 8 characters
+                </div>
             </div>
             <div class="col-md-6">
                 <label for="confirm_password" class="form-label">Confirm Password *</label>
                 <input type="password" class="form-control" id="confirm_password" name="confirm_password"
-                    placeholder="Confirm password">
+                    value="<?= set_value('password', $user['password'] ?? '') ?>">
             </div>
         </div>
     </div>
 
     <!-- Document Upload -->
     <div class="form-card">
-        <h3 class="form-section-title">
-            <i class="fas fa-upload"></i>
-            Document Upload
-        </h3>
-
+        <h3 class="form-section-title"><i class="fas fa-file-upload"></i> Document Upload</h3>
         <div class="row form-row">
+            <!-- Profile Photo -->
             <div class="col-md-6">
                 <label class="form-label">Profile Photo *</label>
                 <div class="file-upload-container" onclick="document.getElementById('photo').click()">
@@ -248,8 +245,28 @@
                     <button type="button" class="file-upload-btn">Choose Photo</button>
                 </div>
                 <input type="file" id="photo" name="photo" class="file-upload-input" accept="image/*">
-                <div id="photo-preview" class="file-preview"></div>
+
+                <!-- Show existing photo if available -->
+                <div id="photo-preview" class="file-preview <?= !empty($user['photo']) ? 'show' : '' ?>">
+                    <?php if (!empty($user['photo'])): ?>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="<?= base_url('application/assets/photo/' . $user['photo']) ?>" alt="Profile Photo"
+                                    style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
+                                <div>
+                                    <div style="font-weight: 600; font-size: 14px;"><?= $user['photo'] ?></div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-input="photo"
+                                data-preview="photo-preview">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
+
+            <!-- Digital Signature -->
             <div class="col-md-6">
                 <label class="form-label">Digital Signature *</label>
                 <div class="file-upload-container" onclick="document.getElementById('signature').click()">
@@ -261,33 +278,49 @@
                     <button type="button" class="file-upload-btn">Choose Signature</button>
                 </div>
                 <input type="file" id="signature" name="signature" class="file-upload-input" accept="image/*">
-                <div id="signature-preview" class="file-preview"></div>
+
+                <!-- Show existing signature if available -->
+                <div id="signature-preview" class="file-preview <?= !empty($user['signature']) ? 'show' : '' ?>">
+                    <?php if (!empty($user['signature'])): ?>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <img src="<?= base_url('application/assets/signature/' . $user['signature']) ?>"
+                                    alt="Digital Signature"
+                                    style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
+                                <div>
+                                    <div style="font-weight: 600; font-size: 14px;"><?= $user['signature'] ?></div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-input="signature"
+                                data-preview="signature-preview">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Initial Contract Information -->
     <div class="form-card">
-        <h3 class="form-section-title">
-            <i class="fas fa-file-contract"></i>
-            Initial Contract Information
-        </h3>
-
+        <h3 class="form-section-title"><i class="fas fa-file-contract"></i> Initial Contract Information</h3>
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="designation" class="form-label">Designation *</label>
                 <select class="form-select select2" id="designation" name="designation">
                     <option value="">Select Designation</option>
-                    <option value="Assistant">Assistant</option>
-                    <option value="Software Developer">Software Developer</option>
-                    <option value="Consultant">Consultant</option>
-                    <option value="Library Officer">Library Officer</option>
-                    <option value="Executive">Executive</option>
+                    <option value="Assistant" <?= set_select('designation', 'Assistant', ($contract['designation'] ?? '') == 'Assistant') ?>>Assistant</option>
+                    <option value="Software Developer" <?= set_select('designation', 'Software Developer', ($contract['designation'] ?? '') == 'Software Developer') ?>>Software Developer</option>
+                    <option value="Consultant" <?= set_select('designation', 'Consultant', ($contract['designation'] ?? '') == 'Consultant') ?>>Consultant</option>
+                    <option value="Library Officer" <?= set_select('designation', 'Library Officer', ($contract['designation'] ?? '') == 'Library Officer') ?>>Library Officer</option>
+                    <option value="Executive" <?= set_select('designation', 'Executive', ($contract['designation'] ?? '') == 'Executive') ?>>Executive</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label for="join_date" class="form-label">Join Date *</label>
-                <input type="date" class="form-control" id="join_date" name="join_date">
+                <input type="date" class="form-control" id="join_date" name="join_date"
+                    value="<?= set_value('join_date', date('Y-m-d', strtotime($contract['join_date'])) ?? '') ?>">
             </div>
         </div>
 
@@ -295,16 +328,17 @@
             <div class="col-md-4">
                 <label for="contract_months" class="form-label">Contract Duration (Months) *</label>
                 <input type="number" class="form-control" id="contract_months" name="contract_months"
-                    placeholder="Enter number of months" min="1" max="120">
+                    value="<?= set_value('contract_months', $contract['contract_month'] ?? '') ?>">
             </div>
             <div class="col-md-4">
                 <label for="end_date" class="form-label">Contract End Date</label>
-                <input type="date" class="form-control" id="end_date" name="end_date" placeholder="Auto-calculated">
+                <input type="date" class="form-control" id="end_date" name="end_date"
+                    value="<?= set_value('end_date', date('Y-m-d', strtotime($contract['end_date'])) ?? '') ?>">
             </div>
             <div class="col-md-4">
                 <label for="salary" class="form-label">Monthly Salary *</label>
-                <input type="number" class="form-control" id="salary" name="salary" placeholder="Enter amount in INR"
-                    min="0" step="0.01">
+                <input type="number" class="form-control" id="salary" name="salary"
+                    value="<?= set_value('salary', $contract['salary'] ?? '') ?>">
             </div>
         </div>
 
@@ -312,41 +346,35 @@
             <div class="col-md-6">
                 <label for="project_name" class="form-label">Assigned Project *</label>
                 <select class="form-select select2" id="project_name" name="project_name">
-                    <option value="">Select Project</option>
-                    <option value="Shodhganga">Shodhganga</option>
-                    <option value="MOOCs">MOOCs</option>
-                    <option value="SOUL">SOUL</option>
-                    <option value="NIRF Project">NIRF Project</option>
-                    <option value="PDS">PDS</option>
+                    <option value="Shodhganga" <?= set_select('project_name', 'Shodhganga', ($contract['project_name'] ?? '') == 'Shodhganga') ?>>Shodhganga</option>
+                    <option value="MOOCs" <?= set_select('project_name', 'MOOCs', ($contract['project_name'] ?? '') == 'MOOCs') ?>>MOOCs</option>
+                    <option value="SOUL" <?= set_select('project_name', 'SOUL', ($contract['project_name'] ?? '') == 'SOUL') ?>>SOUL</option>
+                    <option value="NIRF Project" <?= set_select('project_name', 'NIRF Project', ($contract['project_name'] ?? '') == 'NIRF Project') ?>>NIRF Project</option>
+                    <option value="PDS" <?= set_select('project_name', 'PDS', ($contract['project_name'] ?? '') == 'PDS') ?>>PDS</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label for="location" class="form-label">Location *</label>
                 <select class="form-select select2" id="location" name="location">
-                    <option value="">Select location</option>
-                    <option value="INFLIBNET">INFLIBNET</option>
-                    <option value="UGC New Delhi">UGC New Delhi</option>
-                    <option value="Assam">Assam</option>
-                    <option value="AIU New Delhi">AIU New Delhi</option>
+                    <option value="INFLIBNET" <?= set_select('location', 'INFLIBNET', ($user['location'] ?? '') == 'INFLIBNET') ?>>INFLIBNET</option>
+                    <option value="UGC New Delhi" <?= set_select('location', 'UGC New Delhi', ($contract['location'] ?? '') == 'UGC New Delhi') ?>>UGC New Delhi</option>
+                    <option value="Assam" <?= set_select('location', 'Assam', ($contract['location'] ?? '') == 'Assam') ?>>
+                        Assam</option>
+                    <option value="AIU New Delhi" <?= set_select('location', 'AIU New Delhi', ($contract['location'] ?? '') == 'AIU New Delhi') ?>>AIU New Delhi</option>
                 </select>
             </div>
         </div>
     </div>
 
-    <!-- Form Actions -->
+    <!-- Submit -->
     <div class="form-card">
         <div class="d-flex justify-content-end gap-3">
-            <button type="reset" class="btn btn-secondary">
-                <i class="fas fa-undo me-2"></i>
-                Reset Form
-            </button>
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-2"></i>
-                Create Staff Member
-            </button>
+            <button type="reset" class="btn btn-secondary"><i class="fas fa-undo me-2"></i> Reset</button>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i> Submit</button>
         </div>
     </div>
 </form>
+
 <?php $this->load->view('includes/footer'); ?>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -388,7 +416,7 @@
         }, "Please select a file with a valid extension");
 
         // Initialize jQuery Validation
-        $('#createStaffForm1').validate({
+        $('#createStaffForm').validate({
             ignore: [],
             rules: {
                 employee_id: {
@@ -437,7 +465,7 @@
                 password: {
                     required: true,
                     minlength: 8,
-                    maxlength: 50
+                    maxlength: 100
                 },
                 confirm_password: {
                     required: true,
