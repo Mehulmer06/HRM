@@ -32,5 +32,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /tests/results/
 .history
 .env
-.uploads/photo
-.uploads/signature
+uploads
