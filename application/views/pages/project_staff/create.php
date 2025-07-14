@@ -159,8 +159,8 @@
                 <label for="department" class="form-label">Department *</label>
                 <select class="form-select select2" id="department" name="department">
                     <option value="">Select Department</option>
-                    <option value="library_science">Library Science</option>
-                    <option value="computer_science">Computer Science</option>
+                    <option value="library science">Library Science</option>
+                    <option value="computer science">Computer Science</option>
                 </select>
             </div>
             <div class="col-md-6">
@@ -187,8 +187,6 @@
                 <select class="form-select select2" id="role" name="role">
                     <option value="">Select Role</option>
                     <option value="admin">Admin</option>
-                    <option value="admin_purchase">Admin Purchase</option>
-                    <option value="admin_finance">Admin Finance</option>
                     <option value="employee">Employee</option>
                     <option value="director">Director</option>
                 </select>
@@ -201,7 +199,6 @@
                     <option value="admin_purchase">Admin Purchase</option>
                     <option value="admin_finance">Admin Finance</option>
                     <option value="employee">Employee</option>
-                    <option value="director">Director</option>
                 </select>
             </div>
         </div>
@@ -388,7 +385,7 @@
         }, "Please select a file with a valid extension");
 
         // Initialize jQuery Validation
-        $('#createStaffForm1').validate({
+        $('#createStaffForm').validate({
             ignore: [],
             rules: {
                 employee_id: {

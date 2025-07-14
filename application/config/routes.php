@@ -62,6 +62,8 @@ $route['project-staff/store'] = 'ProjectStaffController/store';
 $route['project-staff/edit/(:num)'] = 'ProjectStaffController/edit/$1';
 $route['project-staff/update/(:num)'] = 'ProjectStaffController/update/$1';
 $route['project-staff/toggle-status'] = 'ProjectStaffController/toggle_status';
+$route['project-staff/show/(:num)'] = 'ProjectStaffController/show/$1';
+$route['project-staff/renewal-contract/(:num)'] = 'ProjectStaffController/renewContract/$1';
 
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
