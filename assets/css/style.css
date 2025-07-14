@@ -369,7 +369,7 @@ body {
     background: #f8f9fa;
     border: 2px solid #e9ecef;
     color: #666;
-    padding: 8px 16px;
+    /*padding: 8px 16px;*/
     border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
@@ -584,7 +584,7 @@ body {
 
 .form-control {
     width: 100%;
-    padding: 15px 20px 15px 50px;
+    /*padding: 15px 20px 15px 50px;*/
     border: 2px solid #e9ecef;
     border-radius: 12px;
     font-size: 16px;
@@ -714,6 +714,16 @@ body {
 .login-btn:hover::before,
 .reset-btn:hover::before {
     left: 100%;
+}
+
+
+.module-btn.secondary {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+}
+
+.module-btn.secondary:hover {
+    background: linear-gradient(135deg, #5a6268, #495057);
 }
 
 .login-btn:hover {
@@ -1009,19 +1019,6 @@ body {
     overflow: hidden;
 }
 
-.dataTables_wrapper .dataTables_length select {
-    padding: 6px 12px;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-}
-
-.dataTables_wrapper .dataTables_filter input {
-    padding: 8px 12px;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    margin-left: 8px;
-}
-
 .table th {
     background: #f8f9fa;
     color: #2c5aa0;
@@ -1175,31 +1172,10 @@ body {
     margin-bottom: 20px;
 }
 
-.form-label {
-    font-weight: 600;
-    color: #2c5aa0;
-    margin-bottom: 8px;
-    font-size: 14px;
-}
-
-.form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    padding: 12px 15px;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-}
-
-.form-control:focus {
-    border-color: #2c5aa0;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
-}
-
 .form-select {
     border: 2px solid #e9ecef;
     border-radius: 8px;
-    padding: 12px 15px;
+    /*padding: 12px 15px;*/
     transition: all 0.3s ease;
     background: #f8f9fa;
 }
@@ -1457,6 +1433,132 @@ body {
     }
 }
 
+/* ===== HOLIDAY LIST STYLES ===== */
+
+.year-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.year-selector .form-label {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #2c5aa0;
+    white-space: nowrap;
+}
+
+.year-selector .form-select {
+    min-width: 120px;
+}
+
+.holiday-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: fit-content;
+}
+
+.holiday-header {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.holiday-header h3 {
+    color: #2c5aa0;
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.holiday-header i {
+    color: #3498db;
+    font-size: 18px;
+}
+
+/* Holiday Table Styles */
+.holiday-section .table-container {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.holiday-section .table th {
+    background: #f8f9fa;
+    color: #2c5aa0;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 8px;
+    border-bottom: 2px solid #dee2e6;
+    text-align: center;
+}
+
+.holiday-section .table td {
+    padding: 12px 8px;
+    font-size: 13px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.holiday-section .table td:first-child {
+    text-align: center;
+    font-weight: 600;
+    color: #2c5aa0;
+}
+
+.holiday-section .table tbody tr:hover {
+    background: rgba(44, 90, 160, 0.02);
+}
+
+/* Holiday Responsive Styles */
+@media (max-width: 991px) {
+    .holiday-section {
+        margin-bottom: 20px;
+    }
+
+    .year-selector {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .page-header .d-flex {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .holiday-section {
+        padding: 15px;
+    }
+
+    .holiday-header h3 {
+        font-size: 18px;
+    }
+
+    .holiday-section .table th,
+    .holiday-section .table td {
+        padding: 8px 4px;
+        font-size: 11px;
+    }
+
+    .table-controls .d-flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-box input {
+        width: 100% !important;
+    }
+}
+
 /* ===== RESPONSIVE STYLES ===== */
 
 @media (max-width: 768px) {
@@ -1566,4 +1668,18 @@ body {
         padding: 15px 10px;
         font-size: 12px;
     }
+}
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
 }

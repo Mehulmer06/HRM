@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="module-body">
-                <a href="holiday-list.html" class="module-btn primary">
+                <a href="<?= base_url('holiday') ?>" class="module-btn primary">
                     Click Here
                 </a>
             </div>
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="module-body">
-                <a href="leave-management.html" class="module-btn success">
+                <a href="<?= base_url('leave') ?>" class="module-btn success">
                     Click Here
                 </a>
             </div>
@@ -40,7 +40,7 @@
             <div class="module-header">
                 <div class="module-info">
                     <i class="fas fa-clipboard-list icon"></i>
-                    <h3>Request/Issue/Note to Admin</h3>
+                    <h3>Request/Issue/Note</h3>
                 </div>
             </div>
             <div class="module-body">
@@ -57,10 +57,10 @@
                     <i class="fas fa-sticky-note icon"></i>
                     <h3>Note Management</h3>
                 </div>
-                <span class="module-badge">NEW</span>
+                <!--<span class="module-badge">NEW</span>-->
             </div>
             <div class="module-body">
-                <a href="note-management.html" class="module-btn info">
+                <a href="<?= base_url('note') ?>" class="module-btn info">
                     Click Here
                 </a>
             </div>
@@ -76,6 +76,21 @@
             </div>
             <div class="module-body">
                 <a href="<?= base_url('project-staff') ?>" class="module-btn primary">
+                    Click Here
+                </a>
+            </div>
+        </div>
+
+        <!-- Evaluation -->
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-info">
+                    <i class="fas fa-chart-line icon"></i>
+                    <h3>Evaluation</h3>
+                </div>
+            </div>
+            <div class="module-body">
+                <a href="<?= base_url('evaluation') ?>" class="module-btn secondary">
                     Click Here
                 </a>
             </div>
