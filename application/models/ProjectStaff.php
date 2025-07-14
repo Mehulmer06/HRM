@@ -46,6 +46,19 @@ class ProjectStaff extends CI_Model
         $this->db->where('user_id', $userId);
         return $this->db->update('contract_details', $data);
     }
+    public function updateContractStatus($userId, $data)
+    {
+        $this->db->where('user_id', $userId);
+        return $this->db->update('contract_details', ['status' => 'complete']);
+    }
+    public function getContractDetails($userId)
+    {
+        $this->db->select('*');
+        $this->db->from('contract_details');
+        $this->db->where('user_id', $userId);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
 
 
 }

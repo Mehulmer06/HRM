@@ -20,6 +20,7 @@ class User extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('contract_details');
+        $this->db->where('status', 'active');
         $this->db->where('user_id', $userId);
         $query = $this->db->get();
         return $query->row_array();

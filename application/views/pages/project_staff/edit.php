@@ -251,7 +251,7 @@
                     <?php if (!empty($user['photo'])): ?>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="<?= base_url('application/assets/photo/' . $user['photo']) ?>" alt="Profile Photo"
+                                <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" alt="Profile Photo"
                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
                                 <div>
                                     <div style="font-weight: 600; font-size: 14px;"><?= $user['photo'] ?></div>
@@ -284,8 +284,7 @@
                     <?php if (!empty($user['signature'])): ?>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="<?= base_url('application/assets/signature/' . $user['signature']) ?>"
-                                    alt="Digital Signature"
+                                <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" alt="Digital Signature"
                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
                                 <div>
                                     <div style="font-weight: 600; font-size: 14px;"><?= $user['signature'] ?></div>

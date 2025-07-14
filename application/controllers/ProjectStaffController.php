@@ -7,6 +7,7 @@ class ProjectStaffController extends CI_Controller
     {
         parent::__construct();
         $this->load->model('ProjectStaff', 'ProjectStaff');
+        $this->load->library('upload');
     }
 
     public function index()
@@ -33,9 +34,7 @@ class ProjectStaffController extends CI_Controller
     {
 
         try {
-            $this->load->library(['upload', 'form_validation']);
 
-            // 1. Form Validation Rules
             $this->form_validation->set_rules('employee_id', 'Employee id', 'required');
             $this->form_validation->set_rules('name', 'Name', 'required');
             $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
@@ -62,25 +61,25 @@ class ProjectStaffController extends CI_Controller
                 $this->session->set_flashdata('error', validation_errors());
                 $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
                 return $this->load->view('pages/project_staff/create', $data);
-                // return redirect('project-staff/create');
+
             }
 
             $input = $this->input->post();
 
-            // 2. Start DB Transaction
+
             $this->db->trans_begin();
             $reportingParts = explode(",'.',", $input['reporting_officer']);
             $reportingOfficerId = isset($reportingParts[0]) ? trim($reportingParts[0]) : null;
             $reportingOfficerName = isset($reportingParts[1]) ? trim($reportingParts[1]) : null;
             $reportingOfficerDesignation = isset($reportingParts[2]) ? trim($reportingParts[2]) : null;
 
-            // 3. Prepare User Data
+
             $userData = [
                 'employee_id' => $input['employee_id'],
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'dob' => $input['dob'],
-                'password' => password_hash($input['password'], PASSWORD_DEFAULT),
+                'password' => md5($input['password']),
                 'address' => $input['address'],
                 'department' => $input['department'],
                 'role' => $input['role'],
@@ -95,10 +94,9 @@ class ProjectStaffController extends CI_Controller
                 'status' => 'Y'
             ];
 
-            // 4. Handle Photo Upload
             if (!empty($_FILES['photo']['name'])) {
                 $photoConfig = [
-                    'upload_path' => './application/assets/photo/',
+                    'upload_path' => 'upload/photo/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -110,11 +108,9 @@ class ProjectStaffController extends CI_Controller
                     throw new Exception('Photo upload failed: ' . strip_tags($this->upload->display_errors()));
                 }
             }
-
-            // 5. Handle Signature Upload
             if (!empty($_FILES['signature']['name'])) {
                 $signatureConfig = [
-                    'upload_path' => './application/assets/signature/',
+                    'upload_path' => 'upload/signature/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -127,13 +123,10 @@ class ProjectStaffController extends CI_Controller
                 }
             }
 
-            // 6. Insert into Users Table
             $userId = $this->User->insertUser($userData);
             if (!$userId) {
                 throw new Exception('Failed to insert user.');
             }
-
-            // 7. Prepare Contract Data
             $contractData = [
                 'user_id' => $userId,
                 'designation' => $input['designation'],
@@ -144,16 +137,12 @@ class ProjectStaffController extends CI_Controller
                 'project_name' => $input['project_name'],
                 'created_at' => date('Y-m-d H:i:s'),
                 'location' => $input['location'],
-                'status' => 'Y'
+                'status' => 'active'
             ];
-
-            // 8. Insert into Contract Table
             $contractResult = $this->ProjectStaff->insertContract($contractData);
             if (!$contractResult) {
                 throw new Exception('Failed to insert contract details.');
             }
-
-            // 9. Commit Transaction
             $this->db->trans_commit();
             $this->session->set_flashdata('success', 'User and contract created successfully.');
         } catch (\Exception $e) {
@@ -174,7 +163,6 @@ class ProjectStaffController extends CI_Controller
             $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
             $data['selectedReportingOfficer'] = $this->ProjectStaff->getSelectedReportingOfficer($id);
             $data['contract'] = $this->User->getContractByUserId($id);
-
             $this->load->view('pages/project_staff/edit', $data);
         } catch (\Exception $e) {
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
@@ -184,9 +172,8 @@ class ProjectStaffController extends CI_Controller
     public function update($userId)
     {
         try {
-            $this->load->library(['upload', 'form_validation']);
 
-            // 1. Form Validation Rules
+
             $this->form_validation->set_rules('employee_id', 'Employee id', 'required');
             $this->form_validation->set_rules('name', 'Name', 'required');
             $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
@@ -214,14 +201,14 @@ class ProjectStaffController extends CI_Controller
 
             $input = $this->input->post();
 
-            // 2. Start DB Transaction
+
             $this->db->trans_begin();
             $reportingParts = explode(",'.',", $input['reporting_officer']);
             $reportingOfficerId = isset($reportingParts[0]) ? trim($reportingParts[0]) : null;
             $reportingOfficerName = isset($reportingParts[1]) ? trim($reportingParts[1]) : null;
             $reportingOfficerDesignation = isset($reportingParts[2]) ? trim($reportingParts[2]) : null;
 
-            // 3. Prepare User Data
+
             $userData = [
                 'employee_id' => $input['employee_id'],
                 'name' => $input['name'],
@@ -240,7 +227,7 @@ class ProjectStaffController extends CI_Controller
                 'updated_at' => date('Y-m-d H:i:s')
             ];
 
-            // Optional password update
+
             if (!empty($input['password'])) {
                 $this->form_validation->set_rules('password', 'Password', 'min_length[6]');
                 $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'matches[password]');
@@ -248,13 +235,13 @@ class ProjectStaffController extends CI_Controller
                     $this->session->set_flashdata('error', validation_errors());
                     return redirect('project-staff/edit/' . $userId);
                 }
-                $userData['password'] = password_hash($input['password'], PASSWORD_DEFAULT);
+                $userData['password'] = md5($input['password']);
             }
 
-            // 4. Handle Photo Upload
+
             if (!empty($_FILES['photo']['name'])) {
                 $photoConfig = [
-                    'upload_path' => './application/assets/photo/',
+                    'upload_path' => 'upload/photo/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -267,10 +254,10 @@ class ProjectStaffController extends CI_Controller
                 }
             }
 
-            // 5. Handle Signature Upload
+
             if (!empty($_FILES['signature']['name'])) {
                 $signatureConfig = [
-                    'upload_path' => './application/assets/signature/',
+                    'upload_path' => 'upload/signature/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -283,13 +270,12 @@ class ProjectStaffController extends CI_Controller
                 }
             }
 
-            // 6. Update User Table
+
             $userUpdate = $this->User->updateUser($userId, $userData);
             if (!$userUpdate) {
                 throw new Exception('Failed to update user.');
             }
 
-            // 7. Prepare Contract Data
             $contractData = [
                 'designation' => $input['designation'],
                 'join_date' => $input['join_date'],
@@ -301,13 +287,12 @@ class ProjectStaffController extends CI_Controller
                 'location' => $input['location']
             ];
 
-            // 8. Update Contract Table
             $contractResult = $this->ProjectStaff->updateContract($userId, $contractData);
             if (!$contractResult) {
                 throw new Exception('Failed to update contract details.');
             }
 
-            // 9. Commit Transaction
+
             $this->db->trans_commit();
             $this->session->set_flashdata('success', 'User and contract updated successfully.');
         } catch (\Exception $e) {
@@ -317,6 +302,82 @@ class ProjectStaffController extends CI_Controller
 
         redirect('project-staff');
     }
+    public function show($id)
+    {
+        try {
+            $data['user'] = $this->User->getUserById($id);
+            if (!$data['user']) {
+                $this->session->set_flashdata('error', 'Error: User not found.');
+                redirect('project-staff');
+            }
+
+            $data['contract'] = $this->User->getContractByUserId($id);
+            if (!$data['contract']) {
+                $this->session->set_flashdata('error', 'Error: Contract details not found.');
+                redirect('project-staff');
+            }
+            $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
+            $this->load->view('pages/project_staff/show', $data);
+        } catch (\Exception $e) {
+            $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
+            redirect('project-staff');
+        }
+
+    }
+    public function renewContract($id)
+    {
+        try {
+
+            $this->form_validation->set_rules('modal_designation', 'Designation', 'required');
+            $this->form_validation->set_rules('start_date', 'Start Date', 'required');
+            $this->form_validation->set_rules('contract_months', 'Contract Duration', 'required|integer|greater_than[0]');
+            $this->form_validation->set_rules('end_date', 'End Date', 'required');
+            $this->form_validation->set_rules('salary', 'Salary', 'required|numeric|greater_than[0]');
+            $this->form_validation->set_rules('location', 'Location', 'required');
+            $this->form_validation->set_rules('project', 'Project', 'required');
+            $this->form_validation->set_rules('status', 'Status', 'required|in_list[active,pending,completed]');
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('error', validation_errors());
+                redirect('project-staff/renewal-contract/' . $id);
+                return;
+            }
+
+            $this->db->where('user_id', $id);
+            $this->db->where('status !=', 'complete');
+            $this->db->update('contract_details', ['status' => 'complete']);
+
+
+            $designation = $this->input->post('modal_designation');
+            $start_date = $this->input->post('start_date');
+            $contract_months = (int) $this->input->post('contract_months');
+            $end_date = $this->input->post('end_date');
+
+            $data = [
+                'user_id' => $id,
+                'designation' => $designation,
+                'join_date' => $start_date,
+                'end_date' => $end_date,
+                'contract_month' => $contract_months,
+                'salary' => $this->input->post('salary'),
+                'location' => $this->input->post('location'),
+                'project_name' => $this->input->post('project'),
+                'status' => $this->input->post('status'),
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+
+            $this->db->insert('contract_details', $data);
+
+            $this->session->set_flashdata('success', 'New contract added successfully.');
+            redirect('project-staff/show/' . $id);
+
+        } catch (Exception $e) {
+            $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
+            redirect('project-staff');
+        }
+    }
+
 
 
 
