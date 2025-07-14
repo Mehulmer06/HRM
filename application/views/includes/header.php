@@ -10,6 +10,10 @@
 
 
     <link href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.2/b-3.2.4/b-html5-3.2.4/b-print-3.2.4/r-3.0.5/datatables.min.css" rel="stylesheet" integrity="sha384-rOhuyMBXv6TLUQTpQsGUd5KPW3slZlre5DLAV7bf0pYiIWehVz4nZLupIt4Vp6k8" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+
+
+
 </head>
 <body>
 <!-- Header -->

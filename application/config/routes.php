@@ -65,5 +65,49 @@ $route['project-staff/toggle-status'] = 'ProjectStaffController/toggle_status';
 $route['project-staff/show/(:num)'] = 'ProjectStaffController/show/$1';
 $route['project-staff/renewal-contract/(:num)'] = 'ProjectStaffController/renewContract/$1';
 
+
+$route['holiday'] = 'HolidayController/index';
+$route['holiday/(:num)'] = 'HolidayController/index/$1';
+
+$route['evaluation'] = 'EvaluationController/index';
+$route['evaluation/create'] = 'EvaluationController/create';
+$route['evaluation/store'] = 'EvaluationController/store';
+$route['evaluation/edit/(:num)'] = 'EvaluationController/edit/$1';
+$route['evaluation/update/(:num)'] = 'EvaluationController/update/$1';
+$route['evaluation/view/(:num)'] = 'EvaluationController/show/$1';
+$route['evaluation/update_status'] = 'EvaluationController/update_status';
+
+
+$route['evaluation/comments/(:num)'] = 'EvaluationController/comments/$1';
+$route['evaluation/add_comment'] = 'EvaluationController/add_comment';
+$route['evaluation/get_comments'] = 'EvaluationController/get_comments';
+
+$route['note'] = 'NoteController/index';
+$route['note/create'] = 'NoteController/create';
+$route['note/store'] = 'NoteController/store';
+$route['note/edit/(:num)'] = 'NoteController/edit/$1';
+$route['note/update/(:num)'] = 'NoteController/update/$1';
+$route['note/remove-attachment'] = 'NoteController/remove_attachment';
+$route['note/close'] = 'NoteController/close';
+$route['note/delete'] = 'NoteController/delete';
+$route['note/view/(:num)'] = 'NoteController/view/$1';
+$route['note/get-discussions'] = 'NoteController/get_discussions';
+$route['note/add-discussion'] = 'NoteController/add_discussion';
+$route['note/take-action'] = 'NoteController/take_action';
+
+
+$route['leave'] = 'LeaveController/index';
+
+
+$route['extra-day-requests'] = 'ExtraDayRequestController/index';
+$route['extra-day-requests/create'] = 'ExtraDayRequestController/create';
+$route['extra-day-requests/update/(:num)'] = 'ExtraDayRequestController/update/$1';
+$route['extra-day-requests/delete'] = 'ExtraDayRequestController/delete';
+$route['extra-day-requests/get/(:num)'] = 'ExtraDayRequestController/get_request/$1';
+
+$route['ro-extra-day-approval'] = 'ExtraDayRequestController/roIndex';
+$route['ro-extra-day-approval/action_request'] = 'ExtraDayRequestController/action_request';
+
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
