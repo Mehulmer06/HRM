@@ -1,134 +1,132 @@
 <?php $this->load->view('includes/header'); ?>
-<!-- Main Content -->
-<div class="main-content">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div class="d-flex justify-content-between align-items-start">
-            <div>
-                <h1 class="page-title">
-                    <i class="fas fa-user"></i>
-                    Staff Details
-                </h1>
-                <nav class="breadcrumb-nav">
-                    <a href="<?= base_url('dashboard'); ?>">Dashboard</a> /
-                    <a href="<?= base_url('project-staff'); ?>">Project Staff</a> /
-                    <span class="text-muted"><?= $user['name'] ?></span>
-                </nav>
-            </div>
-            <div class="d-flex gap-2">
-                <a href="<?= base_url('project-staff'); ?>" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>
-                    Back to List
-                </a>
-            </div>
-        </div>
-    </div>
 
-    <!-- Staff Profile Card -->
-    <div class="detail-card">
-        <div class="detail-header">
-            <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" class="detail-photo" alt="photo">
-            <div class="detail-info">
-                <h1><?= $user['name'] ?></h1>
-                <p><?= $contract['designation'] ?> • <?= $user['department'] ?></p>
-                <div class="mt-2">
-                    <span class="status-badge status-<?= ($user['status'] ?? '') === 'Y' ? 'active' : 'inactive' ?>">
-                        <?= ($user['status'] ?? '') === 'Y' ? 'Active' : 'Inactive' ?>
-                    </span>
-                    <span class="badge bg-primary ms-2">Employee ID: <?= $user['employee_id'] ?></span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Personal Information -->
-    <div class="detail-card">
-        <div class="detail-body">
-            <h3 class="form-section-title">
+<!-- Page Header -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-start">
+        <div>
+            <h1 class="page-title">
                 <i class="fas fa-user"></i>
-                Personal Information
-            </h3>
+                Staff Details
+            </h1>
+            <nav class="breadcrumb-nav">
+                <a href="<?= base_url('dashboard'); ?>">Dashboard</a> /
+                <a href="<?= base_url('project-staff'); ?>">Project Staff</a> /
+                <span class="text-muted"><?= $user['name'] ?></span>
+            </nav>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="<?= base_url('project-staff'); ?>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to List
+            </a>
+        </div>
+    </div>
+</div>
 
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Full Name</div>
-                    <div class="info-value"><?= $user['name'] ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Email Address</div>
-                    <div class="info-value"><?= $user['email'] ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Date of Birth</div>
-                    <div class="info-value"><?= $user['dob'] ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Gender</div>
-                    <div class="info-value"><?= $user['gender'] ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Mobile Number</div>
-                    <div class="info-value"><?= $user['phone'] ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">PAN Number</div>
-                    <div class="info-value"><?= $user['pan_number'] ?></div>
-                </div>
+<!-- Staff Profile Card -->
+<div class="detail-card">
+    <div class="detail-header">
+        <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" class="detail-photo" alt="photo">
+        <div class="detail-info">
+            <h1><?= $user['name'] ?></h1>
+            <p><?= $contract['designation'] ?> • <?= $user['department'] ?></p>
+            <div class="mt-2">
+                <span class="status-badge status-<?= ($user['status'] ?? '') === 'Y' ? 'active' : 'inactive' ?>">
+                    <?= ($user['status'] ?? '') === 'Y' ? 'Active' : 'Inactive' ?>
+                </span>
+                <span class="badge bg-primary ms-2">Employee ID: <?= $user['employee_id'] ?></span>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div class="row mt-4">
-                <div class="col-12">
-                    <div class="info-item">
-                        <div class="info-label">Address</div>
-                        <div class="info-value"><?= $user['address'] ?>
-                        </div>
+<!-- Personal Information -->
+<div class="detail-card">
+    <div class="detail-body">
+        <h3 class="form-section-title">
+            <i class="fas fa-user"></i>
+            Personal Information
+        </h3>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Full Name</div>
+                <div class="info-value"><?= $user['name'] ?></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Email Address</div>
+                <div class="info-value"><?= $user['email'] ?></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Date of Birth</div>
+                <div class="info-value"><?= $user['dob'] ?></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Gender</div>
+                <div class="info-value"><?= $user['gender'] ?></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Mobile Number</div>
+                <div class="info-value"><?= $user['phone'] ?></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">PAN Number</div>
+                <div class="info-value"><?= $user['pan_number'] ?></div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="info-item">
+                    <div class="info-label">Address</div>
+                    <div class="info-value"><?= $user['address'] ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Professional Information -->
-    <div class="detail-card">
-        <div class="detail-body">
-            <h3 class="form-section-title">
-                <i class="fas fa-briefcase"></i>
-                Professional Information
-            </h3>
+<!-- Professional Information -->
+<div class="detail-card">
+    <div class="detail-body">
+        <h3 class="form-section-title">
+            <i class="fas fa-briefcase"></i>
+            Professional Information
+        </h3>
 
-            <div class="info-grid">
-                <div class="info-item">
-                    <div class="info-label">Department</div>
-                    <div class="info-value"><?= $user['department'] ?></div>
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-label">Department</div>
+                <div class="info-value"><?= $user['department'] ?></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Current Designation</div>
+                <div class="info-value"><?= $contract['designation'] ?></div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Reporting Officer</div>
+                <div class="info-value">
+                    <?= $user['reporting_officer_name'] . '-' . $user['reporting_officer_designation'] ?>
                 </div>
-                <div class="info-item">
-                    <div class="info-label">Current Designation</div>
-                    <div class="info-value"><?= $contract['designation'] ?></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Reporting Officer</div>
-                    <div class="info-value">
-                        <?= $user['reporting_officer_name'] . '-' . $user['reporting_officer_designation'] ?>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Years of Service</div>
-                    <div class="info-value">
-                        <?php
-                        $months = (int) $contract['contract_month'];
-                        $years = floor($months / 12);
-                        $remainingMonths = $months % 12;
+            </div>
+            <div class="info-item">
+                <div class="info-label">Years of Service</div>
+                <div class="info-value">
+                    <?php
+                    $months = (int) $contract['contract_month'];
+                    $years = floor($months / 12);
+                    $remainingMonths = $months % 12;
 
-                        $parts = [];
-                        if ($years > 0) {
-                            $parts[] = $years . ' ' . ($years === 1 ? 'Year' : 'Years');
-                        }
-                        if ($remainingMonths > 0) {
-                            $parts[] = $remainingMonths . ' ' . ($remainingMonths === 1 ? 'Month' : 'Months');
-                        }
-                        echo implode(' ', $parts);
-                        ?>
-                    </div>
+                    $parts = [];
+                    if ($years > 0) {
+                        $parts[] = $years . ' ' . ($years === 1 ? 'Year' : 'Years');
+                    }
+                    if ($remainingMonths > 0) {
+                        $parts[] = $remainingMonths . ' ' . ($remainingMonths === 1 ? 'Month' : 'Months');
+                    }
+                    echo implode(' ', $parts);
+                    ?>
                 </div>
             </div>
         </div>
@@ -246,7 +244,7 @@
         </table>
     </div>
 </div>
-</div>
+
 
 <!-- Add Contract Modal -->
 <div class="modal fade" id="addContractModal" tabindex="-1">
