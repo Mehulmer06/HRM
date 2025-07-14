@@ -144,7 +144,6 @@
         </h3>
 
         <div class="info-grid">
-
             <div class="info-item">
                 <div class="info-label">Contract Start Date</div>
                 <div class="info-value"><?= date('Y M d', strtotime($contract['join_date'])) ?></div>
@@ -225,9 +224,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <?php if (!empty($contractList)): ?>
-                        <?php foreach ($contractList as $index => $contract): ?>
+                <?php if (!empty($contractList)): ?>
+                    <?php foreach ($contractList as $index => $contract): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
                             <td><?= $contract['designation'] ?></td>
@@ -241,23 +239,9 @@
                                     <?= ucfirst($contract['status']) ?>
                                 </span>
                             </td>
-                            <!-- <td>
-                                    <button class="action-btn btn-edit" onclick="editContract(<?= $contract['id'] ?>)"
-                                        title="Edit Contract">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </td> -->
                         </tr>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="9" class="text-center">No contract records found.</td>
-                    </tr>
                 <?php endif; ?>
-                </td>
-
-                </tr>
-
             </tbody>
         </table>
     </div>
@@ -367,11 +351,8 @@
         $('#contractHistoryTable').DataTable({
             responsive: true,
             pageLength: 10,
-            order: [[0, 'desc']],
             language: {
                 search: "Search Contracts:",
-                lengthMenu: "Show _MENU_ contracts per page",
-                info: "Showing _START_ to _END_ of _TOTAL_ contracts",
                 paginate: {
                     first: "First",
                     last: "Last",
