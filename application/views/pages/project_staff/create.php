@@ -296,7 +296,7 @@
             </div>
             <div class="col-md-4">
                 <label for="end_date" class="form-label">Contract End Date</label>
-                <input type="date" class="form-control" id="end_date" name="end_date" placeholder="Auto-calculated">
+                <input type="date" class="form-control" id="end_date" name="end_date" placeholder="Auto-calculated" readonly>
             </div>
             <div class="col-md-4">
                 <label for="salary" class="form-label">Monthly Salary *</label>
