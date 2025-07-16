@@ -26,7 +26,7 @@
 <!-- Staff Profile Card -->
 <div class="detail-card">
     <div class="detail-header">
-        <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" class="detail-photo" alt="photo">
+        <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" class="detail-photo" alt="photo">
         <div class="detail-info">
             <h1><?= $user['name'] ?></h1>
             <p><?= $contract['designation'] ?> • <?= $user['department'] ?></p>
@@ -175,7 +175,7 @@
                 <div class="info-item">
                     <div class="info-label">Profile Photo</div>
                     <div class="info-value">
-                        <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" alt="Profile Photo"
+                        <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" alt="Profile Photo"
                             style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;">
                     </div>
                 </div>
@@ -184,7 +184,7 @@
                 <div class="info-item">
                     <div class="info-label">Digital Signature</div>
                     <div class="info-value">
-                        <img src="<?= base_url('upload/signature/' . $user['signature']) ?>" alt="Digital Signature"
+                        <img src="<?= base_url('uploads/signature/' . $user['signature']) ?>" alt="Digital Signature"
                             style="width: 120px; height: 40px; border-radius: 4px; border: 1px solid #dee2e6;">
                     </div>
                 </div>

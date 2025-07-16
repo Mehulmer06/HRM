@@ -51,10 +51,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 */
 $route['default_controller'] = 'welcome';
 
-$route['login'] = 'admin/LoginController/index';
-$route['login/authenticate'] = 'admin/LoginController/authenticate';
-$route['logout'] = 'admin/LoginController/logout';
-$route['dashboard'] = 'admin/DashboardController/index';
+$route['login'] = 'LoginController/index';
+$route['login/authenticate'] = 'LoginController/authenticate';
+$route['logout'] = 'LoginController/logout';
+$route['dashboard'] = 'DashboardController/index';
 
 $route['project-staff'] = 'ProjectStaffController/index';
 $route['project-staff/create'] = 'ProjectStaffController/create';
@@ -107,6 +107,15 @@ $route['extra-day-requests/get/(:num)'] = 'ExtraDayRequestController/get_request
 
 $route['ro-extra-day-approval'] = 'ExtraDayRequestController/roIndex';
 $route['ro-extra-day-approval/action_request'] = 'ExtraDayRequestController/action_request';
+
+$route['request-issue'] = 'RequestIssueController/index';
+$route['request-issue/store'] = 'RequestIssueController/store';
+$route['request-issue/show/(:num)'] = 'RequestIssueController/show/$1';
+$route['request-issue/commentStore'] = 'RequestIssueController/commentStore';
+$route['request-issue/(:num)'] = 'RequestIssueController/fetch/$1';
+$route['request-issue/update_status'] = 'RequestIssueController/update_status';
+
+
 
 
 $route['404_override'] = '';
