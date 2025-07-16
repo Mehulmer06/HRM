@@ -43,7 +43,6 @@ class Evaluation extends CI_Model
     public function getById($id)
     {
         return $this->db
-            ->select('id, title, description, status, created_at')
             ->from('evaluations')
             ->where(['id' => $id, 'deleted_at' => null])
             ->get()

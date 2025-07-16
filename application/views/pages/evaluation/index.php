@@ -1,17 +1,18 @@
-<?php $this->load->view('includes/header'); ?>
+<?php $this->load->view('includes/header');
+include('./application/views/pages/message.php');?>
 
 <!-- Page Header -->
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-start">
         <div>
-            <h1 class="page-title"><i class="fas fa-chart-line"></i> Evaluation Management</h1>
+            <h1 class="page-title"><i class="fas fa-chart-line"></i> Work Progress</h1>
             <nav class="breadcrumb-nav">
                 <a href="<?= base_url('dashboard') ?>">Dashboard</a> /
-                <span class="text-muted">Evaluation</span>
+                <span class="text-muted">Work Progress</span>
             </nav>
         </div>
-        <a href="<?= base_url('evaluation/create') ?>" class="create-btn">
-            <i class="fas fa-plus"></i> Add New Evaluation
+        <a href="<?= base_url('work-progress/create') ?>" class="create-btn">
+            <i class="fas fa-plus"></i> Add New Work
         </a>
     </div>
 </div>
@@ -95,10 +96,10 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/view/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/view/' . $eval->id) ?>"><i
                                                                 class="fas fa-eye me-2"></i> View</a></li>
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/edit/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/edit/' . $eval->id) ?>"><i
                                                                 class="fas fa-edit me-2"></i> Edit</a></li>
                                                 <li><a href="javascript:void(0);"
                                                        class="dropdown-item btn-update-status"
@@ -111,7 +112,7 @@
                                                        data-status="on_hold">
                                                         <i class="fas fa-pause me-2"></i> Put on Hold</a></li>
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/comments/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/comments/' . $eval->id) ?>"><i
                                                                 class="fas fa-comments me-2"></i> Comments</a></li>
                                                 <li>
                                                     <a href="javascript:void(0);"
@@ -182,10 +183,10 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/view/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/view/' . $eval->id) ?>"><i
                                                                 class="fas fa-eye me-2"></i> View</a></li>
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/edit/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/edit/' . $eval->id) ?>"><i
                                                                 class="fas fa-edit me-2"></i> Edit</a></li>
                                                 <li><a href="javascript:void(0);"
                                                        class="dropdown-item btn-update-status"
@@ -198,7 +199,7 @@
                                                        data-status="on_hold">
                                                         <i class="fas fa-pause me-2"></i> Put on Hold</a></li>
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/comments/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/comments/' . $eval->id) ?>"><i
                                                                 class="fas fa-comments me-2"></i> Comments</a></li>
                                                 <li>
                                                     <a href="javascript:void(0);"
@@ -270,10 +271,10 @@
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/view/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/view/' . $eval->id) ?>"><i
                                                                 class="fas fa-eye me-2"></i> View</a></li>
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/edit/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/edit/' . $eval->id) ?>"><i
                                                                 class="fas fa-edit me-2"></i> Edit</a></li>
                                                 <li><a href="javascript:void(0);"
                                                        class="dropdown-item btn-update-status"
@@ -286,7 +287,7 @@
                                                        data-status="on_hold">
                                                         <i class="fas fa-pause me-2"></i> Put on Hold</a></li>
                                                 <li><a class="dropdown-item"
-                                                       href="<?= base_url('evaluation/comments/' . $eval->id) ?>"><i
+                                                       href="<?= base_url('work-progress/comments/' . $eval->id) ?>"><i
                                                                 class="fas fa-comments me-2"></i> Comments</a></li>
                                                 <li>
                                                     <a href="javascript:void(0);"
@@ -368,10 +369,10 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li><a class="dropdown-item"
-                                                   href="<?= base_url('evaluation/view/' . $eval->id) ?>"><i
+                                                   href="<?= base_url('work-progress/view/' . $eval->id) ?>"><i
                                                             class="fas fa-eye me-2"></i> View</a></li>
                                             <li><a class="dropdown-item"
-                                                   href="<?= base_url('evaluation/edit/' . $eval->id) ?>"><i
+                                                   href="<?= base_url('work-progress/edit/' . $eval->id) ?>"><i
                                                             class="fas fa-edit me-2"></i> Edit</a></li>
                                             <li><a href="javascript:void(0);"
                                                    class="dropdown-item btn-update-status"
@@ -384,7 +385,7 @@
                                                    data-status="on_hold">
                                                     <i class="fas fa-pause me-2"></i> Put on Hold</a></li>
                                             <li><a class="dropdown-item"
-                                                   href="<?= base_url('evaluation/comments/' . $eval->id) ?>"><i
+                                                   href="<?= base_url('work-progress/comments/' . $eval->id) ?>"><i
                                                             class="fas fa-comments me-2"></i> Comments</a></li>
                                             <li>
                                                 <a href="javascript:void(0);"
@@ -531,7 +532,7 @@
 
     $('#confirmStatusBtn').on('click', function () {
         $.ajax({
-            url: '<?= base_url("evaluation/update_status") ?>',
+            url: '<?= base_url("work-progress/update_status") ?>',
             type: 'POST',
             data: {id: selectedEvalId, status: selectedStatus},
             dataType: 'json',
@@ -558,7 +559,7 @@
 
     function loadModalComments(evaluationId) {
         $.ajax({
-            url: '<?= base_url("evaluation/get_comments") ?>',
+            url: '<?= base_url("work-progress/get_comments") ?>',
             type: 'GET',
             data: {evaluation_id: evaluationId},
             dataType: 'json',
@@ -619,7 +620,7 @@
         btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Posting...');
 
         $.ajax({
-            url: '<?= base_url("evaluation/add_comment") ?>',
+            url: '<?= base_url("work-progress/add_comment") ?>',
             type: 'POST',
             data: $(this).serialize(),
             dataType: 'json',

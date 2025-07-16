@@ -5,16 +5,16 @@
     <div class="d-flex justify-content-between align-items-start">
         <div>
             <h1 class="page-title">
-                <i class="fas fa-edit"></i> Edit Evaluation
+                <i class="fas fa-edit"></i> Edit Work Progress
             </h1>
             <nav class="breadcrumb-nav">
                 <a href="<?= base_url('dashboard') ?>">Dashboard</a> /
-                <a href="<?= base_url('evaluation') ?>">Evaluation</a> /
+                <a href="<?= base_url('work-progress') ?>">Work Progress</a> /
                 <span class="text-muted">Edit</span>
             </nav>
         </div>
-        <a href="<?= base_url('evaluation') ?>" class="nav-btn">
-            <i class="fas fa-arrow-left me-2"></i> Back to Evaluations
+        <a href="<?= base_url('work-progress') ?>" class="nav-btn bg-dark">
+            <i class="fas fa-arrow-left me-2"></i> Back to Work Progress
         </a>
     </div>
 </div>
@@ -22,20 +22,20 @@
 <!-- Edit Form -->
 <div class="form-card">
     <div class="form-section-title">
-        <i class="fas fa-edit"></i> Evaluation Details
+        <i class="fas fa-edit"></i> Work Progress Details
     </div>
-    <form id="evaluationForm" method="POST" action="<?= base_url('evaluation/update/' . $evaluation->id) ?>">
+    <form id="evaluationForm" method="POST" action="<?= base_url('work-progress/update/' . $evaluation->id) ?>" enctype="multipart/form-data">
         <div class="row">
             <!-- Title Field -->
             <div class="col-md-12 mb-4">
                 <label for="title" class="form-label">
-                    Evaluation Title <span class="text-danger">*</span>
+                    Work Title <span class="text-danger">*</span>
                 </label>
                 <input type="text"
                        class="form-control <?= form_error('title') ? 'is-invalid' : '' ?>"
                        id="title"
                        name="title"
-                       placeholder="Enter evaluation title (e.g., Q4 2024 Performance Review)"
+                       placeholder="Enter Work Title (e.g., Q4 2024 Performance Review)"
                        value="<?= set_value('title', $evaluation->title) ?>"
                 >
                 <?php if (form_error('title')): ?>
@@ -83,14 +83,52 @@
                     <div class="invalid-feedback d-block"><?= form_error('description') ?></div>
                 <?php endif; ?>
             </div>
+
+            <!-- Current Attachment Display -->
+            <?php if (!empty($evaluation->attachment)): ?>
+                <div class="col-md-12 mb-4">
+                    <label class="form-label">Current Attachment</label>
+                    <div class="current-attachment">
+                        <div class="attachment-info">
+                            <i class="fas fa-file-alt me-2 text-primary"></i>
+                            <span class="attachment-name me-2">
+                                <?= isset($evaluation->attachment_original_name) ? $evaluation->attachment_original_name : basename($evaluation->attachment) ?>
+                            </span>
+                            <a href="<?= base_url($evaluation->attachment) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye me-1"></i> View
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endif; ?>
+
+            <!-- Attachment Field -->
+            <div class="col-md-12 mb-4">
+                <label for="attachment" class="form-label">
+                    <?= !empty($evaluation->attachment) ? 'Update Attachment (Optional)' : 'Attachment (Optional)' ?>
+                </label>
+                <input type="file" name="attachment" id="attachment" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.xlsx,.xls">
+                <?php if (!empty($evaluation->attachment)): ?>
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Selecting a new file will replace the current attachment.
+                    </small>
+                <?php endif; ?>
+                <?php if (form_error('attachment')): ?>
+                    <div class="invalid-feedback d-block"><?= form_error('attachment') ?></div>
+                <?php endif; ?>
+                <?php if (isset($upload_error)): ?>
+                    <div class="alert alert-danger mt-2"><?= $upload_error ?></div>
+                <?php endif; ?>
+            </div>
         </div>
 
         <!-- Form Actions -->
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-2"></i> Update Evaluation
+                <i class="fas fa-save me-2"></i> Update Work Progress
             </button>
-            <a href="<?= base_url('evaluation') ?>" class="btn btn-outline-secondary">
+            <a href="<?= base_url('work-progress') ?>" class="btn btn-outline-secondary">
                 <i class="fas fa-times me-2"></i> Cancel
             </a>
         </div>
@@ -135,6 +173,10 @@
                 description: {
                     summernoteRequired: true,
                     summernoteMinLength: 10
+                },
+                attachment: {
+                    fileSize: 10485760, // 10MB in bytes
+                    fileType: 'pdf|doc|docx|jpg|jpeg|png|xlsx|xls'
                 }
             },
             messages: {
@@ -149,6 +191,10 @@
                 description: {
                     summernoteRequired: "Please enter a description",
                     summernoteMinLength: "Description must be at least 10 characters long"
+                },
+                attachment: {
+                    fileSize: "File size must be less than 10MB",
+                    fileType: "Please select a valid file type (PDF, DOC, DOCX, JPG, JPEG, PNG, XLS, XLSX)"
                 }
             },
             errorElement: 'span',
@@ -186,6 +232,26 @@
             }
         });
 
+        // Custom validation methods for file upload
+        $.validator.addMethod("fileSize", function(value, element, maxSize) {
+            if (element.files.length === 0) {
+                return true; // No file selected, so it's valid (optional field)
+            }
+            return element.files[0].size <= maxSize;
+        });
+
+        $.validator.addMethod("fileType", function(value, element, allowedTypes) {
+            if (element.files.length === 0) {
+                return true; // No file selected, so it's valid (optional field)
+            }
+
+            const file = element.files[0];
+            const fileName = file.name.toLowerCase();
+            const allowedExtensions = allowedTypes.split('|');
+
+            return allowedExtensions.some(ext => fileName.endsWith('.' + ext));
+        });
+
         $.validator.addMethod("summernoteRequired", function (value, element) {
             var content = $(element).summernote('code');
             var textContent = $('<div>').html(content).text().trim();
@@ -205,5 +271,40 @@
         $('#description').on('summernote.change', function () {
             $(this).valid();
         });
+
+        // Trigger validation on file input change
+        $('#attachment').on('change', function() {
+            $(this).valid();
+        });
     });
 </script>
+
+<style>
+    .current-attachment {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .attachment-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .attachment-name {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .btn-outline-primary {
+        border-color: #007bff;
+        color: #007bff;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+</style>

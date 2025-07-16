@@ -16,10 +16,10 @@
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-start">
         <div>
-            <h1 class="page-title">Evaluation Details</h1>
+            <h1 class="page-title">Work Progress Details</h1>
             <nav class="breadcrumb-nav">
                 <a href="<?= base_url('dashboard') ?>">Dashboard</a> /
-                <a href="<?= base_url('evaluation') ?>">Evaluation</a> /
+                <a href="<?= base_url('work-progress') ?>">Work Progress</a> /
                 <span class="text-muted">Details</span>
             </nav>
         </div>
@@ -36,7 +36,7 @@
             <span class="status-badge" style="background: <?= $badge[0] ?>; color: <?= $badge[1] ?>;">
                 <?= ucfirst($evaluation->status) ?>
             </span>
-            <a href="<?= base_url('evaluation') ?>" class="btn btn-outline-primary">
+            <a href="<?= base_url('work-progress') ?>" class="btn btn-outline-primary">
                 <i class="fas fa-arrow-left me-2"></i>
                 Back to List
             </a>
@@ -46,7 +46,7 @@
 
 <!-- Evaluation Details -->
 <div class="form-card">
-    <div class="form-section-title">Evaluation Information</div>
+    <div class="form-section-title">Work Progress Information</div>
 
     <div class="row mb-4">
         <div class="col-md-12">

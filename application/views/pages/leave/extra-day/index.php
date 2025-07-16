@@ -109,7 +109,7 @@
                         <input type="date" class="form-control" name="work_date" id="dayRequestDate" required>
                     </div>
                     <div class="mb-3">
-                        <label for="dayRequestReason" class="form-label">Reason *</label>
+                        <label for="dayRequestReason" class="form-label">Work *</label>
                         <textarea class="form-control" name="reason" id="dayRequestReason" rows="4" required placeholder="Please provide a detailed reason for your day request..."></textarea>
                     </div>
                 </div>
@@ -311,7 +311,7 @@
             messages: {
                 work_date: "Please select a date.",
                 reason: {
-                    required: "Please enter a reason.",
+                    required: "Please enter a work.",
                     minlength: "Reason must be at least 10 characters long."
                 }
             },

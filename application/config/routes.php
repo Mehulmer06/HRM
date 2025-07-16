@@ -69,18 +69,18 @@ $route['project-staff/renewal-contract/(:num)'] = 'ProjectStaffController/renewC
 $route['holiday'] = 'HolidayController/index';
 $route['holiday/(:num)'] = 'HolidayController/index/$1';
 
-$route['evaluation'] = 'EvaluationController/index';
-$route['evaluation/create'] = 'EvaluationController/create';
-$route['evaluation/store'] = 'EvaluationController/store';
-$route['evaluation/edit/(:num)'] = 'EvaluationController/edit/$1';
-$route['evaluation/update/(:num)'] = 'EvaluationController/update/$1';
-$route['evaluation/view/(:num)'] = 'EvaluationController/show/$1';
-$route['evaluation/update_status'] = 'EvaluationController/update_status';
+$route['work-progress'] = 'EvaluationController/index';
+$route['work-progress/create'] = 'EvaluationController/create';
+$route['work-progress/store'] = 'EvaluationController/store';
+$route['work-progress/edit/(:num)'] = 'EvaluationController/edit/$1';
+$route['work-progress/update/(:num)'] = 'EvaluationController/update/$1';
+$route['work-progress/view/(:num)'] = 'EvaluationController/show/$1';
+$route['work-progress/update_status'] = 'EvaluationController/update_status';
 
 
-$route['evaluation/comments/(:num)'] = 'EvaluationController/comments/$1';
-$route['evaluation/add_comment'] = 'EvaluationController/add_comment';
-$route['evaluation/get_comments'] = 'EvaluationController/get_comments';
+$route['work-progress/comments/(:num)'] = 'EvaluationController/comments/$1';
+$route['work-progress/add_comment'] = 'EvaluationController/add_comment';
+$route['work-progress/get_comments'] = 'EvaluationController/get_comments';
 
 $route['note'] = 'NoteController/index';
 $route['note/create'] = 'NoteController/create';
@@ -96,8 +96,22 @@ $route['note/add-discussion'] = 'NoteController/add_discussion';
 $route['note/take-action'] = 'NoteController/take_action';
 
 
+// ✅ MAIN LEAVE MANAGEMENT ROUTES
 $route['leave'] = 'LeaveController/index';
+$route['leave/apply'] = 'LeaveController/applyLeave';
+$route['leave/get_by_id/(:num)'] = 'LeaveController/get_by_id/$1';
+$route['leave/update'] = 'LeaveController/updateLeave';
+$route['leave/take_action'] = 'LeaveController/take_action';
+$route['leave/delete/(:num)'] = 'LeaveController/delete/$1';
 
+// ✅ LEAVE CANCELLATION ROUTES
+$route['leave/cancel'] = 'LeaveController/cancel';
+$route['leave/cancel_action'] = 'LeaveController/cancel_action';
+$route['leave/get_cancellation_details/(:num)'] = 'LeaveController/get_cancellation_details/$1';
+
+// ✅ EXTRA DAY ROUTES (if needed)
+$route['extra-day-requests'] = 'ExtraDayController/index';
+$route['ro-extra-day-approval'] = 'ExtraDayController/ro_approval';
 
 $route['extra-day-requests'] = 'ExtraDayRequestController/index';
 $route['extra-day-requests/create'] = 'ExtraDayRequestController/create';
@@ -108,6 +122,7 @@ $route['extra-day-requests/get/(:num)'] = 'ExtraDayRequestController/get_request
 $route['ro-extra-day-approval'] = 'ExtraDayRequestController/roIndex';
 $route['ro-extra-day-approval/action_request'] = 'ExtraDayRequestController/action_request';
 
+
 $route['request-issue'] = 'RequestIssueController/index';
 $route['request-issue/store'] = 'RequestIssueController/store';
 $route['request-issue/show/(:num)'] = 'RequestIssueController/show/$1';
@@ -116,7 +131,6 @@ $route['request-issue/(:num)'] = 'RequestIssueController/fetch/$1';
 $route['request-issue/update_status'] = 'RequestIssueController/update_status';
 
 
-
-
+$route['finance'] = 'FinanceController/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

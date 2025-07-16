@@ -1,6 +1,5 @@
 <?php $this->load->view('includes/header'); ?>
 
-
     <h1 class="welcome-title">Welcome to IHRMS Dashboard</h1>
 
     <!-- Modules Grid -->
@@ -86,11 +85,27 @@
             <div class="module-header">
                 <div class="module-info">
                     <i class="fas fa-chart-line icon"></i>
-                    <h3>Evaluation</h3>
+                    <h3>Work Progress/Assessment</h3>
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('evaluation') ?>" class="module-btn secondary">
+                <a href="<?= base_url('work-progress') ?>" class="module-btn secondary">
+                    Click Here
+                </a>
+            </div>
+        </div>
+
+        <!-- Finance Card - NEW -->
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-info">
+                    <i class="fas fa-indian-rupee-sign icon"></i>
+                    <h3>Finance</h3>
+                </div>
+<!--                <span class="module-badge">NEW</span>-->
+            </div>
+            <div class="module-body">
+                <a href="<?= base_url('finance') ?>" class="module-btn success">
                     Click Here
                 </a>
             </div>
