@@ -96,7 +96,7 @@ class ProjectStaffController extends CI_Controller
 
             if (!empty($_FILES['photo']['name'])) {
                 $photoConfig = [
-                    'upload_path' => 'upload/photo/',
+                    'upload_path' => 'uploads/photo/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -110,7 +110,7 @@ class ProjectStaffController extends CI_Controller
             }
             if (!empty($_FILES['signature']['name'])) {
                 $signatureConfig = [
-                    'upload_path' => 'upload/signature/',
+                    'upload_path' => 'uploads/signature/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -241,7 +241,7 @@ class ProjectStaffController extends CI_Controller
 
             if (!empty($_FILES['photo']['name'])) {
                 $photoConfig = [
-                    'upload_path' => 'upload/photo/',
+                    'upload_path' => 'uploads/photo/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -257,7 +257,7 @@ class ProjectStaffController extends CI_Controller
 
             if (!empty($_FILES['signature']['name'])) {
                 $signatureConfig = [
-                    'upload_path' => 'upload/signature/',
+                    'upload_path' => 'uploads/signature/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];

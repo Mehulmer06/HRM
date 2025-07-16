@@ -43,7 +43,7 @@
                 </div>
             </div>
             <div class="module-body">
-                <a href="request-admin.html" class="module-btn warning">
+                <a href="<?= base_url('request-issue')?>" class="module-btn warning">
                     Click Here
                 </a>
             </div>

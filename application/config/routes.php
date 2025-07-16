@@ -122,6 +122,15 @@ $route['extra-day-requests/get/(:num)'] = 'ExtraDayRequestController/get_request
 $route['ro-extra-day-approval'] = 'ExtraDayRequestController/roIndex';
 $route['ro-extra-day-approval/action_request'] = 'ExtraDayRequestController/action_request';
 
+
+$route['request-issue'] = 'RequestIssueController/index';
+$route['request-issue/store'] = 'RequestIssueController/store';
+$route['request-issue/show/(:num)'] = 'RequestIssueController/show/$1';
+$route['request-issue/commentStore'] = 'RequestIssueController/commentStore';
+$route['request-issue/(:num)'] = 'RequestIssueController/fetch/$1';
+$route['request-issue/update_status'] = 'RequestIssueController/update_status';
+
+
 $route['finance'] = 'FinanceController/index';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

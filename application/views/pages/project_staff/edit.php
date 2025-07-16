@@ -251,7 +251,7 @@
                     <?php if (!empty($user['photo'])): ?>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" alt="Profile Photo"
+                                <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" alt="Profile Photo"
                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
                                 <div>
                                     <div style="font-weight: 600; font-size: 14px;"><?= $user['photo'] ?></div>
@@ -284,7 +284,7 @@
                     <?php if (!empty($user['signature'])): ?>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" alt="Digital Signature"
+                                <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" alt="Digital Signature"
                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
                                 <div>
                                     <div style="font-weight: 600; font-size: 14px;"><?= $user['signature'] ?></div>
@@ -332,7 +332,7 @@
             <div class="col-md-4">
                 <label for="end_date" class="form-label">Contract End Date</label>
                 <input type="date" class="form-control" id="end_date" name="end_date"
-                    value="<?= set_value('end_date', date('Y-m-d', strtotime($contract['end_date'])) ?? '') ?>">
+                    value="<?= set_value('end_date', date('Y-m-d', strtotime($contract['end_date'])) ?? '') ?>" readonly>
             </div>
             <div class="col-md-4">
                 <label for="salary" class="form-label">Monthly Salary *</label>

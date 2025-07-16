@@ -121,7 +121,6 @@ include('./application/views/pages/message.php');?>
                                                         <i class="fas fa-comment-alt me-2"></i> Modal Comment
                                                     </a>
                                                 </li>
-
                                             </ul>
                                         </div>
                                     </td>
