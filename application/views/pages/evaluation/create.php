@@ -1,19 +1,31 @@
-<?php $this->load->view('includes/header'); ?>
+<?php
+$this->load->view('includes/header');
+include('./application/views/pages/message.php');
+?>
 
+
+<!-- Display Upload Error if exists -->
+<?php if (isset($upload_error) && !empty($upload_error)): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <strong>Upload Error:</strong> <?= $upload_error ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<?php endif; ?>
 <!-- Page Header -->
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-start">
         <div>
             <h1 class="page-title">
-                <i class="fas fa-plus-circle"></i> Create New Evaluation
+                <i class="fas fa-plus-circle"></i> Create New Work Progress
             </h1>
             <nav class="breadcrumb-nav">
                 <a href="<?= base_url('dashboard') ?>">Dashboard</a> /
-                <a href="<?= base_url('evaluation') ?>">Evaluation</a> /
+                <a href="<?= base_url('work-progress') ?>">Work Progress</a> /
                 <span class="text-muted">Create</span>
             </nav>
         </div>
-        <a href="<?= base_url('evaluation') ?>" class="nav-btn">
+        <a href="<?= base_url('work-progress') ?>" class="nav-btn">
             <i class="fas fa-arrow-left me-2"></i> Back to Evaluations
         </a>
     </div>
@@ -22,20 +34,20 @@
 <!-- Create Form -->
 <div class="form-card">
     <div class="form-section-title">
-        <i class="fas fa-edit"></i> Evaluation Details
+        <i class="fas fa-edit"></i> Work Progress Details
     </div>
-    <form id="evaluationForm" method="POST" action="<?= base_url('evaluation/store') ?>">
+    <form id="evaluationForm" method="POST" action="<?= base_url('work-progress/store') ?>" enctype="multipart/form-data">
         <div class="row">
             <!-- Title Field -->
             <div class="col-md-12 mb-4">
                 <label for="title" class="form-label">
-                    Evaluation Title <span class="text-danger">*</span>
+                    Work Title <span class="text-danger">*</span>
                 </label>
                 <input type="text"
                        class="form-control <?= form_error('title') ? 'is-invalid' : '' ?>"
                        id="title"
                        name="title"
-                       placeholder="Enter evaluation title (e.g., Q4 2024 Performance Review)"
+                       placeholder="Enter Work Title (e.g., Q4 2024 Performance Review)"
                        value="<?= set_value('title') ?>"
                        >
                 <?php if (form_error('title')): ?>
@@ -84,13 +96,21 @@
                 <?php endif; ?>
             </div>
         </div>
+        <!-- Attachment Field -->
+        <div class="col-md-12 mb-4">
+            <label for="attachment" class="form-label">Attachment (Optional)</label>
+            <input type="file" name="attachment" id="attachment" class="form-control" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+            <?php if (form_error('attachment')): ?>
+                <div class="invalid-feedback d-block"><?= form_error('attachment') ?></div>
+            <?php endif; ?>
+        </div>
 
         <!-- Form Actions -->
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-2"></i> Create Evaluation
+                <i class="fas fa-save me-2"></i> Create Work Progress
             </button>
-            <a href="<?= base_url('evaluation') ?>" class="btn btn-outline-secondary">
+            <a href="<?= base_url('work-progress') ?>" class="btn btn-outline-secondary">
                 <i class="fas fa-times me-2"></i> Cancel
             </a>
         </div>

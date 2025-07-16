@@ -4,14 +4,14 @@
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-start">
         <div>
-            <h1 class="page-title"><i class="fas fa-comments"></i> Evaluation Comments</h1>
+            <h1 class="page-title"><i class="fas fa-comments"></i> Work Progress Comments</h1>
             <nav class="breadcrumb-nav">
                 <a href="<?= base_url('dashboard') ?>">Dashboard</a> /
-                <a href="<?= base_url('evaluation') ?>">Evaluation</a> /
+                <a href="<?= base_url('work-progress') ?>">Work Progress</a> /
                 <span class="text-muted">Comments</span>
             </nav>
         </div>
-        <a href="<?= base_url('evaluation') ?>" class="btn btn-secondary">
+        <a href="<?= base_url('work-progress') ?>" class="btn btn-secondary">
             <i class="fas fa-arrow-left"></i> Back
         </a>
     </div>
@@ -21,7 +21,7 @@
 <div class="form-card">
     <div class="form-section-title">
         <i class="fas fa-info-circle"></i>
-        Evaluation Information
+        Work Progress Information
     </div>
 
     <div class="row">
@@ -160,7 +160,7 @@
     // Load all comments via AJAX
     function loadComments() {
         $.ajax({
-            url: '<?= base_url("evaluation/get_comments") ?>',
+            url: '<?= base_url("work-progress/get_comments") ?>',
             type: 'GET',
             data: {evaluation_id: <?= $evaluation->id ?>},
             dataType: 'json',
@@ -219,7 +219,7 @@
             btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Posting...');
 
             $.ajax({
-                url: '<?= base_url("evaluation/add_comment") ?>',
+                url: '<?= base_url("work-progress/add_comment") ?>',
                 type: 'POST',
                 data: $(this).serialize(),
                 dataType: 'json',
