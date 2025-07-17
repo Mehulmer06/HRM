@@ -412,4 +412,59 @@ class Leave extends CI_Model
         $this->db->order_by('lrd.leave_date', 'ASC');
         return $this->db->get()->result();
     }
+
+
+    /**
+     * Check if user already has leave application for date range
+     */
+    public function checkExistingLeave($userId, $startDate, $endDate, $excludeLeaveId = null)
+    {
+        $this->db->select('lr.id, lr.start_date, lr.end_date, lr.status');
+        $this->db->from('leave_requests lr');
+        $this->db->where('lr.user_id', $userId);
+        $this->db->where('lr.status !=', 'cancelled');
+        $this->db->where('lr.status !=', 'rejected');
+
+        // Exclude current leave if updating
+        if ($excludeLeaveId) {
+            $this->db->where('lr.id !=', $excludeLeaveId);
+        }
+
+        // Check for overlapping dates
+        $this->db->group_start();
+        $this->db->where('lr.start_date <=', $endDate);
+        $this->db->where('lr.end_date >=', $startDate);
+        $this->db->group_end();
+
+        $query = $this->db->get();
+        return $query->row();
+    }
+
+    /**
+     * Check if user already has half-day leave for specific date and time period
+     */
+    public function checkExistingHalfDayLeave($userId, $date, $timePeriod, $excludeLeaveId = null)
+    {
+        $this->db->select('lr.id, lrd.leave_date, lrd.half_type, lr.status');
+        $this->db->from('leave_requests lr');
+        $this->db->join('leave_request_days lrd', 'lr.id = lrd.leave_request_id');
+        $this->db->where('lr.user_id', $userId);
+        $this->db->where('lr.status !=', 'cancelled');
+        $this->db->where('lr.status !=', 'rejected');
+        $this->db->where('lrd.leave_date', $date);
+
+        // Exclude current leave if updating
+        if ($excludeLeaveId) {
+            $this->db->where('lr.id !=', $excludeLeaveId);
+        }
+
+        // Check for same time period or full day leave on same date
+        $this->db->group_start();
+        $this->db->where('lrd.half_type', $timePeriod);
+        $this->db->or_where('lrd.day_type', 'full');
+        $this->db->group_end();
+
+        $query = $this->db->get();
+        return $query->row();
+    }
 }

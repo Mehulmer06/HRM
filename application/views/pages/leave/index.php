@@ -1,4 +1,7 @@
-<?php $this->load->view('includes/header'); ?>
+<?php $this->load->view('includes/header');
+include('./application/views/pages/message.php');
+?>
+
 
 <!-- Page Header -->
 <div class="page-header">
@@ -16,7 +19,7 @@
             <a href="#" class="create-btn" data-bs-toggle="modal" data-bs-target="#applyLeaveModal">
                 <i class="fas fa-plus"></i> Apply Leave
             </a>
-            <a href="<?= base_url('cl-add-module') ?>" class="create-btn btn btn-success ms-2">
+            <a href="<?= base_url('casual-leave') ?>" class="create-btn btn btn-success ms-2">
                 <i class="fas fa-plus-circle"></i> CL Add Module
             </a>
             <a href="<?= base_url('extra-day-requests') ?>" class="create-btn btn btn-warning ms-2">
@@ -924,6 +927,7 @@
 <?php $this->load->view('includes/footer'); ?>
 
 <script>
+    const holidayDates = <?= $holiday_dates_js ?? '[]' ?>;
     $(document).ready(function () {
         initializeDataTables();
         initializeFormValidation();
@@ -1062,8 +1066,10 @@
                 }
             },
             submitHandler: function (form) {
-                handleFormSubmission(form);
-                return false; // Prevent default form submission
+                // handleFormSubmission(form);
+                const submitBtn = $('#submitBtn');
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i> Submitting...');
+                form.submit();
             }
         });
 
@@ -1177,7 +1183,7 @@
         $('#edit_start_date, #edit_end_date').on('change', updateEditDayCount);
 
         const today = new Date().toISOString().split('T')[0];
-        $('#fromDate, #toDate, #halfDayDate').attr('min', today);
+        // $('#fromDate, #toDate, #halfDayDate').attr('min', today);
 
         $('#fromDate').on('change', function () {
             const fromDate = $(this).val();
@@ -1268,8 +1274,23 @@
             const endDate = new Date(toDate);
 
             if (endDate >= startDate) {
-                const dayDiff = Math.ceil((endDate - startDate) / (1000 * 3600 * 24)) + 1;
-                $('#numberOfDays').val(dayDiff);
+                // Calculate working days excluding weekends and holidays
+                let workingDays = 0;
+                let currentDate = new Date(startDate);
+
+                while (currentDate <= endDate) {
+                    const day = currentDate.getDay();
+                    const dateString = currentDate.toISOString().split('T')[0];
+
+                    // Only count if it's not weekend (0=Sunday, 6=Saturday) and not holiday
+                    if (day !== 0 && day !== 6 && !holidayDates.includes(dateString)) {
+                        workingDays++;
+                    }
+
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+
+                $('#numberOfDays').val(workingDays);
             } else {
                 $('#numberOfDays').val('');
                 $('#toDate').addClass('is-invalid');
@@ -1277,6 +1298,7 @@
             }
         }
     }
+
 
     // Handle Form Submission
     function handleFormSubmission(form) {
@@ -1647,17 +1669,38 @@
         const type = $('#edit_leave_type').val();
 
         if (type === 'fullday') {
-            const start = new Date($('#edit_start_date').val());
-            const end = new Date($('#edit_end_date').val());
+            const startDate = $('#edit_start_date').val();
+            const endDate = $('#edit_end_date').val();
 
-            if (start && end && !isNaN(start) && !isNaN(end)) {
-                const diff = (end - start) / (1000 * 60 * 60 * 24) + 1;
-                $('#edit_total_days').val(diff > 0 ? diff : 0);
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+
+                if (start && end && !isNaN(start) && !isNaN(end)) {
+                    // Calculate working days excluding weekends and holidays
+                    let workingDays = 0;
+                    let currentDate = new Date(start);
+
+                    while (currentDate <= end) {
+                        const day = currentDate.getDay();
+                        const dateString = currentDate.toISOString().split('T')[0];
+
+                        // Only count if it's not weekend (0=Sunday, 6=Saturday) and not holiday
+                        if (day !== 0 && day !== 6 && !holidayDates.includes(dateString)) {
+                            workingDays++;
+                        }
+
+                        currentDate.setDate(currentDate.getDate() + 1);
+                    }
+
+                    $('#edit_total_days').val(workingDays > 0 ? workingDays : 0);
+                }
             }
         } else if (type === 'halfday') {
             $('#edit_total_days').val('0.5');
         }
     }
+
 
     function deleteLeave(id) {
         if (confirm("Are you sure you want to delete this leave request?")) {
@@ -1719,6 +1762,4 @@
 
         $('#roCancelActionModal').modal('show');
     }
-
-
 </script>

@@ -6,7 +6,8 @@ class LeaveController extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Leave');
+        $this->load->model('Leave', 'Leave');
+        $this->load->model('Holiday', 'Holiday');
     }
 
     public function index()
@@ -22,9 +23,13 @@ class LeaveController extends CI_Controller
 
         // ✅ ADD PENDING CANCELLATION REQUESTS FOR RO
 
-            $data['pending_cancellations'] = $this->Leave->getPendingCancellationRequests();
+        $data['pending_cancellations'] = $this->Leave->getPendingCancellationRequests();
 
-
+        $data['public_holidays'] = $this->Holiday->getHolidaysByType(2025, 'fixed');
+        $holidayDates = array_map(function ($h) {
+            return $h->holiday_list_date;
+        }, $data['public_holidays']);
+        $data['holiday_dates_js'] = json_encode($holidayDates);
 
 
         $this->load->view('pages/leave/index', $data);
@@ -33,6 +38,7 @@ class LeaveController extends CI_Controller
     public function applyLeave()
     {
         $this->load->model('Leave');
+        $this->load->model('Holiday');
         $userId = $this->session->userdata('user_id');
         $leaveType = $this->input->post('leave_type');
 
@@ -44,6 +50,37 @@ class LeaveController extends CI_Controller
             'status' => 'pending'
         ];
 
+        // Get holiday dates for exclusion
+        $holidays = $this->Holiday->getHolidaysByType(2025, 'fixed');
+        $holidayDates = array_map(function ($h) {
+            return $h->holiday_list_date;
+        }, $holidays);
+
+        // ✅ CHECK FOR DUPLICATE LEAVE APPLICATIONS
+        if ($leaveType == 'fullday') {
+            $startDate = $this->input->post('start_date');
+            $endDate = $this->input->post('end_date');
+
+            // Check if user already has leave application for any date in this range
+            $existingLeave = $this->Leave->checkExistingLeave($userId, $startDate, $endDate);
+            if ($existingLeave) {
+                $this->session->set_flashdata('error', 'You already have a leave application for some dates in this range. Please check your existing leaves.');
+                redirect('leave');
+                return;
+            }
+        } elseif ($leaveType == 'halfday') {
+            $halfDayDate = $this->input->post('half_day_date');
+            $timePeriod = $this->input->post('time_period');
+
+            // Check if user already has leave application for this specific date and time period
+            $existingLeave = $this->Leave->checkExistingHalfDayLeave($userId, $halfDayDate, $timePeriod);
+            if ($existingLeave) {
+                $this->session->set_flashdata('error', 'You already have a leave application for this date and time period.');
+                redirect('leave');
+                return;
+            }
+        }
+
         $days = [];
         $totalDays = 0;
         $extraUsed = 0;
@@ -52,15 +89,40 @@ class LeaveController extends CI_Controller
 
         // File upload handling
         if (!empty($_FILES['attachment']['name'])) {
-            $config['upload_path'] = './uploads/leave_attachments/';
-            $config['allowed_types'] = 'pdf|doc|docx|jpg|jpeg|png';
-            $config['max_size'] = 5120;
-            $config['encrypt_name'] = TRUE;
+            // Use relative path from the application root
+            $upload_dir = './uploads/leave_attachments/';
+            $full_path = FCPATH . 'uploads/leave_attachments/';
 
-            $this->load->library('upload', $config);
+            // Create directory if it doesn't exist
+            if (!is_dir($full_path)) {
+                if (!mkdir($full_path, 0755, true)) {
+                    $this->session->set_flashdata('error', 'Failed to create upload directory. Please check permissions.');
+                    redirect('leave');
+                    return;
+                }
+            }
+
+            $config['upload_path'] = $upload_dir;
+            $config['allowed_types'] = 'pdf|doc|docx|jpg|jpeg|png';
+            $config['encrypt_name'] = true;
+            $config['max_size'] = 5120; // 5MB in KB
+            $config['remove_spaces'] = true;
+
+            // Initialize upload library
+            $this->load->library('upload');
+            $this->upload->initialize($config);
 
             if ($this->upload->do_upload('attachment')) {
-                $leaveData['attachment'] = $this->upload->data('file_name');
+                // Save new file info
+                $uploadData = $this->upload->data();
+                $filePath = 'uploads/leave_attachments/' . $uploadData['file_name'];
+                $leaveData['attachment'] = $filePath;
+            } else {
+                // Handle upload error
+                $error = $this->upload->display_errors('', '');
+                $this->session->set_flashdata('error', 'File upload failed: ' . $error);
+                redirect('leave');
+                return;
             }
         }
 
@@ -76,8 +138,16 @@ class LeaveController extends CI_Controller
             $cl = $this->Leave->getAvailableCL($userId);
 
             for ($date = $start; $date <= $end; $date += 86400) {
+                $currentDate = date('Y-m-d', $date);
+                $dayOfWeek = date('N', $date); // 1=Monday, 7=Sunday
+
+                // Skip weekends (Saturday=6, Sunday=7) and holidays
+                if ($dayOfWeek == 6 || $dayOfWeek == 7 || in_array($currentDate, $holidayDates)) {
+                    continue;
+                }
+
                 $entry = [
-                    'leave_date' => date('Y-m-d', $date),
+                    'leave_date' => $currentDate,
                     'day_type' => 'full'
                 ];
 
@@ -103,13 +173,31 @@ class LeaveController extends CI_Controller
                 $days[] = $entry;
                 $totalDays++;
             }
+
+            // Check if no working days found
+            if ($totalDays == 0) {
+                $this->session->set_flashdata('error', 'Selected date range contains no working days (only weekends/holidays). Please select dates that include at least one working day.');
+                redirect('leave');
+                return;
+            }
+
         } elseif ($leaveType == 'halfday') {
-            $leaveData['start_date'] = $this->input->post('half_day_date');
-            $leaveData['end_date'] = $this->input->post('half_day_date');
+            $halfDayDate = $this->input->post('half_day_date');
+            $dayOfWeek = date('N', strtotime($halfDayDate)); // 1=Monday, 7=Sunday
+
+            // Check if half day is on weekend or holiday
+            if ($dayOfWeek == 6 || $dayOfWeek == 7 || in_array($halfDayDate, $holidayDates)) {
+                $this->session->set_flashdata('error', 'Cannot apply for half-day leave on weekends or public holidays. Please select a working day.');
+                redirect('leave');
+                return;
+            }
+
+            $leaveData['start_date'] = $halfDayDate;
+            $leaveData['end_date'] = $halfDayDate;
             $totalDays = 0.5;
 
             $entry = [
-                'leave_date' => $this->input->post('half_day_date'),
+                'leave_date' => $halfDayDate,
                 'day_type' => 'half',
                 'half_type' => $this->input->post('time_period')
             ];
@@ -139,14 +227,19 @@ class LeaveController extends CI_Controller
             $days[] = $entry;
         }
 
-        // Finalize
-        $leaveData['total_days'] = $totalDays;
-        $leaveData['cl_used'] = $clUsed;
-        $leaveData['extra_used'] = $extraUsed;
-        $leaveData['paid_used'] = $paidUsed;
-        $this->Leave->insertLeave($leaveData, $days);
+        // Finalize only if there are working days
+        if ($totalDays > 0) {
+            $leaveData['total_days'] = $totalDays;
+            $leaveData['cl_used'] = $clUsed;
+            $leaveData['extra_used'] = $extraUsed;
+            $leaveData['paid_used'] = $paidUsed;
+            $this->Leave->insertLeave($leaveData, $days);
 
-        $this->session->set_flashdata('success', 'Leave request submitted successfully.');
+            $this->session->set_flashdata('success', 'Leave request submitted successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'No working days found in the selected date range.');
+        }
+
         redirect('leave');
     }
 
@@ -187,9 +280,9 @@ class LeaveController extends CI_Controller
     }
 
 
-
     public function updateLeave()
     {
+        $this->load->model('Holiday');
         $userId = $this->session->userdata('user_id');
         $leaveId = $this->input->post('leave_id');
         $leaveType = $this->input->post('leave_type');
@@ -199,6 +292,38 @@ class LeaveController extends CI_Controller
         if (!$existing || $existing->user_id != $userId) {
             $this->session->set_flashdata('error', 'Invalid leave request.');
             redirect('leave');
+            return;
+        }
+
+        // Get holiday dates for exclusion
+        $holidays = $this->Holiday->getHolidaysByType(2025, 'fixed');
+        $holidayDates = array_map(function ($h) {
+            return $h->holiday_list_date;
+        }, $holidays);
+
+        // ✅ CHECK FOR DUPLICATE LEAVE APPLICATIONS (excluding current leave)
+        if ($leaveType === 'fullday') {
+            $startDate = $this->input->post('start_date');
+            $endDate = $this->input->post('end_date');
+
+            // Check if user already has leave application for any date in this range (excluding current leave)
+            $existingLeave = $this->Leave->checkExistingLeave($userId, $startDate, $endDate, $leaveId);
+            if ($existingLeave) {
+                $this->session->set_flashdata('error', 'You already have another leave application for some dates in this range. Please check your existing leaves.');
+                redirect('leave');
+                return;
+            }
+        } elseif ($leaveType === 'halfday') {
+            $halfDayDate = $this->input->post('half_day_date');
+            $timePeriod = $this->input->post('time_period');
+
+            // Check if user already has leave application for this specific date and time period (excluding current leave)
+            $existingLeave = $this->Leave->checkExistingHalfDayLeave($userId, $halfDayDate, $timePeriod, $leaveId);
+            if ($existingLeave) {
+                $this->session->set_flashdata('error', 'You already have another leave application for this date and time period.');
+                redirect('leave');
+                return;
+            }
         }
 
         // Build new data
@@ -210,16 +335,47 @@ class LeaveController extends CI_Controller
             'attachment' => $existing->attachment
         ];
 
-        // Handle new file
+        // Handle file upload
         if (!empty($_FILES['attachment']['name'])) {
-            $config['upload_path'] = './uploads/leave_attachments/';
-            $config['allowed_types'] = 'pdf|doc|docx|jpg|jpeg|png';
-            $config['max_size'] = 5120;
-            $config['encrypt_name'] = TRUE;
+            // Use relative path from the application root
+            $upload_dir = './uploads/leave_attachments/';
+            $full_path = FCPATH . 'uploads/leave_attachments/';
 
-            $this->load->library('upload', $config);
+            // Create directory if it doesn't exist
+            if (!is_dir($full_path)) {
+                if (!mkdir($full_path, 0755, true)) {
+                    $this->session->set_flashdata('error', 'Failed to create upload directory. Please check permissions.');
+                    redirect('leave');
+                    return;
+                }
+            }
+
+            $config['upload_path'] = $upload_dir;
+            $config['allowed_types'] = 'pdf|doc|docx|jpg|jpeg|png';
+            $config['encrypt_name'] = true;
+            $config['max_size'] = 5120; // 5MB in KB
+            $config['remove_spaces'] = true;
+
+            // Initialize upload library
+            $this->load->library('upload');
+            $this->upload->initialize($config);
+
             if ($this->upload->do_upload('attachment')) {
-                $leaveData['attachment'] = $this->upload->data('file_name');
+                // Delete old file if exists
+                if (!empty($existing->attachment) && file_exists(FCPATH . $existing->attachment)) {
+                    unlink(FCPATH . $existing->attachment);
+                }
+
+                // Save new file info
+                $uploadData = $this->upload->data();
+                $filePath = 'uploads/leave_attachments/' . $uploadData['file_name'];
+                $leaveData['attachment'] = $filePath;
+            } else {
+                // Handle upload error
+                $error = $this->upload->display_errors('', '');
+                $this->session->set_flashdata('error', 'File upload failed: ' . $error);
+                redirect('leave');
+                return;
             }
         }
 
@@ -240,8 +396,16 @@ class LeaveController extends CI_Controller
             $end = strtotime($leaveData['end_date']);
 
             for ($date = $start; $date <= $end; $date += 86400) {
+                $currentDate = date('Y-m-d', $date);
+                $dayOfWeek = date('N', $date); // 1=Monday, 7=Sunday
+
+                // Skip weekends (Saturday=6, Sunday=7) and holidays
+                if ($dayOfWeek == 6 || $dayOfWeek == 7 || in_array($currentDate, $holidayDates)) {
+                    continue;
+                }
+
                 $entry = [
-                    'leave_date' => date('Y-m-d', $date),
+                    'leave_date' => $currentDate,
                     'day_type' => 'full'
                 ];
 
@@ -267,13 +431,31 @@ class LeaveController extends CI_Controller
                 $days[] = $entry;
                 $totalDays++;
             }
+
+            // Check if no working days found
+            if ($totalDays == 0) {
+                $this->session->set_flashdata('error', 'Selected date range contains no working days (only weekends/holidays). Please select dates that include at least one working day.');
+                redirect('leave');
+                return;
+            }
+
         } elseif ($leaveType === 'halfday') {
-            $leaveData['start_date'] = $this->input->post('half_day_date');
-            $leaveData['end_date'] = $this->input->post('half_day_date');
+            $halfDayDate = $this->input->post('half_day_date');
+            $dayOfWeek = date('N', strtotime($halfDayDate)); // 1=Monday, 7=Sunday
+
+            // Check if half day is on weekend or holiday
+            if ($dayOfWeek == 6 || $dayOfWeek == 7 || in_array($halfDayDate, $holidayDates)) {
+                $this->session->set_flashdata('error', 'Cannot update leave for weekends or public holidays. Please select a working day.');
+                redirect('leave');
+                return;
+            }
+
+            $leaveData['start_date'] = $halfDayDate;
+            $leaveData['end_date'] = $halfDayDate;
             $totalDays = 0.5;
 
             $entry = [
-                'leave_date' => $this->input->post('half_day_date'),
+                'leave_date' => $halfDayDate,
                 'day_type' => 'half',
                 'half_type' => $this->input->post('time_period')
             ];
@@ -300,22 +482,28 @@ class LeaveController extends CI_Controller
             $days[] = $entry;
         }
 
-        $leaveData['total_days'] = $totalDays;
-        $leaveData['cl_used'] = $clUsed;
-        $leaveData['extra_used'] = $extraUsed;
-        $leaveData['paid_used'] = $paidUsed;
+        // Update only if there are working days
+        if ($totalDays > 0) {
+            $leaveData['total_days'] = $totalDays;
+            $leaveData['cl_used'] = $clUsed;
+            $leaveData['extra_used'] = $extraUsed;
+            $leaveData['paid_used'] = $paidUsed;
 
-        // Update request
-        $this->db->where('id', $leaveId)->update('leave_requests', $leaveData);
+            // Update request
+            $this->db->where('id', $leaveId)->update('leave_requests', $leaveData);
 
-        // Delete old days and insert new
-        $this->db->delete('leave_request_days', ['leave_request_id' => $leaveId]);
-        foreach ($days as $day) {
-            $day['leave_request_id'] = $leaveId;
-            $this->db->insert('leave_request_days', $day);
+            // Delete old days and insert new
+            $this->db->delete('leave_request_days', ['leave_request_id' => $leaveId]);
+            foreach ($days as $day) {
+                $day['leave_request_id'] = $leaveId;
+                $this->db->insert('leave_request_days', $day);
+            }
+
+            $this->session->set_flashdata('success', 'Leave updated successfully.');
+        } else {
+            $this->session->set_flashdata('error', 'No working days found in the selected date range.');
         }
 
-        $this->session->set_flashdata('success', 'Leave updated successfully.');
         redirect('leave');
     }
 
@@ -587,7 +775,6 @@ class LeaveController extends CI_Controller
             $this->Leave->recalculateLeaveTotal($leaveId);
         }
     }
-
 
 
 }
