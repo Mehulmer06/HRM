@@ -17,7 +17,15 @@
     src="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.2/b-3.2.4/b-html5-3.2.4/b-print-3.2.4/r-3.0.5/datatables.min.js"
     integrity="sha384-JOdY7hqqxpm4spUHp84LM7HKOifrTWD8thPI8MXXkkqAd46pTwFYuqHqGIYsIFcz"
     crossorigin="anonymous"></script>
-
+<script>
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 300);
+        });
+    }, 5000);
+</script>
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>

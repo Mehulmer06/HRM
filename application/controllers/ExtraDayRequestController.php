@@ -6,23 +6,63 @@ class ExtraDayRequestController extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('ExtraDayRequest');
+        $this->load->model('ExtraDayRequest', 'ExtraDayRequest');
+        $this->load->model('Holiday', 'Holiday');
     }
 
     public function index()
     {
         $userId = $this->session->userdata('user_id');
+
         $data['requests'] = $this->ExtraDayRequest->get_by_user($userId);
+        $data['public_holidays'] = $this->Holiday->getHolidaysByType(2025, 'fixed');
+        $holidayDates = array_map(function ($h) {
+            return $h->holiday_list_date;
+        }, $data['public_holidays']);
+        $data['holiday_dates_js'] = json_encode($holidayDates);
+
         $this->load->view('pages/leave/extra-day/index', $data);
     }
+
 
     public function create()
     {
         $data = $this->input->post();
-        $data['user_id'] = $this->session->userdata('user_id');  // ✅ Add this
+        $data['user_id'] = $this->session->userdata('user_id');
         $data['created_at'] = date('Y-m-d H:i:s');
+
+        $requestedDate = $data['work_date'] ?? null;
+
+        // Validate: date required
+        if (!$requestedDate) {
+            $this->session->set_flashdata('error', 'Date is required.');
+            redirect('extra-day-requests');
+            return;
+        }
+
+        // Check day of week
+        $dayOfWeek = date('w', strtotime($requestedDate)); // 0 = Sunday, 6 = Saturday
+
+        // Get holidays for the requested year
+        $year = date('Y', strtotime($requestedDate));
+        $publicHolidays = $this->Holiday->getHolidaysByType($year, 'fixed');
+        $holidayDates = array_map(function ($h) {
+            return $h->holiday_list_date;
+        }, $publicHolidays);
+
+        $isWeekend = ($dayOfWeek == 0 || $dayOfWeek == 6);
+        $isHoliday = in_array($requestedDate, $holidayDates);
+
+        if (!$isWeekend && !$isHoliday) {
+            $this->session->set_flashdata('error', 'Only Saturdays, Sundays, or Public Holidays are allowed.');
+            redirect('extra-day-requests');
+            return;
+        }
+
+        // ✅ Valid request
         $this->ExtraDayRequest->create($data);
-        redirect('ExtraDayRequestController/index');
+        $this->session->set_flashdata('success', 'Extra Day Request submitted successfully.');
+        redirect('extra-day-requests');
     }
 
 

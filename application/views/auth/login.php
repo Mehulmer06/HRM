@@ -51,7 +51,7 @@
                 </label>
                 <div class="input-wrapper">
                     <input type="email" class="form-control" name="email" id="email"
-                           placeholder="Enter your email address" required autofocus value="test@gmail.com">
+                           placeholder="Enter your email address" required autofocus value="gela@mailinator.com">
                     <div class="error-message">Please enter a valid email address</div>
                 </div>
             </div>

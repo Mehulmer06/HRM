@@ -132,5 +132,12 @@ $route['request-issue/update_status'] = 'RequestIssueController/update_status';
 
 
 $route['finance'] = 'FinanceController/index';
+
+
+$route['casual-leave'] = 'CasualLeaveController/index';
+$route['casual-leave/save'] = 'CasualLeaveController/save';
+$route['casual-leave/get/(:num)'] = 'CasualLeaveController/get_grant/$1';
+$route['casual-leave/delete/(:num)'] = 'CasualLeaveController/delete/$1';
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

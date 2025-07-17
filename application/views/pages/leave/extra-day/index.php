@@ -1,4 +1,6 @@
-<?php $this->load->view('includes/header'); ?>
+<?php $this->load->view('includes/header');
+include('./application/views/pages/message.php');
+?>
 
 <!-- Page Header -->
 <div class="page-header">
@@ -33,60 +35,84 @@
                         <th style="width: 8%;">ID</th>
                         <th style="width: 15%;">Day</th>
                         <th style="width: 35%;">Reason</th>
+                        <th style="width: 12%;">Used Status</th>
                         <th style="width: 15%;">Created At</th>
                         <th style="width: 12%;">RO Status</th>
                         <th style="width: 15%;">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($requests as $row): ?>
-                        <tr>
-                            <td><?= str_pad($row->id, 3, '0', STR_PAD_LEFT); ?></td>
-                            <td><span class="badge bg-primary"><?= $row->work_date; ?></span></td>
-                            <td><div class="reason-text"><?= htmlentities($row->reason); ?></div></td>
-                            <td><small class="text-muted"><?= date('Y-m-d', strtotime($row->created_at)); ?></small></td>
-                            <td>
-                                <?php
-                                $status = ucfirst($row->status);
-                                $colorMap = [
-                                    'pending' => ['#fff3cd', '#856404'],
-                                    'approved' => ['#d4edda', '#155724'],
-                                    'rejected' => ['#f8d7da', '#721c24'],
-                                ];
-                                $bg = $colorMap[$row->status][0] ?? '#f8f9fa';
-                                $text = $colorMap[$row->status][1] ?? '#495057';
-                                ?>
-                                <span class="status-badge" style="background: <?= $bg ?>; color: <?= $text ?>;"><?= $status ?></span>
-                            </td>
-                            <td>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        <i class="fas fa-cogs"></i> Actions
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li>
-                                            <a class="dropdown-item view-btn" href="#" data-id="<?= $row->id ?>" data-bs-toggle="modal" data-bs-target="#viewDayRequestModal">
-                                                <i class="fas fa-eye me-2"></i> View
-                                            </a>
-                                        </li>
-                                        <?php if ($row->status !== 'approved'): ?>
-                                            <li>
-                                                <a class="dropdown-item edit-btn" href="#" data-id="<?= $row->id ?>" data-bs-toggle="modal" data-bs-target="#editDayRequestModal">
-                                                    <i class="fas fa-edit me-2"></i> Edit
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item text-danger delete-btn" href="#" data-id="<?= $row->id ?>" data-date="<?= $row->work_date ?>" data-reason="<?= htmlentities($row->reason) ?>" data-bs-toggle="modal" data-bs-target="#deleteDayRequestModal">
-                                                    <i class="fas fa-trash me-2"></i> Delete
-                                                </a>
-                                            </li>
+                    <?php if (isset($requests) && !empty($requests)): ?>
+                        <?php foreach ($requests as $row): ?>
+                            <tr>
+                                <td><?= str_pad($row->id, 3, '0', STR_PAD_LEFT); ?></td>
+                                <td><span class="badge bg-primary"><?= $row->work_date; ?></span></td>
+                                <td>
+                                    <div class="reason-text"><?= htmlentities($row->reason); ?></div>
+                                </td>
+                                <td>
+                                    <?php if (isset($row->is_used)): ?>
+                                        <?php if ($row->is_used === 'y' || $row->is_used === 'yes' || $row->is_used === '1'): ?>
+                                            <span class="status-badge status-used">Used</span>
+                                        <?php else: ?>
+                                            <span class="status-badge status-inactive">Not Used</span>
                                         <?php endif; ?>
-                                    </ul>
-                                </div>
-                            </td>
+                                    <?php else: ?>
+                                        <span class="status-badge status-unknown">Unknown</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td><small class="text-muted"><?= date('Y-m-d', strtotime($row->created_at)); ?></small>
+                                </td>
+                                <td>
+                                    <?php
+                                    $status = ucfirst($row->status);
+                                    $colorMap = [
+                                        'pending' => ['#fff3cd', '#856404'],
+                                        'approved' => ['#d4edda', '#155724'],
+                                        'rejected' => ['#f8d7da', '#721c24'],
+                                    ];
+                                    $bg = $colorMap[$row->status][0] ?? '#f8f9fa';
+                                    $text = $colorMap[$row->status][1] ?? '#495057';
+                                    ?>
+                                    <span class="status-badge"
+                                          style="background: <?= $bg ?>; color: <?= $text ?>;"><?= $status ?></span>
+                                </td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown">
+                                            <i class="fas fa-cogs"></i> Actions
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item view-btn" href="#" data-id="<?= $row->id ?>"
+                                                   data-bs-toggle="modal" data-bs-target="#viewDayRequestModal">
+                                                    <i class="fas fa-eye me-2"></i> View
+                                                </a>
+                                            </li>
+                                            <?php if ($row->status !== 'approved'): ?>
+                                                <li>
+                                                    <a class="dropdown-item edit-btn" href="#" data-id="<?= $row->id ?>"
+                                                       data-bs-toggle="modal" data-bs-target="#editDayRequestModal">
+                                                        <i class="fas fa-edit me-2"></i> Edit
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item text-danger delete-btn" href="#"
+                                                       data-id="<?= $row->id ?>" data-date="<?= $row->work_date ?>"
+                                                       data-reason="<?= htmlentities($row->reason) ?>"
+                                                       data-bs-toggle="modal" data-bs-target="#deleteDayRequestModal">
+                                                        <i class="fas fa-trash me-2"></i> Delete
+                                                    </a>
+                                                </li>
+                                            <?php endif; ?>
+                                        </ul>
+                                    </div>
+                                </td>
 
-                        </tr>
-                    <?php endforeach; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -110,12 +136,14 @@
                     </div>
                     <div class="mb-3">
                         <label for="dayRequestReason" class="form-label">Work *</label>
-                        <textarea class="form-control" name="reason" id="dayRequestReason" rows="4" required placeholder="Please provide a detailed reason for your day request..."></textarea>
+                        <textarea class="form-control" name="reason" id="dayRequestReason" rows="4" required
+                                  placeholder="Please provide a detailed reason for your day request..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i> Submit Request</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i> Submit Request
+                    </button>
                 </div>
             </div>
         </form>
@@ -168,12 +196,14 @@
                     </div>
                     <div class="mb-3">
                         <label for="editDayRequestReason" class="form-label">Reason *</label>
-                        <textarea class="form-control" name="reason" id="editDayRequestReason" rows="4" required></textarea>
+                        <textarea class="form-control" name="reason" id="editDayRequestReason" rows="4"
+                                  required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i> Update Request</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save me-2"></i> Update Request
+                    </button>
                 </div>
             </div>
         </form>
@@ -200,7 +230,8 @@
                 <form id="deleteRequestForm" method="post">
                     <input type="hidden" id="deleteRequestId" name="id">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-2"></i> Delete Request</button>
+                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash me-2"></i> Delete Request
+                    </button>
                 </form>
             </div>
         </div>
@@ -212,11 +243,27 @@
 <!-- JS -->
 <script>
     $(document).ready(function () {
+        const allowedHolidays = <?= $holiday_dates_js ?>;
+
+        $('#dayRequestDate').on('change', function () {
+            const selectedDate = this.value;
+            const day = new Date(selectedDate).getDay(); // 0 = Sunday, 6 = Saturday
+
+            const isWeekend = (day === 0 || day === 6);
+            const isHoliday = allowedHolidays.includes(selectedDate);
+
+            if (!isWeekend && !isHoliday) {
+                $(this).val('');
+            }
+        });
+    });
+
+    $(document).ready(function () {
         $('#dayRequestTable').DataTable({
             responsive: true,
             pageLength: 10,
             order: [[0, 'desc']],
-            columnDefs: [{ targets: -1, orderable: false }],
+            columnDefs: [{targets: -1, orderable: false}],
             language: {
                 search: "Search Day Requests:",
                 lengthMenu: "Show _MENU_ requests per page",
@@ -242,7 +289,7 @@
                         console.error('Error parsing response:', e);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error fetching data:', error);
                 }
             });
@@ -264,7 +311,7 @@
                         console.error('Error parsing response:', e);
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error fetching data:', error);
                 }
             });
@@ -283,7 +330,7 @@
         });
 
         // Form submissions
-        $('#deleteRequestForm').on('submit', function(e) {
+        $('#deleteRequestForm').on('submit', function (e) {
             e.preventDefault();
             const form = $(this);
 
@@ -291,11 +338,11 @@
                 url: form.attr('action'),
                 method: 'POST',
                 data: form.serialize(),
-                success: function(response) {
+                success: function (response) {
                     $('#deleteDayRequestModal').modal('hide');
                     location.reload(); // Refresh page to show updated data
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('Error deleting request:', error);
                     alert('Error deleting request. Please try again.');
                 }
@@ -305,8 +352,8 @@
         // Validation
         $("#dayRequestForm, #editDayRequestForm").validate({
             rules: {
-                work_date: { required: true },
-                reason: { required: true, minlength: 10 }
+                work_date: {required: true},
+                reason: {required: true, minlength: 10}
             },
             messages: {
                 work_date: "Please select a date.",
@@ -334,10 +381,31 @@
 </script>
 <!-- Styles -->
 <style>
-    .reason-text { font-size: 13px; line-height: 1.4; color: #2c3e50; }
-    .table td { vertical-align: top; }
-    .modal-lg { max-width: 800px; }
-    .form-label { font-weight: 600; color: #2c5aa0; }
-    .modal-header { background: linear-gradient(135deg, #e67e22, #d35400); color: white; }
-    .modal-header .btn-close { filter: brightness(0) invert(1); }
+    .reason-text {
+        font-size: 13px;
+        line-height: 1.4;
+        color: #2c3e50;
+    }
+
+    .table td {
+        vertical-align: top;
+    }
+
+    .modal-lg {
+        max-width: 800px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2c5aa0;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #e67e22, #d35400);
+        color: white;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+    }
 </style>
