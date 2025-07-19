@@ -13,8 +13,12 @@ class User extends CI_Model
     }
     public function getUserById($id)
     {
-        $query = $this->db->get_where('users', ['id' => $id]);
-        return $query->row_array();
+		$this->db->select('us.*, cd.offer_latter');
+		$this->db->from('users us');
+		$this->db->join('contract_details cd', 'us.id = cd.user_id', 'inner');
+		$this->db->where('us.id', $id);
+		$query = $this->db->get();
+		return $query->row_array();
     }
     public function getContractByUserId($userId)
     {

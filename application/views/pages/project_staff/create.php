@@ -56,8 +56,8 @@
                 Add New Staff Member
             </h1>
             <nav class="breadcrumb-nav">
-                <a href="dashboard.html">Dashboard</a> /
-                <a href="project-staff-listing.html">Project Staff</a> /
+                <a href="<?=base_url('dashboard')?>">Dashboard</a> /
+                <a href="<?=base_url('project-staff')?>">Project Staff</a> /
                 <span class="text-muted">Add New</span>
             </nav>
         </div>
@@ -78,6 +78,13 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     <?php endif; ?>
+	<?php if ($this->session->flashdata('error')): ?>
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			<i class="fas fa-check-circle me-2"></i>
+			<?= $this->session->flashdata('error') ?>
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+		</div>
+	<?php endif; ?>
     <!-- Personal Information -->
     <div class="form-card">
         <h3 class="form-section-title">
@@ -154,6 +161,10 @@
             Professional Information
         </h3>
 
+		<div class="col-md-12">
+			<label for="professional_email" class="form-label">Professional email *</label>
+			<input type="email" class="form-control" placeholder="enter profession email" name="professional_email" id="professional_email"  />
+		</div>
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="department" class="form-label">Department *</label>
@@ -292,7 +303,7 @@
             <div class="col-md-4">
                 <label for="contract_months" class="form-label">Contract Duration (Months) *</label>
                 <input type="number" class="form-control" id="contract_months" name="contract_months"
-                    placeholder="Enter number of months" min="1" max="120">
+                    placeholder="Enter number of months">
             </div>
             <div class="col-md-4">
                 <label for="end_date" class="form-label">Contract End Date</label>
@@ -306,7 +317,7 @@
         </div>
 
         <div class="row form-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="project_name" class="form-label">Assigned Project *</label>
                 <select class="form-select select2" id="project_name" name="project_name">
                     <option value="">Select Project</option>
@@ -317,7 +328,7 @@
                     <option value="PDS">PDS</option>
                 </select>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="location" class="form-label">Location *</label>
                 <select class="form-select select2" id="location" name="location">
                     <option value="">Select location</option>
@@ -327,6 +338,10 @@
                     <option value="AIU New Delhi">AIU New Delhi</option>
                 </select>
             </div>
+			<div class="col-md-4">
+				<label for="offer_latter" class="form-label">offer latter *</label>
+				<input type="file" class="form-control" id="offer_latter" name="offer_latter">
+			</div>
         </div>
     </div>
 
@@ -448,6 +463,7 @@
                     date: true
                 },
                 contract_months: {
+					required:true,
                     digits: true,
                     min: 1,
                     max: 120
@@ -463,12 +479,18 @@
                 location: {
                     required: true
                 },
+				offer_latter:{
+					required:true,
+					extension: "jpg|jpeg|png|pdf",
+					filesize: 2097152 // 2MB in bytes
+				},
                 photo: {
-                    extension: "jpg|jpeg|png",
+					required:true,
+                    extension: "jpg|jpeg|png|pdf",
                     filesize: 2097152 // 2MB in bytes
                 },
                 signature: {
-                    extension: "jpg|jpeg|png",
+                    extension: "jpg|jpeg|png|pdf",
                     filesize: 1048576 // 1MB in bytes
                 }
             },
@@ -531,6 +553,7 @@
                     min: "Salary cannot be negative"
                 },
                 contract_months: {
+					required:"please enter contract duration month",
                     digits: "Please enter a valid number of months",
                     min: "Contract duration must be at least 1 month",
                     max: "Contract duration cannot exceed 120 months"
@@ -541,7 +564,13 @@
                 location: {
                     required: "Please select a location"
                 },
+				offer_latter:{
+					required:"please upload offer latter",
+					extension: "Please select a valid image file (JPG, PNG,PDF)",
+					filesize: "File size must be less than 2MB"
+				},
                 photo: {
+					required:"employee photo is required",
                     extension: "Please select a valid image file (JPG, PNG)",
                     filesize: "File size must be less than 2MB"
                 },

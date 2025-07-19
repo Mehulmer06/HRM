@@ -37,7 +37,7 @@ class ProjectStaffController extends CI_Controller
 
             $this->form_validation->set_rules('employee_id', 'Employee id', 'required');
             $this->form_validation->set_rules('name', 'Name', 'required');
-            $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
+            $this->form_validation->set_rules('email', 'Email', 'required');
             $this->form_validation->set_rules('dob', 'Date of Birth', 'required');
             $this->form_validation->set_rules('gender', 'Gender', 'required');
             $this->form_validation->set_rules('mobile', 'Mobile', 'required|numeric');
@@ -73,14 +73,14 @@ class ProjectStaffController extends CI_Controller
             $reportingOfficerName = isset($reportingParts[1]) ? trim($reportingParts[1]) : null;
             $reportingOfficerDesignation = isset($reportingParts[2]) ? trim($reportingParts[2]) : null;
 
-
             $userData = [
-                'employee_id' => $input['employee_id'],
+                'employee_id' => (int)$input['employee_id'],
                 'name' => $input['name'],
                 'email' => $input['email'],
                 'dob' => $input['dob'],
                 'password' => md5($input['password']),
                 'address' => $input['address'],
+				'professional_email' =>$input['professional_email'],
                 'department' => $input['department'],
                 'role' => $input['role'],
                 'category' => $input['sub_role'],
@@ -96,7 +96,7 @@ class ProjectStaffController extends CI_Controller
 
             if (!empty($_FILES['photo']['name'])) {
                 $photoConfig = [
-                    'upload_path' => 'uploads/photo/',
+                    'upload_path' => './upload/photo/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -110,7 +110,7 @@ class ProjectStaffController extends CI_Controller
             }
             if (!empty($_FILES['signature']['name'])) {
                 $signatureConfig = [
-                    'upload_path' => 'uploads/signature/',
+                    'upload_path' => './upload/signature/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -122,23 +122,42 @@ class ProjectStaffController extends CI_Controller
                     throw new Exception('Signature upload failed: ' . strip_tags($this->upload->display_errors()));
                 }
             }
-
             $userId = $this->User->insertUser($userData);
             if (!$userId) {
                 throw new Exception('Failed to insert user.');
             }
-            $contractData = [
-                'user_id' => $userId,
-                'designation' => $input['designation'],
-                'join_date' => $input['join_date'],
-                'end_date' => $input['end_date'],
-                'contract_month' => $input['contract_months'],
-                'salary' => $input['salary'],
-                'project_name' => $input['project_name'],
-                'created_at' => date('Y-m-d H:i:s'),
-                'location' => $input['location'],
-                'status' => 'active'
-            ];
+			if (!empty($_FILES['offer_latter']['name'])) {
+				$offerLetterConfig = [
+					'upload_path'   => './upload/offer_latter/',
+					'allowed_types' => 'jpg|jpeg|png|pdf',
+					'encrypt_name'  => TRUE
+				];
+
+				$this->load->library('upload');
+				$this->upload->initialize($offerLetterConfig);
+
+				if ($this->upload->do_upload('offer_latter')) {
+					$offerLetterData = $this->upload->data();
+					$filename = $offerLetterData['file_name'];
+				} else {
+					throw new Exception('Offer letter upload failed: ' . strip_tags($this->upload->display_errors()));
+				}
+			} else {
+				$filename = null;
+			}
+			$contractData = [
+				'user_id'        => $userId,
+				'designation'    => $input['designation'],
+				'join_date'      => $input['join_date'],
+				'end_date'       => $input['end_date'],
+				'contract_month' => $input['contract_months'],
+				'salary'         => $input['salary'],
+				'project_name'   => $input['project_name'],
+				'created_at'     => date('Y-m-d H:i:s'),
+				'location'       => $input['location'],
+				'offer_latter'   => $filename,
+				'status'         => 'active'
+			];
             $contractResult = $this->ProjectStaff->insertContract($contractData);
             if (!$contractResult) {
                 throw new Exception('Failed to insert contract details.');
@@ -149,7 +168,6 @@ class ProjectStaffController extends CI_Controller
             $this->db->trans_rollback();
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
         }
-
         redirect('project-staff');
     }
     public function edit($id)
@@ -172,8 +190,6 @@ class ProjectStaffController extends CI_Controller
     public function update($userId)
     {
         try {
-
-
             $this->form_validation->set_rules('employee_id', 'Employee id', 'required');
             $this->form_validation->set_rules('name', 'Name', 'required');
             $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
@@ -215,6 +231,7 @@ class ProjectStaffController extends CI_Controller
                 'email' => $input['email'],
                 'dob' => $input['dob'],
                 'address' => $input['address'],
+				'professional_email' =>$input['professional_email'],
                 'department' => $input['department'],
                 'role' => $input['role'],
                 'category' => $input['sub_role'],
@@ -241,7 +258,7 @@ class ProjectStaffController extends CI_Controller
 
             if (!empty($_FILES['photo']['name'])) {
                 $photoConfig = [
-                    'upload_path' => 'uploads/photo/',
+                    'upload_path' => 'upload/photo/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -257,7 +274,7 @@ class ProjectStaffController extends CI_Controller
 
             if (!empty($_FILES['signature']['name'])) {
                 $signatureConfig = [
-                    'upload_path' => 'uploads/signature/',
+                    'upload_path' => 'upload/signature/',
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
@@ -276,29 +293,51 @@ class ProjectStaffController extends CI_Controller
                 throw new Exception('Failed to update user.');
             }
 
-            $contractData = [
-                'designation' => $input['designation'],
-                'join_date' => $input['join_date'],
-                'end_date' => $input['end_date'],
-                'contract_month' => $input['contract_months'],
-                'salary' => $input['salary'],
-                'project_name' => $input['project_name'],
-                'updated_at' => date('Y-m-d H:i:s'),
-                'location' => $input['location']
-            ];
+			$filename = null;
 
-            $contractResult = $this->ProjectStaff->updateContract($userId, $contractData);
-            if (!$contractResult) {
-                throw new Exception('Failed to update contract details.');
-            }
+			if (isset($_FILES['offer_latter']) && !empty($_FILES['offer_latter']['name'])) {
+				$offerLetterConfig = [
+					'upload_path'   => './upload/offer_latter/',
+					'allowed_types' => 'jpg|jpeg|png|pdf',
+					'encrypt_name'  => TRUE
+				];
 
+				$this->load->library('upload');
+				$this->upload->initialize($offerLetterConfig);
 
-            $this->db->trans_commit();
-            $this->session->set_flashdata('success', 'User and contract updated successfully.');
-        } catch (\Exception $e) {
-            $this->db->trans_rollback();
-            $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
-        }
+				if ($this->upload->do_upload('offer_latter')) {
+					$offerLetterData = $this->upload->data();
+					$filename = $offerLetterData['file_name'];
+				} else {
+					throw new Exception('Offer letter upload failed: ' . strip_tags($this->upload->display_errors()));
+				}
+			}
+
+			$contractData = [
+				'designation' => $input['designation'],
+				'join_date' => $input['join_date'],
+				'end_date' => $input['end_date'],
+				'contract_month' => $input['contract_months'],
+				'salary' => $input['salary'],
+				'project_name' => $input['project_name'],
+				'updated_at' => date('Y-m-d H:i:s'),
+				'location' => $input['location'],
+			];
+			if ($filename !== null) {
+				$contractData['offer_latter'] = $filename;
+			}
+
+			$contractResult = $this->ProjectStaff->updateContract($userId, $contractData);
+			if (!$contractResult) {
+				throw new Exception('Failed to update contract details.');
+			}
+
+			$this->db->trans_commit();
+			$this->session->set_flashdata('success', 'User and contract updated successfully.');
+		} catch (\Exception $e) {
+			$this->db->trans_rollback();
+			$this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
+		}
 
         redirect('project-staff');
     }
@@ -327,7 +366,6 @@ class ProjectStaffController extends CI_Controller
     public function renewContract($id)
     {
         try {
-
             $this->form_validation->set_rules('modal_designation', 'Designation', 'required');
             $this->form_validation->set_rules('start_date', 'Start Date', 'required');
             $this->form_validation->set_rules('contract_months', 'Contract Duration', 'required|integer|greater_than[0]');
@@ -353,6 +391,25 @@ class ProjectStaffController extends CI_Controller
             $contract_months = (int) $this->input->post('contract_months');
             $end_date = $this->input->post('end_date');
 
+			if (!empty($_FILES['offer_latter']['name'])) {
+				$offerLetterConfig = [
+					'upload_path'   => './upload/offer_latter/',
+					'allowed_types' => 'jpg|jpeg|png|pdf',
+					'encrypt_name'  => TRUE
+				];
+
+				$this->load->library('upload');
+				$this->upload->initialize($offerLetterConfig);
+
+				if ($this->upload->do_upload('offer_latter')) {
+					$offerLetterData = $this->upload->data();
+					$filename = $offerLetterData['file_name'];
+				} else {
+					throw new Exception('Offer letter upload failed: ' . strip_tags($this->upload->display_errors()));
+				}
+			} else {
+				$filename = null;
+			}
             $data = [
                 'user_id' => $id,
                 'designation' => $designation,
@@ -362,6 +419,7 @@ class ProjectStaffController extends CI_Controller
                 'salary' => $this->input->post('salary'),
                 'location' => $this->input->post('location'),
                 'project_name' => $this->input->post('project'),
+				'offer_latter' => $filename,
                 'status' => $this->input->post('status'),
                 'created_at' => date('Y-m-d H:i:s')
             ];
@@ -377,10 +435,4 @@ class ProjectStaffController extends CI_Controller
             redirect('project-staff');
         }
     }
-
-
-
-
-
-
 }
