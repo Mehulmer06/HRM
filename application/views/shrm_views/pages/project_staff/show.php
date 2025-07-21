@@ -320,11 +320,82 @@
                             <label for="modal_designation" class="form-label">Designation *</label>
                             <select class="form-select" id="modal_designation" name="modal_designation">
                                 <option value="">Select Designation</option>
-                                <option value="Assistant">Assistant</option>
-                                <option value="Software Developer">Software Developer</option>
-                                <option value="Consultant">Consultant</option>
-                                <option value="Library Officer">Library Officer</option>
-                                <option value="Executive">Executive</option>
+                                <option
+                                        value="Consultant" <?= set_select('designation', 'Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Consultant')) ?>>
+                                    Consultant
+                                </option>
+                                <option
+                                        value="Executive" <?= set_select('designation', 'Executive', (!empty($contract['designation']) && $contract['designation'] == 'Executive')) ?>>
+                                    Executive
+                                </option>
+                                <option
+                                        value="IT Consultant" <?= set_select('designation', 'IT Consultant', (!empty($contract['designation']) && $contract['designation'] == 'IT Consultant')) ?>>
+                                    IT Consultant
+                                </option>
+                                <option
+                                        value="Jr. IT Consultant" <?= set_select('designation', 'Jr. IT Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Jr. IT Consultant')) ?>>
+                                    Jr. IT Consultant
+                                </option>
+                                <option
+                                        value="Jr. Project Consultant" <?= set_select('designation', 'Jr. Project Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Jr. Project Consultant')) ?>>
+                                    Jr. Project Consultant
+                                </option>
+                                <option
+                                        value="Library Associate" <?= set_select('designation', 'Library Associate', (!empty($contract['designation']) && $contract['designation'] == 'Library Associate')) ?>>
+                                    Library Associate
+                                </option>
+                                <option
+                                        value="Professional Assistant" <?= set_select('designation', 'Professional Assistant', (!empty($contract['designation']) && $contract['designation'] == 'Professional Assistant')) ?>>
+                                    Professional Assistant
+                                </option>
+                                <option
+                                        value="Programmer" <?= set_select('designation', 'Programmer', (!empty($contract['designation']) && $contract['designation'] == 'Programmer')) ?>>
+                                    Programmer
+                                </option>
+                                <option
+                                        value="Project Assistant" <?= set_select('designation', 'Project Assistant', (!empty($contract['designation']) && $contract['designation'] == 'Project Assistant')) ?>>
+                                    Project Assistant
+                                </option>
+                                <option
+                                        value="Project Associate" <?= set_select('designation', 'Project Associate', (!empty($contract['designation']) && $contract['designation'] == 'Project Associate')) ?>>
+                                    Project Associate
+                                </option>
+                                <option
+                                        value="Project Consultant" <?= set_select('designation', 'Project Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Project Consultant')) ?>>
+                                    Project Consultant
+                                </option>
+                                <option
+                                        value="Project Consultant (IT)" <?= set_select('designation', 'Project Consultant (IT)', (!empty($contract['designation']) && $contract['designation'] == 'Project Consultant (IT)')) ?>>
+                                    Project Consultant (IT)
+                                </option>
+                                <option
+                                        value="Project Officer" <?= set_select('designation', 'Project Officer', (!empty($contract['designation']) && $contract['designation'] == 'Project Officer')) ?>>
+                                    Project Officer
+                                </option>
+                                <option
+                                        value="Sr. Executive" <?= set_select('designation', 'Sr. Executive', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Executive')) ?>>
+                                    Sr. Executive
+                                </option>
+                                <option
+                                        value="Sr. Project Associate" <?= set_select('designation', 'Sr. Project Associate', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Project Associate')) ?>>
+                                    Sr. Project Associate
+                                </option>
+                                <option
+                                        value="Sr. Project Consultant" <?= set_select('designation', 'Sr. Project Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Project Consultant')) ?>>
+                                    Sr. Project Consultant
+                                </option>
+                                <option
+                                        value="Sr. Project Officer" <?= set_select('designation', 'Sr. Project Officer', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Project Officer')) ?>>
+                                    Sr. Project Officer
+                                </option>
+                                <option
+                                        value="Sr. Software Developer" <?= set_select('designation', 'Sr. Software Developer', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Software Developer')) ?>>
+                                    Sr. Software Developer
+                                </option>
+                                <option
+                                        value="Software Developer" <?= set_select('designation', 'Software Developer', (!empty($contract['designation']) && $contract['designation'] == 'Software Developer')) ?>>
+                                    Software Developer
+                                </option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -369,7 +440,7 @@
 								<option value="">Select Project</option>
 								<?php if (!empty($projects)): ?>
 									<?php foreach ($projects as $project): ?>
-										<option value="<?= $project->id ?>"><?= $project->project_name ?></option>
+										<option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
 									<?php endforeach; ?>
 								<?php endif; ?>
 							</select>
