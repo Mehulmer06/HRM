@@ -50,94 +50,111 @@ defined('BASEPATH') or exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'welcome';
-
-$route['login'] = 'LoginController/index';
-$route['login/authenticate'] = 'LoginController/authenticate';
-$route['logout'] = 'LoginController/logout';
-$route['dashboard'] = 'DashboardController/index';
-
-$route['project-staff'] = 'ProjectStaffController/index';
-$route['project-staff/create'] = 'ProjectStaffController/create';
-$route['project-staff/store'] = 'ProjectStaffController/store';
-$route['project-staff/edit/(:num)'] = 'ProjectStaffController/edit/$1';
-$route['project-staff/update/(:num)'] = 'ProjectStaffController/update/$1';
-$route['project-staff/toggle-status'] = 'ProjectStaffController/toggle_status';
-$route['project-staff/show/(:num)'] = 'ProjectStaffController/show/$1';
-$route['project-staff/renewal-contract/(:num)'] = 'ProjectStaffController/renewContract/$1';
-
-
-$route['holiday'] = 'HolidayController/index';
-$route['holiday/(:num)'] = 'HolidayController/index/$1';
-
-$route['work-progress'] = 'EvaluationController/index';
-$route['work-progress/create'] = 'EvaluationController/create';
-$route['work-progress/store'] = 'EvaluationController/store';
-$route['work-progress/edit/(:num)'] = 'EvaluationController/edit/$1';
-$route['work-progress/update/(:num)'] = 'EvaluationController/update/$1';
-$route['work-progress/view/(:num)'] = 'EvaluationController/show/$1';
-$route['work-progress/update_status'] = 'EvaluationController/update_status';
-
-
-$route['work-progress/comments/(:num)'] = 'EvaluationController/comments/$1';
-$route['work-progress/add_comment'] = 'EvaluationController/add_comment';
-$route['work-progress/get_comments'] = 'EvaluationController/get_comments';
-
-$route['note'] = 'NoteController/index';
-$route['note/create'] = 'NoteController/create';
-$route['note/store'] = 'NoteController/store';
-$route['note/edit/(:num)'] = 'NoteController/edit/$1';
-$route['note/update/(:num)'] = 'NoteController/update/$1';
-$route['note/remove-attachment'] = 'NoteController/remove_attachment';
-$route['note/close'] = 'NoteController/close';
-$route['note/delete'] = 'NoteController/delete';
-$route['note/view/(:num)'] = 'NoteController/view/$1';
-$route['note/get-discussions'] = 'NoteController/get_discussions';
-$route['note/add-discussion'] = 'NoteController/add_discussion';
-$route['note/take-action'] = 'NoteController/take_action';
-
-
-// ✅ MAIN LEAVE MANAGEMENT ROUTES
-$route['leave'] = 'LeaveController/index';
-$route['leave/apply'] = 'LeaveController/applyLeave';
-$route['leave/get_by_id/(:num)'] = 'LeaveController/get_by_id/$1';
-$route['leave/update'] = 'LeaveController/updateLeave';
-$route['leave/take_action'] = 'LeaveController/take_action';
-$route['leave/delete/(:num)'] = 'LeaveController/delete/$1';
-
-// ✅ LEAVE CANCELLATION ROUTES
-$route['leave/cancel'] = 'LeaveController/cancel';
-$route['leave/cancel_action'] = 'LeaveController/cancel_action';
-$route['leave/get_cancellation_details/(:num)'] = 'LeaveController/get_cancellation_details/$1';
-
-// ✅ EXTRA DAY ROUTES (if needed)
-$route['extra-day-requests'] = 'ExtraDayController/index';
-$route['ro-extra-day-approval'] = 'ExtraDayController/ro_approval';
-
-$route['extra-day-requests'] = 'ExtraDayRequestController/index';
-$route['extra-day-requests/create'] = 'ExtraDayRequestController/create';
-$route['extra-day-requests/update/(:num)'] = 'ExtraDayRequestController/update/$1';
-$route['extra-day-requests/delete'] = 'ExtraDayRequestController/delete';
-$route['extra-day-requests/get/(:num)'] = 'ExtraDayRequestController/get_request/$1';
-
-$route['ro-extra-day-approval'] = 'ExtraDayRequestController/roIndex';
-$route['ro-extra-day-approval/action_request'] = 'ExtraDayRequestController/action_request';
-
-
-$route['request-issue'] = 'RequestIssueController/index';
-$route['request-issue/store'] = 'RequestIssueController/store';
-$route['request-issue/show/(:num)'] = 'RequestIssueController/show/$1';
-$route['request-issue/commentStore'] = 'RequestIssueController/commentStore';
-$route['request-issue/(:num)'] = 'RequestIssueController/fetch/$1';
-$route['request-issue/update_status'] = 'RequestIssueController/update_status';
-
-
-$route['finance'] = 'FinanceController/index';
-
-
-$route['casual-leave'] = 'CasualLeaveController/index';
-$route['casual-leave/save'] = 'CasualLeaveController/save';
-$route['casual-leave/get/(:num)'] = 'CasualLeaveController/get_grant/$1';
-$route['casual-leave/delete/(:num)'] = 'CasualLeaveController/delete/$1';
-
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['shrm/login'] = 'shrm_controllers/LoginController/index';
+$route['shrm/login/authenticate'] = 'shrm_controllers/LoginController/authenticate';
+$route['shrm/logout'] = 'shrm_controllers/LoginController/logout';
+$route['shrm/dashboard'] = 'shrm_controllers/DashboardController/index';
+$route['shrm/test'] = 'shrm_controllers/DashboardController/test';
+
+$route['project-staff'] = 'shrm_controllers/ProjectStaffController/index';
+$route['project-staff/create'] = 'shrm_controllers/ProjectStaffController/create';
+$route['project-staff/store'] = 'shrm_controllers/ProjectStaffController/store';
+$route['project-staff/edit/(:num)'] = 'shrm_controllers/ProjectStaffController/edit/$1';
+$route['project-staff/update/(:num)'] = 'shrm_controllers/ProjectStaffController/update/$1';
+$route['project-staff/toggle-status'] = 'shrm_controllers/ProjectStaffController/toggle_status';
+$route['project-staff/show/(:num)'] = 'shrm_controllers/ProjectStaffController/show/$1';
+$route['project-staff/renewal-contract/(:num)'] = 'shrm_controllers/ProjectStaffController/renewContract/$1';
+
+
+$route['holiday'] = 'shrm_controllers/HolidayController/index';
+$route['holiday/(:num)'] = 'shrm_controllers/HolidayController/index/$1';
+
+$route['work-progress'] = 'shrm_controllers/EvaluationController/index';
+$route['work-progress/create'] = 'shrm_controllers/EvaluationController/create';
+$route['work-progress/store'] = 'shrm_controllers/EvaluationController/store';
+$route['work-progress/edit/(:any)'] = 'shrm_controllers/EvaluationController/edit/$1';
+$route['work-progress/update/(:num)'] = 'shrm_controllers/EvaluationController/update/$1';
+$route['work-progress/view/(:any)'] = 'shrm_controllers/EvaluationController/show/$1';
+$route['work-progress/update_status'] = 'shrm_controllers/EvaluationController/update_status';
+
+
+$route['work-progress/comments/(:any)'] = 'shrm_controllers/EvaluationController/comments/$1';
+$route['work-progress/add_comment'] = 'shrm_controllers/EvaluationController/add_comment';
+$route['work-progress/get_comments'] = 'shrm_controllers/EvaluationController/get_comments';
+
+$route['note'] = 'shrm_controllers/NoteController/index';
+$route['note/create'] = 'shrm_controllers/NoteController/create';
+$route['note/store'] = 'shrm_controllers/NoteController/store';
+$route['note/edit/(:num)'] = 'shrm_controllers/NoteController/edit/$1';
+$route['note/update/(:num)'] = 'shrm_controllers/NoteController/update/$1';
+$route['note/remove-attachment'] = 'shrm_controllers/NoteController/remove_attachment';
+$route['note/close'] = 'shrm_controllers/NoteController/close';
+$route['note/delete'] = 'shrm_controllers/NoteController/delete';
+$route['note/view/(:num)'] = 'shrm_controllers/NoteController/view/$1';
+$route['note/get-discussions'] = 'shrm_controllers/NoteController/get_discussions';
+$route['note/add-discussion'] = 'shrm_controllers/NoteController/add_discussion';
+$route['note/take-action'] = 'shrm_controllers/NoteController/take_action';
+
+
+$route['leave'] = 'shrm_controllers/LeaveController/index';
+$route['leave/apply'] = 'shrm_controllers/LeaveController/applyLeave';
+$route['leave/get_by_id/(:num)'] = 'shrm_controllers/LeaveController/get_by_id/$1';
+$route['leave/update'] = 'shrm_controllers/LeaveController/updateLeave';
+$route['leave/take_action'] = 'shrm_controllers/LeaveController/take_action';
+$route['leave/delete/(:num)'] = 'shrm_controllers/LeaveController/delete/$1';
+
+$route['leave/cancel'] = 'shrm_controllers/LeaveController/cancel';
+$route['leave/cancel_action'] = 'shrm_controllers/LeaveController/cancel_action';
+$route['leave/get_cancellation_details/(:num)'] = 'shrm_controllers/LeaveController/get_cancellation_details/$1';
+
+$route['extra-day-requests'] = 'shrm_controllers/ExtraDayController/index';
+$route['ro-extra-day-approval'] = 'shrm_controllers/ExtraDayController/ro_approval';
+
+$route['extra-day-requests'] = 'shrm_controllers/ExtraDayRequestController/index';
+$route['extra-day-requests/create'] = 'shrm_controllers/ExtraDayRequestController/create';
+$route['extra-day-requests/update/(:num)'] = 'shrm_controllers/ExtraDayRequestController/update/$1';
+$route['extra-day-requests/delete'] = 'shrm_controllers/ExtraDayRequestController/delete';
+$route['extra-day-requests/get/(:num)'] = 'shrm_controllers/ExtraDayRequestController/get_request/$1';
+
+$route['ro-extra-day-approval'] = 'shrm_controllers/ExtraDayRequestController/roIndex';
+$route['ro-extra-day-approval/action_request'] = 'shrm_controllers/ExtraDayRequestController/action_request';
+
+$route['request-issue'] = 'shrm_controllers/RequestIssueController/index';
+$route['request-issue/store'] = 'shrm_controllers/RequestIssueController/store';
+$route['request-issue/show/(:num)'] = 'shrm_controllers/RequestIssueController/show/$1';
+$route['request-issue/commentStore'] = 'shrm_controllers/RequestIssueController/commentStore';
+$route['request-issue/(:num)'] = 'shrm_controllers/RequestIssueController/fetch/$1';
+$route['request-issue/update_status'] = 'shrm_controllers/RequestIssueController/update_status';
+
+$route['shrm/finance'] = 'shrm_controllers/FinanceController/index';
+$route['shrm/finance/store'] = 'shrm_controllers/FinanceController/store';
+
+$route['casual-leave'] = 'shrm_controllers/CasualLeaveController/index';
+$route['casual-leave/save'] = 'shrm_controllers/CasualLeaveController/save';
+$route['casual-leave/get/(:num)'] = 'shrm_controllers/CasualLeaveController/get_grant/$1';
+$route['casual-leave/delete/(:num)'] = 'shrm_controllers/CasualLeaveController/delete/$1';
+
+$route['profile'] = 'shrm_controllers/ProfileController/index';
+$route['profile/update'] = 'shrm_controllers/ProfileController/update';
+$route['update-phone'] = 'shrm_controllers/ProfileController/update_phone';
+$route['change-password'] = 'shrm_controllers/ProfileController/changePassword';
+$route['change-update'] = 'shrm_controllers/ProfileController/update_password';
+
+// Activity Module Routes
+$route['activity'] = 'shrm_controllers/ActivityController/index';
+$route['activity/store'] = 'shrm_controllers/ActivityController/store';
+$route['activity/update'] = 'shrm_controllers/ActivityController/update';
+$route['activity/delete'] = 'shrm_controllers/ActivityController/delete';
+$route['activity/restore'] = 'shrm_controllers/ActivityController/restore';
+$route['activity/get_activity'] = 'shrm_controllers/ActivityController/get_activity';
+
+$route['project'] = 'shrm_controllers/ProjectController/index';
+$route['project/index'] = 'shrm_controllers/ProjectController/index';
+$route['project/store'] = 'shrm_controllers/ProjectController/store';
+$route['project/update'] = 'shrm_controllers/ProjectController/update';
+$route['project/delete'] = 'shrm_controllers/ProjectController/delete';
+$route['project/restore'] = 'shrm_controllers/ProjectController/restore';
+$route['project/get_project'] = 'shrm_controllers/ProjectController/get_project';
