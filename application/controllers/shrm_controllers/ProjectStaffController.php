@@ -11,7 +11,9 @@ class ProjectStaffController extends CI_Controller
         }
         $this->load->model('shrm_models/ProjectStaff', 'ProjectStaff');
         $this->load->model('shrm_models/User', 'User');
-        $this->shrm = $this->load->database('shrm', TRUE);
+		$this->load->model('shrm_models/ProjectStaff', 'ProjectStaff');
+		$this->load->model('shrm_models/Project', 'Project');
+		$this->shrm = $this->load->database('shrm', TRUE);
         $this->load->library('upload');
         $this->load->library('form_validation');
     }
@@ -35,6 +37,7 @@ class ProjectStaffController extends CI_Controller
     public function create()
     {
         $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
+		$data['projects'] = $this->Project->get_projects();
         $this->load->view('shrm_views/pages/project_staff/create', $data);
     }
 
@@ -235,6 +238,7 @@ class ProjectStaffController extends CI_Controller
                 redirect('project-staff');
             }
             $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
+			$data['projects'] = $this->Project->get_projects();
             $data['assets'] = $this->ProjectStaff->get_assets_by_id($id);
             $data['selectedReportingOfficer'] = $this->ProjectStaff->getSelectedReportingOfficer($id);
             $data['contract'] = $this->User->getContractByUserId($id);
@@ -421,6 +425,7 @@ class ProjectStaffController extends CI_Controller
 //                $this->session->set_flashdata('error', 'Error: Contract details not found.');
 //                redirect('project-staff');
 //            }
+			$data['projects'] = $this->Project->get_projects();
             $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
             $this->load->view('shrm_views/pages/project_staff/show', $data);
         } catch (\Exception $e) {
@@ -438,7 +443,7 @@ class ProjectStaffController extends CI_Controller
             $this->form_validation->set_rules('end_date', 'End Date', 'required');
             $this->form_validation->set_rules('salary', 'Salary', 'required|numeric|greater_than[0]');
             $this->form_validation->set_rules('location', 'Location', 'required');
-            $this->form_validation->set_rules('project', 'Project', 'required');
+            $this->form_validation->set_rules('project_name', 'project name', 'required');
             $this->form_validation->set_rules('status', 'Status', 'required|in_list[active,pending,completed]');
 
             if ($this->form_validation->run() === FALSE) {
@@ -495,7 +500,7 @@ class ProjectStaffController extends CI_Controller
                 'offer_latter' => $filename,
                 'salary' => $this->input->post('salary'),
                 'location' => $this->input->post('location'),
-                'project_name' => $this->input->post('project'),
+                'project_name' => $this->input->post('project_name'),
                 'status' => $this->input->post('status'),
                 'created_at' => date('Y-m-d H:i:s')
             ];
