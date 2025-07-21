@@ -315,7 +315,14 @@ include('./application/views/shrm_views/pages/message.php');
                                                                 Cancellation
                                                             </a>
                                                         </li>
+
                                                     <?php endif; ?>
+                                                    <li>
+                                                        <a class="dropdown-item text-success"
+                                                           href="<?= base_url('shrm/leave/pfd/'.$leave->id) ?>">
+                                                            <i class="fas fa-file-pdf me-2"></i> Leave PDF
+                                                        </a>
+                                                    </li>
                                                 <?php endif; ?>
                                             </ul>
                                         </div>

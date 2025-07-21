@@ -54,6 +54,7 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['shrm/login'] = 'shrm_controllers/LoginController/index';
+$route['shrm/login/captcha'] = 'shrm_controllers/LoginController/captcha';
 $route['shrm/login/authenticate'] = 'shrm_controllers/LoginController/authenticate';
 $route['shrm/logout'] = 'shrm_controllers/LoginController/logout';
 $route['shrm/dashboard'] = 'shrm_controllers/DashboardController/index';
@@ -158,3 +159,9 @@ $route['project/update'] = 'shrm_controllers/ProjectController/update';
 $route['project/delete'] = 'shrm_controllers/ProjectController/delete';
 $route['project/restore'] = 'shrm_controllers/ProjectController/restore';
 $route['project/get_project'] = 'shrm_controllers/ProjectController/get_project';
+
+$route['shrm/finance'] = 'shrm_controllers/FinanceController/index';
+$route['shrm/finance/store'] = 'shrm_controllers/FinanceController/store';
+$route['shrm/finance/store_other_document'] = 'shrm_controllers/FinanceController/store_other_document';
+
+$route['shrm/leave/pfd/(:num)'] = 'shrm_controllers/LeaveController/leavePDF/$1';

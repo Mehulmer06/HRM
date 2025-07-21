@@ -228,6 +228,38 @@ class Leave extends CI_Model
             'days' => $days
         ];
     }
+    public function getByIdLeavePDF($id)
+    {
+        // 1) Get leave request with user info
+        $this->shrm->select('lr.*, u.name, u.employee_id, u.signature, u.reporting_officer_name,u.department');
+        $this->shrm->from('leave_requests lr');
+        $this->shrm->join('users u', 'u.id = lr.user_id', 'left');
+        $this->shrm->where('lr.id', $id);
+        $leave = $this->shrm->get()->row();
+
+        // 2) Get leave_request_days entries (excluding cancelled)
+        $this->shrm->from('leave_request_days');
+        $this->shrm->where('leave_request_id', $id);
+        $this->shrm->where('is_canceled !=', 'y');
+        $days = $this->shrm->get()->result();
+
+        // 3) Get the latest contract_details for this user
+        $this->shrm->select('designation, join_date, end_date, contract_month, project_name, salary, location, offer_latter, status');
+        $this->shrm->from('contract_details');
+        $this->shrm->where('user_id', $leave->user_id);
+        // you can choose to order by created_at or id; here we use created_at desc:
+        $this->shrm->order_by('created_at', 'DESC');
+        $this->shrm->limit(1);
+        $contract = $this->shrm->get()->row();
+
+        // 4) Return everything in one object
+        return (object)[
+            'leave'    => $leave,
+            'days'     => $days,
+            'contract' => $contract
+        ];
+    }
+
 
     public function revertUsedDays($leaveId)
     {
@@ -558,24 +590,32 @@ class Leave extends CI_Model
     public function get_todays_out_of_office()
     {
         $today = date('Y-m-d');
-
-        $this->shrm->select('u.employee_id, u.name, lr.total_days, lrd.leave_date, lrd.day_type, lrd.half_type, cd.designation, cd.join_date, cd.end_date, cd.project_name, cd.salary, cd.location');
+        $ro_id = '';
+        if($this->session->userdata('role') === 'employee'){
+            $ro_id = $this->session->userdata('ro_id');
+        }else{
+            $ro_id = $this->session->userdata('user_id');
+        }
+        $this->shrm->select('u.employee_id, u.name, lrd.leave_date, lrd.day_type, lrd.half_type, cd.designation');
+        $this->shrm->distinct();
         $this->shrm->from('leave_request_days lrd');
         $this->shrm->join('leave_requests lr', 'lr.id = lrd.leave_request_id');
         $this->shrm->join('users u', 'u.id = lr.user_id');
-        $this->shrm->join('(SELECT * FROM contract_details WHERE id IN (SELECT MAX(id) FROM contract_details GROUP BY user_id)) cd', 'cd.user_id = u.id', 'left');
+        $this->shrm->join('contract_details cd', 'cd.user_id = u.id', 'left');
 
         $this->shrm->where('lr.status', 'approved');
         $this->shrm->where('lrd.is_canceled', 'n');
         $this->shrm->where('u.status', 'Y');
-        $this->shrm->where('u.reporting_officer_id', $this->session->userdata('user_id'));
+        $this->shrm->where('lr.reporting_officer_id', $ro_id);
 
+        // Check for approved cancellation requests
         $this->shrm->where('NOT EXISTS (SELECT 1 FROM leave_cancellation_requests lcr 
-        WHERE lcr.leave_request_id = lr.id 
-        AND lcr.status = "approved" 
-        AND (lcr.leave_request_day_id IS NULL OR lcr.leave_request_day_id = lrd.id))');
+WHERE lcr.leave_request_id = lr.id 
+AND lcr.status = "approved" 
+AND (lcr.leave_request_day_id IS NULL OR lcr.leave_request_day_id = lrd.id))');
 
         $this->shrm->order_by('u.name', 'ASC');
+        $this->shrm->order_by('lrd.leave_date', 'ASC');
 
         $query = $this->shrm->get();
         $results = $query->result_array();
@@ -587,28 +627,124 @@ class Leave extends CI_Model
                 $processed_results[$key] = [
                     'employee_id' => $row['employee_id'],
                     'name' => $row['name'],
-                    'total_days' => $row['total_days'],
+                    'total_days' => 0, // Initialize to 0, will calculate below
                     'nature' => 'Leave',
                     'designation' => $row['designation'],
-                    'join_date' => $row['join_date'],
-                    'end_date' => $row['end_date'],
-                    'project_name' => $row['project_name'],
-                    'salary' => $row['salary'],
-                    'location' => $row['location'],
                     'dates' => []
                 ];
             }
 
             $leave_details = ($row['day_type'] == 'full') ? 'Full Day' : 'Half Day (' . ucfirst(str_replace('_', ' ', $row['half_type'])) . ')';
 
-            $processed_results[$key]['dates'][] = [
-                'leave_date' => $row['leave_date'],
-                'leave_details' => $leave_details
-            ];
+            // Check if this date already exists to prevent duplicates
+            $date_exists = false;
+            foreach ($processed_results[$key]['dates'] as $existing_date) {
+                if ($existing_date['leave_date'] == $row['leave_date']) {
+                    $date_exists = true;
+                    break;
+                }
+            }
+
+            // Only add if date doesn't already exist
+            if (!$date_exists) {
+                $processed_results[$key]['dates'][] = [
+                    'leave_date' => $row['leave_date'],
+                    'leave_details' => $leave_details
+                ];
+
+                // Calculate total days: full day = 1, half day = 0.5
+                $day_value = ($row['day_type'] == 'full') ? 1 : 0.5;
+                $processed_results[$key]['total_days'] += $day_value;
+            }
+        }
+
+        // Format total_days to show .00 for whole numbers
+        foreach ($processed_results as &$result) {
+            $result['total_days'] = number_format($result['total_days'], 2);
         }
 
         return array_values($processed_results);
     }
 
+// Fixed get_upcoming_leave function
+    public function get_upcoming_leave()
+    {
+        $today = date('Y-m-d');
+        $end_date = date('Y-m-d', strtotime('+30 days'));
 
+        // Get all upcoming leave days for employees
+        $this->shrm->select('u.employee_id, u.name, lr.start_date, lrd.leave_date, lrd.day_type, lrd.half_type, cd.designation');
+        $this->shrm->distinct();
+        $this->shrm->from('leave_request_days lrd');
+        $this->shrm->join('leave_requests lr', 'lr.id = lrd.leave_request_id');
+        $this->shrm->join('users u', 'u.id = lr.user_id');
+        $this->shrm->join('contract_details cd', 'cd.user_id = u.id', 'left');
+
+        $this->shrm->where('lr.status', 'approved');
+        $this->shrm->where('lrd.is_canceled', 'n');
+        $this->shrm->where('u.status', 'Y');
+        $this->shrm->where('lr.reporting_officer_id', $this->session->userdata('user_id'));
+        $this->shrm->where('lrd.leave_date >', $today);
+        $this->shrm->where('lrd.leave_date <=', $end_date);
+
+        // Check for approved cancellation requests
+        $this->shrm->where('NOT EXISTS (SELECT 1 FROM leave_cancellation_requests lcr 
+WHERE lcr.leave_request_id = lr.id 
+AND lcr.status = "approved" 
+AND (lcr.leave_request_day_id IS NULL OR lcr.leave_request_day_id = lrd.id))');
+
+        $this->shrm->order_by('lr.start_date', 'ASC');
+        $this->shrm->order_by('u.name', 'ASC');
+        $this->shrm->order_by('lrd.leave_date', 'ASC');
+
+        $query = $this->shrm->get();
+        $results = $query->result_array();
+
+        $processed_results = [];
+        foreach ($results as $row) {
+            $key = $row['employee_id'] . '_' . $row['start_date'];
+
+            if (!isset($processed_results[$key])) {
+                $processed_results[$key] = [
+                    'employee_id' => $row['employee_id'],
+                    'name' => $row['name'],
+                    'total_days' => 0, // Initialize to 0, will calculate below
+                    'nature' => 'Leave',
+                    'designation' => $row['designation'],
+                    'start_date' => $row['start_date'],
+                    'dates' => []
+                ];
+            }
+
+            $leave_details = ($row['day_type'] == 'full') ? 'Full Day' : 'Half Day (' . ucfirst(str_replace('_', ' ', $row['half_type'])) . ')';
+
+            // Check if this date already exists to prevent duplicates
+            $date_exists = false;
+            foreach ($processed_results[$key]['dates'] as $existing_date) {
+                if ($existing_date['leave_date'] == $row['leave_date']) {
+                    $date_exists = true;
+                    break;
+                }
+            }
+
+            // Only add if date doesn't already exist
+            if (!$date_exists) {
+                $processed_results[$key]['dates'][] = [
+                    'leave_date' => $row['leave_date'],
+                    'leave_details' => $leave_details
+                ];
+
+                // Calculate total days: full day = 1, half day = 0.5
+                $day_value = ($row['day_type'] == 'full') ? 1 : 0.5;
+                $processed_results[$key]['total_days'] += $day_value;
+            }
+        }
+
+        // Format total_days to show .00 for whole numbers
+        foreach ($processed_results as &$result) {
+            $result['total_days'] = number_format($result['total_days'], 2);
+        }
+
+        return array_values($processed_results);
+    }
 }
