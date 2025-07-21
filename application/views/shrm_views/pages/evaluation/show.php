@@ -104,6 +104,24 @@
             </div>
         </div>
     </div>
+    <!-- Project Field -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <label class="form-label">Project</label>
+            <p class="form-value">
+                <?= htmlspecialchars($evaluation->project_name ?? 'N/A') ?>
+            </p>
+        </div>
+
+        <!-- Activity Field -->
+        <div class="col-md-6">
+            <label class="form-label">Activity</label>
+            <p class="form-value">
+                <?= htmlspecialchars($evaluation->name ?? 'N/A') ?>
+            </p>
+        </div>
+    </div>
+
 </div>
 
 <!-- Assigned Users - Card Layout -->

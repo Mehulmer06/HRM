@@ -12,17 +12,47 @@ class EvaluationController extends CI_Controller
         $this->shrm = $this->load->database('shrm', TRUE);
         $this->load->model('shrm_models/Evaluation', 'Evaluation');
         $this->load->model('shrm_models/User', 'User');
+        $this->load->model('shrm_models/Project', 'Project');
+        $this->load->model('shrm_models/Activity', 'Activity');
     }
 
     public function index()
     {
-        $data['evaluations'] = $this->Evaluation->getAllEvaluations();
+        if ($this->session->userdata('role') === 'employee') {
+            $user_id = $this->session->userdata('user_id');
+            $data['counts'] = $this->Evaluation->getUserCounts($user_id);
+        }
+
+        $data['activity'] = $this->Activity->getActiveActivities();
+
+        // Get filter parameters for dynamic filtering
+        $filters = array(
+            'filter_project' => $this->input->get('filter_project'),
+            'filter_activity' => $this->input->get('filter_activity'),
+            'filter_priority' => $this->input->get('filter_priority'),
+            'filter_status' => $this->input->get('filter_status'),
+            'start_date' => $this->input->get('start_date'),
+            'end_date' => $this->input->get('end_date')
+        );
+
+        // Pass filters to the model
+        $data['evaluations'] = $this->Evaluation->getAllEvaluations($filters);
+
+        // Get projects and activities for filter dropdowns (only for role 'e' with category 'e')
+        if ($this->session->userdata('role') === 'e' && $this->session->userdata('category') === 'e') {
+            $data['projects'] = $this->Project->getActiveProjects(); // You might need to create this method
+            $data['activities'] = $this->Activity->getActiveActivities();
+        }
+
         $this->load->view('shrm_views/pages/evaluation/index', $data);
     }
+
 
     public function create()
     {
         $data['users'] = $this->User->get_users_with_latest_contract();
+        $data['projects'] = $this->Project->getActiveProjects();
+        $data['activity'] = $this->Activity->getActiveActivities();
         $this->load->view('shrm_views/pages/evaluation/create', $data);
     }
 
@@ -32,6 +62,8 @@ class EvaluationController extends CI_Controller
         $this->form_validation->set_rules('description', 'Description', 'required');
         $this->form_validation->set_rules('assign_users[]', 'Assigned Users', 'required');
         $this->form_validation->set_rules('category', 'Category', 'required|in_list[routine,urgent,addon,support]');
+        $this->form_validation->set_rules('project_id', 'Project', 'required');
+        $this->form_validation->set_rules('activity_id', 'Activity', 'required');
 
         $this->form_validation->set_message([
             'required' => 'Please enter {field}',
@@ -41,6 +73,8 @@ class EvaluationController extends CI_Controller
 
         if ($this->form_validation->run() === FALSE) {
             $data['users'] = $this->User->get_users_with_latest_contract();
+            $data['projects'] = $this->Project->getActiveProjects();
+            $data['activity'] = $this->Activity->getActiveActivities();
             $data['validation_errors'] = validation_errors(); // optional
             $this->load->view('shrm_views/pages/evaluation/create', $data);
             return;
@@ -54,7 +88,8 @@ class EvaluationController extends CI_Controller
         // Assume current logged-in user is the reporting officer
         $reportingOfficerId = $this->session->userdata('user_id');
         $reportingOfficerName = $this->session->userdata('name');
-
+        $projectId = $this->input->post('project_id');
+        $activityId = $this->input->post('activity_id');
         // Insert evaluation
         $evaluationData = [
             'title' => $title,
@@ -62,6 +97,8 @@ class EvaluationController extends CI_Controller
             'reporting_officer_id' => $reportingOfficerId,
             'reporting_officer_name' => $reportingOfficerName,
             'category' => $category,
+            'project_id' => $projectId,
+            'activity_id' => $activityId,
             'status' => 'pending'
         ];
 
@@ -73,6 +110,8 @@ class EvaluationController extends CI_Controller
             if (!is_dir($full_path)) {
                 if (!mkdir($full_path, 0755, true)) {
                     $data['users'] = $this->User->get_users_with_latest_contract();
+                    $data['projects'] = $this->Project->getActiveProjects();
+                    $data['activity'] = $this->Activity->getActiveActivities();
                     $data['upload_error'] = 'Failed to create upload directory. Please check permissions.';
                     $this->load->view('shrm_views/pages/evaluation/create', $data);
                     return;
@@ -82,6 +121,8 @@ class EvaluationController extends CI_Controller
             // Verify directory is writable
             if (!is_writable($full_path)) {
                 $data['users'] = $this->User->get_users_with_latest_contract();
+                $data['projects'] = $this->Project->getActiveProjects();
+                $data['activity'] = $this->Activity->getActiveActivities();
                 $data['upload_error'] = 'Upload directory is not writable. Please check permissions.';
                 $this->load->view('shrm_views/pages/evaluation/create', $data);
                 return;
@@ -105,6 +146,8 @@ class EvaluationController extends CI_Controller
             } else {
                 // Handle upload error
                 $data['users'] = $this->User->get_users_with_latest_contract();
+                $data['projects'] = $this->Project->getActiveProjects();
+                $data['activity'] = $this->Activity->getActiveActivities();
                 $data['upload_error'] = $this->upload->display_errors();
                 $this->load->view('shrm_views/pages/evaluation/create', $data);
                 return;
@@ -141,9 +184,10 @@ class EvaluationController extends CI_Controller
         $data = [
             'evaluation' => $evaluation,
             'assigned_user_ids' => array_column($assigned, 'user_id'),
-            'users' => $this->User->get_users_with_latest_contract()
+            'users' => $this->User->get_users_with_latest_contract(),
+            'projects' => $this->Project->getActiveProjects(),
+            'activity' => $this->Activity->getActiveActivities(),
         ];
-
         $this->load->view('shrm_views/pages/evaluation/edit', $data);
     }
 
@@ -154,6 +198,8 @@ class EvaluationController extends CI_Controller
         $this->form_validation->set_rules('description', 'Description', 'required');
         $this->form_validation->set_rules('assign_users[]', 'Assigned Users', 'required');
         $this->form_validation->set_rules('category', 'Category', 'required|in_list[routine,urgent,addon,support]');
+        $this->form_validation->set_rules('project_id', 'Project', 'required');
+        $this->form_validation->set_rules('activity_id', 'Activity', 'required');
 
         $this->form_validation->set_message([
             'required' => 'Please enter {field}',
@@ -182,6 +228,8 @@ class EvaluationController extends CI_Controller
             'title' => $this->input->post('title'),
             'description' => $this->input->post('description'),
             'category' => $this->input->post('category'),
+            'project_id' => $this->input->post('project_id'),
+            'activity_id' => $this->input->post('activity_id'),
             'updated_at' => date('Y-m-d H:i:s')
         ];
 
@@ -262,7 +310,6 @@ class EvaluationController extends CI_Controller
         redirect('work-progress');
     }
 
-    // 3) in shrm_controllers/EvaluationController.php
     public function show($encodedId)
     {
         $originalId = $this->decryptId($encodedId);

@@ -143,6 +143,39 @@ include('./application/views/shrm_views/pages/message.php');
                     <option value="support" <?= ($evaluation->category == 'support') ? 'selected' : '' ?>>Support</option>
                 </select>
             </div>
+
+            <!-- Project Field -->
+            <div class="col-md-6 mb-4">
+                <label for="project_id" class="form-label">Project <span class="text-danger">*</span></label>
+                <select name="project_id" id="project_id" class="form-select <?= form_error('project_id') ? 'is-invalid' : '' ?>">
+                    <option value="">Select Project</option>
+                    <?php foreach ($projects as $project): ?>
+                        <option value="<?= $project['id'] ?>" <?= set_select('project_id', $project['id'], $project['id'] == $evaluation->project_id) ?>>
+                            <?= htmlspecialchars($project['project_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (form_error('project_id')): ?>
+                    <div class="invalid-feedback"><?= form_error('project_id') ?></div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Activity Field -->
+            <div class="col-md-6 mb-4">
+                <label for="activity_id" class="form-label">Activity <span class="text-danger">*</span></label>
+                <select name="activity_id" id="activity_id" class="form-select <?= form_error('activity_id') ? 'is-invalid' : '' ?>">
+                    <option value="">Select Activity</option>
+                    <?php foreach ($activity as $act): ?>
+                        <option value="<?= $act['id'] ?>" <?= set_select('activity_id', $act['id'], $act['id'] == $evaluation->activity_id) ?>>
+                            <?= htmlspecialchars($act['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (form_error('activity_id')): ?>
+                    <div class="invalid-feedback"><?= form_error('activity_id') ?></div>
+                <?php endif; ?>
+            </div>
+
         </div>
 
 
@@ -200,7 +233,14 @@ include('./application/views/shrm_views/pages/message.php');
                 attachment: {
                     fileSize: 10485760, // 10MB in bytes
                     fileType: 'pdf|doc|docx|jpg|jpeg|png|xlsx|xls'
+                },
+                project_id: {
+                    required: true
+                },
+                activity_id: {
+                    required: true
                 }
+
             },
             messages: {
                 title: {
@@ -218,7 +258,14 @@ include('./application/views/shrm_views/pages/message.php');
                 attachment: {
                     fileSize: "File size must be less than 10MB",
                     fileType: "Please select a valid file type (PDF, DOC, DOCX, JPG, JPEG, PNG, XLS, XLSX)"
+                },
+                project_id: {
+                    required: "Please select a project"
+                },
+                activity_id: {
+                    required: "Please select an activity"
                 }
+
             },
             errorElement: 'span',
             errorClass: 'invalid-feedback',

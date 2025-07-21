@@ -134,6 +134,41 @@ include('./application/views/shrm_views/pages/message.php');
                     </option>
                 </select>
             </div>
+
+            <!-- Project Field -->
+            <div class="col-md-6 mb-4">
+                <label for="project_id" class="form-label">Project <span class="text-danger">*</span></label>
+                <select name="project_id" id="project_id"
+                        class="form-select <?= form_error('project_id') ? 'is-invalid' : '' ?>">
+                    <option value="">Select Project</option>
+                    <?php foreach ($projects as $project): ?>
+                        <option value="<?= $project['id'] ?>" <?= set_select('project_id', $project['id']) ?>>
+                            <?= htmlspecialchars($project['project_name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (form_error('project_id')): ?>
+                    <div class="invalid-feedback"><?= form_error('project_id') ?></div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Activity Field -->
+            <div class="col-md-6 mb-4">
+                <label for="activity_id" class="form-label">Activity <span class="text-danger">*</span></label>
+                <select name="activity_id" id="activity_id"
+                        class="form-select <?= form_error('activity_id') ? 'is-invalid' : '' ?>">
+                    <option value="">Select Activity</option>
+                    <?php foreach ($activity as $act): ?>
+                        <option value="<?= $act['id'] ?>" <?= set_select('activity_id', $act['id']) ?>>
+                            <?= htmlspecialchars($act['name']) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if (form_error('activity_id')): ?>
+                    <div class="invalid-feedback"><?= form_error('activity_id') ?></div>
+                <?php endif; ?>
+            </div>
+
         </div>
 
 
@@ -187,7 +222,13 @@ include('./application/views/shrm_views/pages/message.php');
                 description: {
                     summernoteRequired: true,
                     summernoteMinLength: 10
-                }
+                },
+                project_id: {
+                    required: true
+                },
+                activity_id: {
+                    required: true
+                },
             },
             messages: {
                 title: {
@@ -201,7 +242,13 @@ include('./application/views/shrm_views/pages/message.php');
                 description: {
                     summernoteRequired: "Please enter a description",
                     summernoteMinLength: "Description must be at least 10 characters long"
-                }
+                },
+                project_id: {
+                    required: "Please select a project"
+                },
+                activity_id: {
+                    required: "Please select an activity"
+                },
             },
             errorElement: 'span',
             errorClass: 'invalid-feedback',
