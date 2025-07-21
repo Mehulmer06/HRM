@@ -363,17 +363,17 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="modal_project" class="form-label">Project</label>
-                            <select class="form-select" id="modal_project" name="project">
-                                <option value="">Select Project</option>
-                                <option value="Shodhganga">Shodhganga</option>
-                                <option value="MOOCs">MOOCs</option>
-                                <option value="SOUL">SOUL</option>
-                                <option value="NIRF Project">NIRF Project</option>
-                                <option value="PDS">PDS</option>
-                            </select>
-                        </div>
+						<div class="col-md-6">
+							<label for="project_name" class="form-label">Assigned Project *</label>
+							<select class="form-select select2" id="project_name" name="project_name">
+								<option value="">Select Project</option>
+								<?php if (!empty($projects)): ?>
+									<?php foreach ($projects as $project): ?>
+										<option value="<?= $project->id ?>"><?= $project->project_name ?></option>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</select>
+						</div>
                         <div class="col-md-6 d-none">
                             <label for="modal_status" class="form-label">Status *</label>
                             <select class="form-select" id="modal_status" name="status" required>
@@ -448,7 +448,7 @@
                     min: 0
                 },
                 status: "required",
-                project: "required"
+				project_name: "required"
             },
             messages: {
                 offer_latter:"please upload offer latter",
@@ -463,7 +463,7 @@
                     min: "Salary must be positive"
                 },
                 status: "Please select a status",
-                project: "Please select a project",
+				project_name: "Please select a project",
 
             },
             errorElement: 'div',

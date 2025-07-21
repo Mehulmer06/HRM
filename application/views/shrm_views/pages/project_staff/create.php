@@ -11,8 +11,8 @@ include('./application/views/shrm_views/pages/message.php');
                 Add New Staff Member
             </h1>
             <nav class="breadcrumb-nav">
-                <a href="dashboard.html">Dashboard</a> /
-                <a href="project-staff-listing.html">Project Staff</a> /
+                <a href="<?= base_url('shrm/dashboard')?>">Dashboard</a> /
+                <a href="<?= base_url('project-staff')?>">Project Staff</a> /
                 <span class="text-muted">Add New</span>
             </nav>
         </div>
@@ -210,47 +210,20 @@ include('./application/views/shrm_views/pages/message.php');
             </div>
         </div>
         <div class="row form-row">
-            <div class="col-md-4">
-                <label for="project_name" class="form-label">Assigned Project *</label>
-                <select class="form-select select2" id="project_name" name="project_name">
-                    <option value="">Select Project</option>
-                    <option value="ARIIA" <?= set_select('project_name', 'ARIIA') ?>>ARIIA</option>
-                    <option value="Children University" <?= set_select('project_name', 'Children University') ?>>
-                        Children University
-                    </option>
-                    <option value="DTH Swayam Prabha" <?= set_select('project_name', 'DTH Swayam Prabha') ?>>DTH Swayam
-                        Prabha
-                    </option>
-                    <option value="E-Shodh Sindhu" <?= set_select('project_name', 'E-Shodh Sindhu') ?>>E-Shodh Sindhu
-                    </option>
-                    <option value="IR-DSpace" <?= set_select('project_name', 'IR-DSpace') ?>>IR-DSpace</option>
-                    <option value="IRINS" <?= set_select('project_name', 'IRINS') ?>>IRINS</option>
-                    <option value="INFLIBNET" <?= set_select('project_name', 'INFLIBNET') ?>>INFLIBNET</option>
-                    <option value="ISBN" <?= set_select('project_name', 'ISBN') ?>>ISBN</option>
-                    <option value="MOOCs" <?= set_select('project_name', 'MOOCs') ?>>MOOCs</option>
-                    <option value="NAAC" <?= set_select('project_name', 'NAAC') ?>>NAAC</option>
-                    <option value="NIRF Project" <?= set_select('project_name', 'NIRF Project') ?>>NIRF Project</option>
-                    <option value="PDS" <?= set_select('project_name', 'PDS') ?>>PDS</option>
-                    <option value="PSOU" <?= set_select('project_name', 'PSOU') ?>>PSOU</option>
-                    <option value="SASU" <?= set_select('project_name', 'SASU') ?>>SASU</option>
-                    <option value="Shodhganga" <?= set_select('project_name', 'Shodhganga') ?>>Shodhganga</option>
-                    <option value="SOUL" <?= set_select('project_name', 'SOUL') ?>>SOUL</option>
-                    <option value="Study In India" <?= set_select('project_name', 'Study In India') ?>>Study In India
-                    </option>
-                    <option value="Swayam Parbha" <?= set_select('project_name', 'Swayam Parbha') ?>>Swayam Parbha
-                    </option>
-                    <option value="TG Portal" <?= set_select('project_name', 'TG Portal') ?>>TG Portal</option>
-                    <option value="UGC-Deb" <?= set_select('project_name', 'UGC-Deb') ?>>UGC-Deb</option>
-                    <option value="e-Content" <?= set_select('project_name', 'e-Content') ?>>e-Content</option>
-                    <option value="e-Governance UGC" <?= set_select('project_name', 'e-Governance UGC') ?>>e-Governance
-                        UGC
-                    </option>
-                    <option value="e-NBA" <?= set_select('project_name', 'e-NBA') ?>>e-NBA</option>
-                    <option value="ONOS" <?= set_select('project_name', 'ONOS') ?>>ONOS</option>
-                </select>
+			<div class="col-md-4">
+				<label for="project_name" class="form-label">Assigned Project *</label>
+				<select class="form-select select2" id="project_name" name="project_name">
+					<option value="">Select Project</option>
+					<?php if (!empty($projects)): ?>
+						<?php foreach ($projects as $project): ?>
+							<option value="<?= $project->id ?>"><?= $project->project_name ?></option>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</select>
+			</div>
 
-            </div>
-            <div class="col-md-4">
+
+			<div class="col-md-4">
                 <label for="location" class="form-label">Location *</label>
                 <select class="form-select select2" id="location" name="location">
                     <option value="">Select location</option>
@@ -586,7 +559,7 @@ include('./application/views/shrm_views/pages/message.php');
                 },
             },
             errorElement: 'span',
-            errorClass: 'error',
+            errorClass: 'error text-danger',
             validClass: 'valid',
             errorPlacement: function (error, element) {
                 // Handle Select2 elements
