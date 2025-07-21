@@ -19,6 +19,10 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                         class="text-muted">Project Management</span>
             </nav>
         </div>
+		<a href="<?= base_url('shrm/dashboard') ?>" class="btn btn-secondary">
+			<i class="fas fa-arrow-left me-2"></i>
+			Back to List
+		</a>
     </div>
 </div>
 
