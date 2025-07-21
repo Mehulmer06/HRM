@@ -26,7 +26,7 @@
 <!-- Staff Profile Card -->
 <div class="detail-card">
     <div class="detail-header">
-        <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" class="detail-photo" alt="photo">
+        <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" class="detail-photo" alt="photo">
         <div class="detail-info">
             <h1><?= $user['name'] ?></h1>
             <p><?= $contract['designation'] ?> • <?= $user['department'] ?></p>
@@ -171,25 +171,36 @@
         </h3>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="info-item">
                     <div class="info-label">Profile Photo</div>
                     <div class="info-value">
-                        <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" alt="Profile Photo"
+                        <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" alt="Profile Photo"
                             style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;">
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="info-item">
                     <div class="info-label">Digital Signature</div>
                     <div class="info-value">
-                        <img src="<?= base_url('uploads/signature/' . $user['signature']) ?>" alt="Digital Signature"
-                            style="width: 120px; height: 40px; border-radius: 4px; border: 1px solid #dee2e6;">
+                        <img src="<?= base_url('upload/signature/' . $user['signature']) ?>" alt="Digital Signature"
+                            style="width: 80px; height: 40px; border-radius: 8px; object-fit: cover;">
                     </div>
                 </div>
             </div>
-        </div>
+			<div class="col-md-4">
+				<div class="info-item">
+					<div class="info-label">Offer Letter</div>
+					<div class="info-value">
+						<a href="<?= base_url('upload/offer_latter/' . $contract['offer_latter']) ?>" download
+						   style="text-decoration: none; color: #dc3545; font-size: 24px;">
+							<i class="fas fa-file-pdf"></i> Download Now
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
     </div>
 </div>
 
@@ -259,7 +270,7 @@
             </div>
             <div class="modal-body">
                 <form id="addContractForm" action="<?= base_url('project-staff/renewal-contract/') . $user['id']; ?>"
-                    method="POST">
+                    method="POST" enctype="multipart/form-data">
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="modal_designation" class="form-label">Designation *</label>
@@ -319,15 +330,19 @@
                                 <option value="PDS">PDS</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 d-none">
                             <label for="modal_status" class="form-label">Status *</label>
                             <select class="form-select" id="modal_status" name="status" required>
                                 <option value="">Select Status</option>
-                                <option value="active">Active</option>
+                                <option value="active" selected>Active</option>
                                 <option value="pending">Pending</option>
                                 <option value="completed">Completed</option>
                             </select>
                         </div>
+						<div class="col-md-6">
+							<label for="offer_latter" class="form-label">offer latter *</label>
+							<input type="file" class="form-control" id="offer_latter" name="offer_latter" accept="application/pdf">
+						</div>
                     </div>
                 </form>
             </div>
@@ -382,6 +397,7 @@
                 modal_month: "required",
                 end_date: "required",
                 location: "required",
+				offer_latter:"required",
                 salary: {
                     required: true,
                     number: true,
@@ -389,6 +405,7 @@
                 },
                 status: "required",
                 project: "required"
+
             },
             messages: {
                 modal_designation: "Please enter a designation",
@@ -403,6 +420,7 @@
                 },
                 status: "Please select a status",
                 project: "Please select a project",
+				offer_latter:"please upload offer latter"
 
             },
             errorElement: 'div',

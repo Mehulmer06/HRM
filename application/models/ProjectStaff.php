@@ -8,9 +8,14 @@ class ProjectStaff extends CI_Model
     }
     public function getUserList()
     {
-        $query = $this->db->get('users');
-        return $query->result();
-    }
+		$this->db->select('us.*,cd.designation,cd.offer_latter');
+		$this->db->from('users us');
+		$this->db->join('contract_details cd', 'us.id = cd.user_id', 'inner');
+		$this->db->where('cd.status', 'active');
+		$query = $this->db->get();
+		return $query->result();
+
+	}
     /**
      * Update user
      */

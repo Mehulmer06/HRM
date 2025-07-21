@@ -56,8 +56,8 @@
                 Edit New Staff Member
             </h1>
             <nav class="breadcrumb-nav">
-                <a href="dashboard.html">Dashboard</a> /
-                <a href="project-staff-listing.html">Project Staff</a> /
+                <a href="<?=base_url('dashboard')?>">Dashboard</a> /
+                <a href="<?=base_url('project-staff')?>">Project Staff</a> /
                 <span class="text-muted">Edit New</span>
             </nav>
         </div>
@@ -160,13 +160,18 @@
     <!-- Professional Information -->
     <div class="form-card">
         <h3 class="form-section-title"><i class="fas fa-briefcase"></i> Professional Information</h3>
+
+		<div class="col-md-12">
+			<label for="professional_email" class="form-label">Professional email *</label>
+			<input type="email" class="form-control" placeholder="enter profession email" name="professional_email" id="professional_email" value=" <?= set_value('professional_email', $user['professional_email'] ?? '') ?>"  />
+		</div>
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="department" class="form-label">Department *</label>
                 <select class="form-select select2" id="department" name="department">
                     <option value="">Select Department</option>
-                    <option value="library_science" <?= set_select('department', 'library_science', ($user['department'] ?? '') == 'library_science') ?>>Library Science</option>
-                    <option value="computer_science" <?= set_select('department', 'computer_science', ($user['department'] ?? '') == 'computer_science') ?>>Computer Science</option>
+                    <option value="library science" <?= set_select('department', 'library science', ($user['department'] ?? '') == 'library science') ?>>Library Science</option>
+                    <option value="computer science" <?= set_select('department', 'computer science', ($user['department'] ?? '') == 'computer science') ?>>Computer Science</option>
                 </select>
             </div>
             <div class="col-md-6">
@@ -251,7 +256,7 @@
                     <?php if (!empty($user['photo'])): ?>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" alt="Profile Photo"
+                                <img src="<?= base_url('upload/photo/' . $user['photo']) ?>" alt="Profile Photo"
                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
                                 <div>
                                     <div style="font-weight: 600; font-size: 14px;"><?= $user['photo'] ?></div>
@@ -284,7 +289,7 @@
                     <?php if (!empty($user['signature'])): ?>
                         <div class="d-flex align-items-center justify-content-between">
                             <div class="d-flex align-items-center">
-                                <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" alt="Digital Signature"
+                                <img src="<?= base_url('upload/signature/' . $user['signature']) ?>" alt="Digital Signature"
                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
                                 <div>
                                     <div style="font-weight: 600; font-size: 14px;"><?= $user['signature'] ?></div>
@@ -342,7 +347,7 @@
         </div>
 
         <div class="row form-row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="project_name" class="form-label">Assigned Project *</label>
                 <select class="form-select select2" id="project_name" name="project_name">
                     <option value="Shodhganga" <?= set_select('project_name', 'Shodhganga', ($contract['project_name'] ?? '') == 'Shodhganga') ?>>Shodhganga</option>
@@ -352,7 +357,7 @@
                     <option value="PDS" <?= set_select('project_name', 'PDS', ($contract['project_name'] ?? '') == 'PDS') ?>>PDS</option>
                 </select>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label for="location" class="form-label">Location *</label>
                 <select class="form-select select2" id="location" name="location">
                     <option value="INFLIBNET" <?= set_select('location', 'INFLIBNET', ($user['location'] ?? '') == 'INFLIBNET') ?>>INFLIBNET</option>
@@ -362,6 +367,39 @@
                     <option value="AIU New Delhi" <?= set_select('location', 'AIU New Delhi', ($contract['location'] ?? '') == 'AIU New Delhi') ?>>AIU New Delhi</option>
                 </select>
             </div>
+				<div class="col-md-4">
+					<label for="offer_latter" class="form-label">offer latter *</label>
+					<input type="file" class="form-control" id="offer_latter" name="offer_latter" <?= set_value('offer_latter',$contract['offer_latter']??'') ?>>
+					<div id="offer-preview" class="file-preview <?= !empty($contract['offer_latter']) ? 'show' : '' ?>">
+						<?php if (!empty($contract['offer_latter'])):
+							$file = $contract['offer_latter'];
+							$ext = pathinfo($file, PATHINFO_EXTENSION);
+							$isImage = in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif','pdf']);
+							$fileUrl = base_url('upload/offer_latter/' . $file);
+							?>
+							<div class="d-flex align-items-center justify-content-between">
+								<div class="d-flex align-items-center">
+									<?php if ($isImage): ?>
+										<img src="<?= $fileUrl ?>" alt="offer latter"
+											 style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 10px;">
+									<?php else: ?>
+										<div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; border-radius: 6px; margin-right: 10px;">
+											<i class="fas fa-file-pdf" style="font-size: 20px; color: red;"></i>
+										</div>
+									<?php endif; ?>
+									<div>
+										<div style="font-weight: 600; font-size: 14px;"><?= $file ?></div>
+									</div>
+								</div>
+								<button type="button" class="btn btn-sm btn-outline-danger" data-input="offer_latter"
+										data-preview="offer-preview">
+									<i class="fas fa-trash"></i>
+								</button>
+							</div>
+						<?php endif; ?>
+					</div>
+
+				</div>
         </div>
     </div>
 
@@ -493,6 +531,11 @@
                 location: {
                     required: true
                 },
+				offer_latter:{
+					required:true,
+					extension: "jpg|jpeg|png|pdf",
+					filesize: 2097152 // 2MB in bytes
+				},
                 photo: {
                     extension: "jpg|jpeg|png",
                     filesize: 2097152 // 2MB in bytes
@@ -571,6 +614,11 @@
                 location: {
                     required: "Please select a location"
                 },
+				offer_latter:{
+					required:"please upload offer latter",
+					extension: "Please select a valid image file (JPG, PNG,PDF)",
+					filesize: "File size must be less than 2MB"
+				},
                 photo: {
                     extension: "Please select a valid image file (JPG, PNG)",
                     filesize: "File size must be less than 2MB"
@@ -629,6 +677,11 @@
             // Trigger validation for file input
             $(this).valid();
         });
+		$('#offer_latter').on('change', function (e) {
+			handleFileUpload(e, 'offer-preview', 'Offer Latter');
+			// Trigger validation for file input
+			$(this).valid();
+		});
 
         function handleFileUpload(event, previewId, fileName) {
             const file = event.target.files[0];

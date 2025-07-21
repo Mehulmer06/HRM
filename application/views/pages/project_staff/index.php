@@ -26,7 +26,7 @@ $inactive_users = [];
 
 if (isset($users) && is_array($users)) {
     foreach ($users as $user) {
-        if ($user->status === 'Y') {
+        if ($user->status == 'Y') {
             $active_users[] = $user;
         } else {
             $inactive_users[] = $user;
@@ -132,7 +132,7 @@ $total_inactive = count($inactive_users);
                                             <div>
                                                 <p class="staff-name"><?php echo htmlspecialchars($user->name); ?></p>
                                                 <p class="staff-department">
-                                                    <?php echo !empty($user->role) ? htmlspecialchars($user->role) : 'Staff Member'; ?>
+                                                    <?php echo !empty($user->designation) ? htmlspecialchars($user->designation) : 'Staff Member'; ?>
                                                 </p>
                                             </div>
                                         </div>
@@ -208,6 +208,7 @@ $total_inactive = count($inactive_users);
                             <th>Staff</th>
                             <th>Mobile</th>
                             <th>Email</th>
+							<th>Designation</th>
                             <th>Department</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -239,7 +240,7 @@ $total_inactive = count($inactive_users);
                                             <div>
                                                 <p class="staff-name"><?php echo htmlspecialchars($user->name); ?></p>
                                                 <p class="staff-department">
-                                                    <?php echo !empty($user->role) ? 'Former ' . htmlspecialchars($user->role) : 'Former Staff Member'; ?>
+													<?php echo !empty($user->designation) ? htmlspecialchars($user->designation) : 'Former Staff Member'; ?>
                                                 </p>
                                             </div>
                                         </div>
