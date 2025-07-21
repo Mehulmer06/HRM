@@ -586,7 +586,7 @@ include('./application/views/shrm_views/pages/message.php');
                 },
             },
             errorElement: 'span',
-            errorClass: 'error',
+            errorClass: 'error text-danger',
             validClass: 'valid',
             errorPlacement: function (error, element) {
                 // Handle Select2 elements

@@ -7,6 +7,23 @@
     <link href="<?= base_url('asset/shrm/vendor/bootstrap/bootstrap.min.css') ?>" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="<?= base_url('asset/shrm/css/style.css') ?>" rel="stylesheet">
+    <style>
+        .captcha-image {
+            height: 50px;
+            width: 150px;
+        }
+
+        .captcha-refresh {
+            border: none;
+            background: none;
+            color: #007bff;
+            font-size: 18px;
+        }
+
+        .captcha-refresh:hover {
+            color: #0056b3;
+        }
+    </style>
 </head>
 <body class="auth-body">
 <div class="login-container">
@@ -50,7 +67,7 @@
                 'hash' => $this->security->get_csrf_hash()
             );
             ?>
-            <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
+            <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>"/>
             <div class="form-group">
                 <label for="email" class="form-label">
                     <i class="fas fa-envelope me-2"></i>
@@ -75,12 +92,32 @@
                 </div>
             </div>
 
-            <div class="form-options">
-<!--                <div class="form-check">-->
-<!--                    <input type="checkbox" class="form-check-input" id="remember">-->
-<!--                    <label class="form-check-label" for="remember">Remember me</label>-->
-<!--                </div>-->
-<!--                <a href="forgot.html" class="forgot-link">Forgot password?</a>-->
+            <!-- Math Captcha -->
+            <!-- Math Captcha -->
+            <div class="form-group">
+                <label for="captcha" class="form-label">
+                    <i class="fas fa-calculator me-2"></i>
+                    Security Check
+                </label>
+                <div class="row align-items-center g-2">
+                    <div class="col-auto">
+                        <img src="<?= base_url('shrm/login/captcha') ?>" id="captcha-image"
+                             class="captcha-image border rounded bg-light" alt="Math Captcha">
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="captcha-refresh btn btn-link p-2" onclick="refreshCaptcha()"
+                                title="Refresh Captcha">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="col-auto">
+                        <div class="input-wrapper">
+                            <input type="number" class="form-control text-center" name="captcha" id="captcha"
+                                   placeholder="Answer" required style="width: 100px;">
+                            <div class="error-message">Please solve the math problem</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <button type="submit" class="login-btn" id="loginBtn">
@@ -95,6 +132,12 @@
 <script src="<?= base_url('asset/shrm/vendor/jquery_validate/jquery.validate.min.js') ?>"></script>
 <script src="<?= base_url('asset/shrm/vendor/bootstrap/bootstrap.bundle.min.js') ?>"></script>
 <script>
+    function refreshCaptcha() {
+        const captchaImage = document.getElementById('captcha-image');
+        captchaImage.src = '<?= base_url('shrm/login/captcha') ?>?' + Math.random();
+        document.getElementById('captcha').value = '';
+    }
+
     $(document).ready(function () {
         // Auto-dismiss alerts after 5 seconds
         setTimeout(function () {
@@ -111,6 +154,10 @@
                 password: {
                     required: true,
                     minlength: 6
+                },
+                captcha: {
+                    required: true,
+                    number: true
                 }
             },
             messages: {
@@ -121,6 +168,10 @@
                 password: {
                     required: "Password is required",
                     minlength: "Password must be at least 6 characters"
+                },
+                captcha: {
+                    required: "Please solve the math problem",
+                    number: "Please enter a valid number"
                 }
             },
             errorClass: "error-message",
@@ -156,6 +207,13 @@
                 $(this).parent('.input-wrapper').removeClass('show-error');
             }
         });
+
+        // Refresh captcha on failed login
+        <?php if ($this->session->flashdata('error')): ?>
+        setTimeout(function () {
+            refreshCaptcha();
+        }, 1000);
+        <?php endif; ?>
     });
 </script>
 </body>

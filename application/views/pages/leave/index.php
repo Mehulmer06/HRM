@@ -367,6 +367,12 @@ include('./application/views/pages/message.php');
                                                             Cancellation
                                                         </a>
                                                     </li>
+                                                    <li>
+                                                        <a class="dropdown-item text-success" href="#"
+                                                           onclick="openCancelModal(<?= $leave->id ?>)">
+                                                            <i class="fas fa-file-pdf me-2"></i> Leave PDF
+                                                        </a>
+                                                    </li>
                                                 <?php endif; ?>
                                             </ul>
                                         </div>

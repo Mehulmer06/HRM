@@ -245,17 +245,14 @@ class LeaveController extends CI_Controller
         redirect('leave');
     }
 
-    // ✅ UPDATED get_by_id method in LeaveController.php
     public function get_by_id($id)
     {
-        $this->load->model('Leave');
         $result = $this->Leave->getById($id);
 
         if ($result && $result->leave) {
-            // ✅ Get canceled days using model method
+
             $canceled_days = $this->Leave->getCanceledDays($id);
 
-            // ✅ Format canceled days for display
             $formatted_cancelled_days = [];
             foreach ($canceled_days as $day) {
                 $formatted_cancelled_days[] = [
@@ -795,6 +792,45 @@ class LeaveController extends CI_Controller
 
             // Recalculate leave totals
             $this->Leave->recalculateLeaveTotal($leaveId);
+        }
+    }
+
+    public function leavePDF($id)
+    {
+        $data = $this->Leave->getByIdLeavePDf($id);
+
+        // Check if data exists
+        if (!$data || !isset($data->leave)) {
+            show_error('Leave record not found', 404, 'Leave Not Found');
+            return;
+        }
+
+        // Optional: Debug - uncomment to see data structure
+//         echo "<pre>";
+//        print_r($data);
+//        exit();
+
+        // Load the Pdf library
+        $this->load->library('pdf');
+
+        // Prepare filename
+        $employee_name = !empty($data->leave->name)
+            ? preg_replace('/[^A-Za-z0-9\-]/', '_', $data->leave->name)
+            : 'Employee';
+        $leave_id = $data->leave->id;
+        $filename = "Leave_Application_{$employee_name}_{$leave_id}.pdf";
+
+        try {
+            // Render the view into PDF
+            $this->pdf->load_view('shrm_views/pdf/leave', $data, 'A4', 'portrait');
+
+            // Stream to browser (false = inline view; true = force download)
+            $this->pdf->stream($filename, false);
+
+        } catch (Exception $e) {
+            // Handle PDF generation errors
+            log_message('error', 'PDF Generation Error: ' . $e->getMessage());
+            show_error('Failed to generate PDF. Please try again.', 500, 'PDF Generation Error');
         }
     }
 
