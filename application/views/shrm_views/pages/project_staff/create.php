@@ -216,7 +216,7 @@ include('./application/views/shrm_views/pages/message.php');
 					<option value="">Select Project</option>
 					<?php if (!empty($projects)): ?>
 						<?php foreach ($projects as $project): ?>
-							<option value="<?= $project->id ?>"><?= $project->project_name ?></option>
+							<option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
 						<?php endforeach; ?>
 					<?php endif; ?>
 				</select>

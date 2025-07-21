@@ -37,7 +37,7 @@ class ProjectStaffController extends CI_Controller
     public function create()
     {
         $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
-		$data['projects'] = $this->Project->get_projects();
+		$data['projects'] = $this->Project->getActiveProjects();
         $this->load->view('shrm_views/pages/project_staff/create', $data);
     }
 
@@ -238,7 +238,7 @@ class ProjectStaffController extends CI_Controller
                 redirect('project-staff');
             }
             $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
-			$data['projects'] = $this->Project->get_projects();
+			$data['projects'] = $this->Project->getActiveProjects();
             $data['assets'] = $this->ProjectStaff->get_assets_by_id($id);
             $data['selectedReportingOfficer'] = $this->ProjectStaff->getSelectedReportingOfficer($id);
             $data['contract'] = $this->User->getContractByUserId($id);
@@ -307,17 +307,6 @@ class ProjectStaffController extends CI_Controller
             ];
 
 
-            if (!empty($input['password'])) {
-                $this->form_validation->set_rules('password', 'Password', 'min_length[6]');
-                $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'matches[password]');
-                if ($this->form_validation->run() == FALSE) {
-                    $this->session->set_flashdata('error', validation_errors());
-                    return redirect('project-staff/edit/' . $userId);
-                }
-                $userData['password'] = md5($input['password']);
-            }
-
-
             if (!empty($_FILES['photo']['name'])) {
                 $photoConfig = [
                     'upload_path' => 'uploads/photo/',
@@ -384,6 +373,7 @@ class ProjectStaffController extends CI_Controller
                     throw new Exception('Offer letter upload failed: ' . strip_tags($this->upload->display_errors()));
                 }
             }
+
             $contractData = [
                 'designation' => $input['designation'],
                 'join_date' => $input['join_date'],
@@ -394,6 +384,7 @@ class ProjectStaffController extends CI_Controller
                 'updated_at' => date('Y-m-d H:i:s'),
                 'location' => $input['location']
             ];
+
             if ($filename !== null) {
                 $contractData['offer_latter'] = $filename;
             }
@@ -425,7 +416,7 @@ class ProjectStaffController extends CI_Controller
 //                $this->session->set_flashdata('error', 'Error: Contract details not found.');
 //                redirect('project-staff');
 //            }
-			$data['projects'] = $this->Project->get_projects();
+			$data['projects'] = $this->Project->getActiveProjects();
             $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
             $this->load->view('shrm_views/pages/project_staff/show', $data);
         } catch (\Exception $e) {
