@@ -74,15 +74,15 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-    'dsn' => '',
-    'hostname' => getenv('DB_HRM_HOST'),
-    'username' => getenv('DB_HRM_USER'),
-    'password' => getenv('DB_HRM_PASS'),
-    'database' => getenv('DB_HRM_NAME'),
+    'dsn'	=> '',
+    'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '',
+    'database' => 'hrms_inflibnet',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
-    'db_debug' => (ENVIRONMENT !== 'production'),
+    'db_debug' => (ENVIRONMENT !== 'development'),
     'cache_on' => FALSE,
     'cachedir' => '',
     'char_set' => 'utf8',
@@ -96,12 +96,13 @@ $db['default'] = array(
 );
 
 
-$db['ihrms'] = array(
+
+$db['shrm'] = array(
     'dsn' => '',
-    'hostname' => getenv('DB_OLD_HRM_HOST'),
-    'username' => getenv('DB_OLD_HRM_USER'),
-    'password' => getenv('DB_OLD_HRM_PASS'),
-    'database' => getenv('DB_OLD_HRM_NAME'),
+    'hostname' => 'localhost',
+    'username' => 'root',
+    'password' => '',
+    'database' => 'SHRM',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
