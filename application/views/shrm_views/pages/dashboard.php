@@ -131,7 +131,7 @@ include('./application/views/shrm_views/pages/message.php');
             <div class="module-header">
                 <div class="module-info">
                     <i class="fas fa-indian-rupee-sign icon"></i>
-                    <h3>Salary Slip</h3>
+                    <h3>Finance Management</h3>
                 </div>
             </div>
             <div class="module-body">

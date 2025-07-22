@@ -17,6 +17,8 @@ class ProfileController extends CI_Controller
         $user_id = $this->session->userdata('user_id');
         $data['profiles'] = $this->User->get_by_user($user_id);
         $data['contract_history'] = $this->User->contract_history($user_id);
+        $data['current_contract'] = $this->User->getContractByUserId($user_id);
+
 
         return $this->load->view('shrm_views/profile/index', $data);
     }

@@ -62,7 +62,7 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                     <div class="row form-row">
                         <div class="col-md-6">
                             <img id="profilePreview"
-                                 src="<?= base_url('upload/photo/' . $users->photo) ?>"
+                                 src="<?= base_url('uploads/photo/' . $users->photo) ?>"
                                  alt="Profile"
                                  class="rounded-circle"
                                  style="width: 80px; height: 80px; object-fit: cover;">

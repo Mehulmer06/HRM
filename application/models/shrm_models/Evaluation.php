@@ -54,16 +54,15 @@ class Evaluation extends CI_Model
 //        return $this->shrm->get()->result();
 //    }
 
-    public function getAllEvaluations($filters = array())
-    {
+    public function getAllEvaluations($filters = array()) {
         $userId = $this->session->userdata('user_id');
         $role = $this->session->userdata('role');
         $category = $this->session->userdata('category');
 
         $this->shrm->select('e.id, e.category, e.title, e.project_id, e.activity_id, e.created_at, e.status, 
-                         GROUP_CONCAT(DISTINCT u.name) as assigned_users,
-                         a.name as activity_name,
-                         p.project_name as project_name');
+                        GROUP_CONCAT(DISTINCT CONCAT(u.id, ":", u.name) SEPARATOR "|") as assigned_users, 
+                        a.name as activity_name, 
+                        p.project_name as project_name');
         $this->shrm->from('evaluations e');
         $this->shrm->join('evaluation_users eu', 'eu.evaluation_id = e.id', 'left');
         $this->shrm->join('users u', 'u.id = eu.user_id', 'left');
@@ -79,15 +78,12 @@ class Evaluation extends CI_Model
             if (!empty($filters['filter_project'])) {
                 $this->shrm->where('e.project_id', $filters['filter_project']);
             }
-
             if (!empty($filters['filter_activity'])) {
                 $this->shrm->where('e.activity_id', $filters['filter_activity']);
             }
-
             if (!empty($filters['filter_priority'])) {
                 $this->shrm->where('e.category', $filters['filter_priority']);
             }
-
             if (!empty($filters['filter_status'])) {
                 $this->shrm->where('e.status', $filters['filter_status']);
             }
@@ -97,7 +93,6 @@ class Evaluation extends CI_Model
                 $this->shrm->where('DATE(e.created_at) >=', $filters['start_date']);
                 $this->shrm->where('DATE(e.created_at) <=', $filters['end_date']);
             }
-
         } else if ($role === 'employee') {
             // Only get evaluations where the current employee is assigned
             $this->shrm->where('e.id IN (SELECT evaluation_id FROM evaluation_users WHERE user_id = ' . $userId . ')', NULL, FALSE);
