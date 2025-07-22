@@ -91,7 +91,7 @@ class LoginController extends CI_Controller
                     $this->session->set_userdata('mobile_no', $alt_user->mobile_no);
                     $this->session->set_userdata('is_credit_society', $alt_user->is_credit_society);
 
-                    $this->session->set_flashdata('success', 'Login successful.');
+                    $this->session->set_flashdata('success', 'Login successful! Welcome back.');
                     redirect('shrm/dashboard');
                 } else {
                     $this->session->set_flashdata('error', 'Invalid email or password.');

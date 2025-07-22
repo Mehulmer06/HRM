@@ -19,7 +19,6 @@ class ProfileController extends CI_Controller
         $data['contract_history'] = $this->User->contract_history($user_id);
         $data['current_contract'] = $this->User->getContractByUserId($user_id);
 
-
         return $this->load->view('shrm_views/profile/index', $data);
     }
 
@@ -108,7 +107,7 @@ class ProfileController extends CI_Controller
 
                 $this->load->model('User');
                 $user = $this->User->get_user_by_password($user_id);
-                if ( ! $user || md5($current_password) !== $user->password ) {
+                if (!$user || md5($current_password) !== $user->password) {
                     $this->session->set_flashdata('error', 'Current password is incorrect.');
                     redirect('change-password');
                 }

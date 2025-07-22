@@ -458,12 +458,10 @@ class ProjectStaffController extends CI_Controller
             }
 
             $data['contract'] = $this->User->getContractByUserId($id);
-//            if (!$data['contract']) {
-//                $this->session->set_flashdata('error', 'Error: Contract details not found.');
-//                redirect('project-staff');
-//            }
             $data['projects'] = $this->Project->getActiveProjects();
             $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
+
+
             $this->load->view('shrm_views/pages/project_staff/show', $data);
         } catch (\Exception $e) {
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
@@ -481,7 +479,6 @@ class ProjectStaffController extends CI_Controller
             $this->form_validation->set_rules('salary', 'Salary', 'required|numeric|greater_than[0]');
             $this->form_validation->set_rules('location', 'Location', 'required');
             $this->form_validation->set_rules('project_name', 'project name', 'required');
-            $this->form_validation->set_rules('status', 'Status', 'required|in_list[active,pending,completed]');
 
             if ($this->form_validation->run() === FALSE) {
                 $this->session->set_flashdata('error', validation_errors());
@@ -538,7 +535,7 @@ class ProjectStaffController extends CI_Controller
                 'salary' => $this->input->post('salary'),
                 'location' => $this->input->post('location'),
                 'project_name' => $this->input->post('project_name'),
-                'status' => $this->input->post('status'),
+                'status' => 'active',
                 'created_at' => date('Y-m-d H:i:s')
             ];
 

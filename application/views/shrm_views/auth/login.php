@@ -75,7 +75,7 @@
                 </label>
                 <div class="input-wrapper">
                     <input type="email" class="form-control" name="email" id="email"
-                           placeholder="Enter your email address" required autofocus value="gela@mailinator.com">
+                           placeholder="Enter your email address" required autofocus >
                     <div class="error-message">Please enter a valid email address</div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
                 </label>
                 <div class="input-wrapper">
                     <input type="password" class="form-control" name="password" id="password"
-                           placeholder="Enter your password" required value="12345678">
+                           placeholder="Enter your password" required value="Test@123">
                     <div class="error-message">Password is required</div>
                 </div>
             </div>

@@ -29,7 +29,8 @@
         <?php if (!empty($user['photo'])): ?>
             <img src="<?= base_url('uploads/photo/' . $user['photo']) ?>" class="detail-photo" alt="photo">
         <?php else: ?>
-            <div class="detail-photo" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+            <div class="detail-photo"
+                 style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #6c757d;">
                 <i class="fas fa-user fa-2x"></i>
             </div>
         <?php endif; ?>
@@ -129,7 +130,7 @@
                 <div class="info-value">
                     <?php
                     if (!empty($contract['contract_month'])) {
-                        $months = (int) $contract['contract_month'];
+                        $months = (int)$contract['contract_month'];
                         $years = floor($months / 12);
                         $remainingMonths = $months % 12;
 
@@ -209,7 +210,8 @@
                     <div class="info-label">Digital Signature</div>
                     <div class="info-value">
                         <?php if (!empty($user['signature'])): ?>
-                            <img src="<?= base_url('uploads/signature/' . $user['signature']) ?>" alt="Digital Signature"
+                            <img src="<?= base_url('uploads/signature/' . $user['signature']) ?>"
+                                 alt="Digital Signature"
                                  style="width: 120px; height: 40px; border-radius: 4px; border: 1px solid #dee2e6;">
                         <?php else: ?>
                             <span style="color: #6c757d;">-</span>
@@ -314,88 +316,31 @@
                         'hash' => $this->security->get_csrf_hash()
                     );
                     ?>
-                    <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>" />
+                    <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>"/>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="modal_designation" class="form-label">Designation *</label>
                             <select class="form-select" id="modal_designation" name="modal_designation">
                                 <option value="">Select Designation</option>
-                                <option
-                                        value="Consultant" <?= set_select('designation', 'Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Consultant')) ?>>
-                                    Consultant
-                                </option>
-                                <option
-                                        value="Executive" <?= set_select('designation', 'Executive', (!empty($contract['designation']) && $contract['designation'] == 'Executive')) ?>>
-                                    Executive
-                                </option>
-                                <option
-                                        value="IT Consultant" <?= set_select('designation', 'IT Consultant', (!empty($contract['designation']) && $contract['designation'] == 'IT Consultant')) ?>>
-                                    IT Consultant
-                                </option>
-                                <option
-                                        value="Jr. IT Consultant" <?= set_select('designation', 'Jr. IT Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Jr. IT Consultant')) ?>>
-                                    Jr. IT Consultant
-                                </option>
-                                <option
-                                        value="Jr. Project Consultant" <?= set_select('designation', 'Jr. Project Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Jr. Project Consultant')) ?>>
-                                    Jr. Project Consultant
-                                </option>
-                                <option
-                                        value="Library Associate" <?= set_select('designation', 'Library Associate', (!empty($contract['designation']) && $contract['designation'] == 'Library Associate')) ?>>
-                                    Library Associate
-                                </option>
-                                <option
-                                        value="Professional Assistant" <?= set_select('designation', 'Professional Assistant', (!empty($contract['designation']) && $contract['designation'] == 'Professional Assistant')) ?>>
-                                    Professional Assistant
-                                </option>
-                                <option
-                                        value="Programmer" <?= set_select('designation', 'Programmer', (!empty($contract['designation']) && $contract['designation'] == 'Programmer')) ?>>
-                                    Programmer
-                                </option>
-                                <option
-                                        value="Project Assistant" <?= set_select('designation', 'Project Assistant', (!empty($contract['designation']) && $contract['designation'] == 'Project Assistant')) ?>>
-                                    Project Assistant
-                                </option>
-                                <option
-                                        value="Project Associate" <?= set_select('designation', 'Project Associate', (!empty($contract['designation']) && $contract['designation'] == 'Project Associate')) ?>>
-                                    Project Associate
-                                </option>
-                                <option
-                                        value="Project Consultant" <?= set_select('designation', 'Project Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Project Consultant')) ?>>
-                                    Project Consultant
-                                </option>
-                                <option
-                                        value="Project Consultant (IT)" <?= set_select('designation', 'Project Consultant (IT)', (!empty($contract['designation']) && $contract['designation'] == 'Project Consultant (IT)')) ?>>
-                                    Project Consultant (IT)
-                                </option>
-                                <option
-                                        value="Project Officer" <?= set_select('designation', 'Project Officer', (!empty($contract['designation']) && $contract['designation'] == 'Project Officer')) ?>>
-                                    Project Officer
-                                </option>
-                                <option
-                                        value="Sr. Executive" <?= set_select('designation', 'Sr. Executive', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Executive')) ?>>
-                                    Sr. Executive
-                                </option>
-                                <option
-                                        value="Sr. Project Associate" <?= set_select('designation', 'Sr. Project Associate', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Project Associate')) ?>>
-                                    Sr. Project Associate
-                                </option>
-                                <option
-                                        value="Sr. Project Consultant" <?= set_select('designation', 'Sr. Project Consultant', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Project Consultant')) ?>>
-                                    Sr. Project Consultant
-                                </option>
-                                <option
-                                        value="Sr. Project Officer" <?= set_select('designation', 'Sr. Project Officer', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Project Officer')) ?>>
-                                    Sr. Project Officer
-                                </option>
-                                <option
-                                        value="Sr. Software Developer" <?= set_select('designation', 'Sr. Software Developer', (!empty($contract['designation']) && $contract['designation'] == 'Sr. Software Developer')) ?>>
-                                    Sr. Software Developer
-                                </option>
-                                <option
-                                        value="Software Developer" <?= set_select('designation', 'Software Developer', (!empty($contract['designation']) && $contract['designation'] == 'Software Developer')) ?>>
-                                    Software Developer
-                                </option>
+                                <option value="Consultant">Consultant</option>
+                                <option value="Executive">Executive</option>
+                                <option value="IT Consultant">IT Consultant</option>
+                                <option value="Jr. IT Consultant">Jr. IT Consultant</option>
+                                <option value="Jr. Project Consultant">Jr. Project Consultant</option>
+                                <option value="Library Associate">Library Associate</option>
+                                <option value="Professional Assistant">Professional Assistant</option>
+                                <option value="Programmer">Programmer</option>
+                                <option value="Project Assistant">Project Assistant</option>
+                                <option value="Project Associate">Project Associate</option>
+                                <option value="Project Consultant">Project Consultant</option>
+                                <option value="Project Consultant (IT)">Project Consultant (IT)</option>
+                                <option value="Project Officer">Project Officer</option>
+                                <option value="Sr. Executive">Sr. Executive</option>
+                                <option value="Sr. Project Associate">Sr. Project Associate</option>
+                                <option value="Sr. Project Consultant">Sr. Project Consultant</option>
+                                <option value="Sr. Project Officer">Sr. Project Officer</option>
+                                <option value="Sr. Software Developer">Sr. Software Developer</option>
+                                <option value="Software Developer">Software Developer</option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -434,17 +379,17 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-						<div class="col-md-6">
-							<label for="project_name" class="form-label">Assigned Project *</label>
-							<select class="form-select select2" id="project_name" name="project_name">
-								<option value="">Select Project</option>
-								<?php if (!empty($projects)): ?>
-									<?php foreach ($projects as $project): ?>
-										<option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
-									<?php endforeach; ?>
-								<?php endif; ?>
-							</select>
-						</div>
+                        <div class="col-md-6">
+                            <label for="project_name" class="form-label">Assigned Project *</label>
+                            <select class="form-select select2" id="project_name" name="project_name">
+                                <option value="">Select Project</option>
+                                <?php if (!empty($projects)): ?>
+                                    <?php foreach ($projects as $project): ?>
+                                        <option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </select>
+                        </div>
                         <div class="col-md-6 d-none">
                             <label for="modal_status" class="form-label">Status *</label>
                             <select class="form-select" id="modal_status" name="status" required>
@@ -456,7 +401,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="offer_latter" class="form-label">offer latter *</label>
-                            <input type="file" class="form-control" id="offer_latter" name="offer_latter" accept="application/pdf">
+                            <input type="file" class="form-control" id="offer_latter" name="offer_latter"
+                                   accept="application/pdf">
                         </div>
                     </div>
                 </form>
@@ -489,7 +435,7 @@
                 }
             },
             columnDefs: [
-                { orderable: false, targets: -1 }
+                {orderable: false, targets: -1}
             ]
         });
 
@@ -512,17 +458,17 @@
                 modal_month: "required",
                 end_date: "required",
                 location: "required",
-                offer_latter:"required",
+                // offer_latter: "required",
                 salary: {
                     required: true,
                     number: true,
                     min: 0
                 },
                 status: "required",
-				project_name: "required"
+                project_name: "required"
             },
             messages: {
-                offer_latter:"please upload offer latter",
+                offer_latter: "please upload offer latter",
                 modal_designation: "Please enter a designation",
                 start_date: "Start date is required",
                 modal_month: "Please select a month",
@@ -534,7 +480,7 @@
                     min: "Salary must be positive"
                 },
                 status: "Please select a status",
-				project_name: "Please select a project",
+                project_name: "Please select a project",
 
             },
             errorElement: 'div',
