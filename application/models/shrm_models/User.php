@@ -28,10 +28,11 @@ class User extends CI_Model
 
     public function getContractByUserId($userId)
     {
-        $this->shrm->select('*');
+        $this->shrm->select('contract_details.*, projects.*,contract_details.status as status');
         $this->shrm->from('contract_details');
-        $this->shrm->where('status', 'active');
-        $this->shrm->where('user_id', $userId);
+        $this->shrm->join('projects', 'contract_details.project_name = projects.id', 'inner');
+        $this->shrm->where('contract_details.user_id', $userId);
+        $this->shrm->where('contract_details.status', 'active');
         $query = $this->shrm->get();
         return $query->row_array();
     }
@@ -44,26 +45,23 @@ class User extends CI_Model
 
     public function get_users_with_latest_contract()
     {
-        // 1) build a sub-query that gets the latest join_date per user
         $latest = $this->shrm
             ->select('user_id, MAX(join_date) AS max_join_date')
             ->from('contract_details')
-            ->where('status','active')
+            ->where('status', 'active')
             ->group_by('user_id')
             ->get_compiled_select();
 
-        // 2) join users → latest → full contract_details
         $this->shrm
-            ->select('u.*, cd.designation, cd.join_date, cd.end_date, cd.salary, cd.location, cd.status')
+            ->select('u.*, cd.designation, cd.join_date, cd.end_date, cd.salary, cd.location, cd.status AS contract_status')
             ->from('users u')
             ->where('u.role', 'employee')
             ->join("($latest) AS l", 'l.user_id = u.id', 'left')
-            ->join('contract_details cd',
-                'cd.user_id = u.id AND cd.join_date = l.max_join_date',
-                'left');
+            ->join('contract_details cd', 'cd.user_id = l.user_id AND cd.join_date = l.max_join_date AND cd.status = "active"', 'left');
 
         return $this->shrm->get()->result();
     }
+
 
     public function get_users_with_latest_contract_request()
     {
@@ -108,9 +106,6 @@ class User extends CI_Model
     }
 
 
-
-
-
     public function getAllUser()
     {
         $this->shrm->select('*');
@@ -150,12 +145,14 @@ class User extends CI_Model
 
     public function contract_history($user_id)
     {
-        return $this->shrm->select('*')
-            ->from('contract_details')
-            ->where('user_id', $user_id)
-            ->where('status', 'complete')
-            ->get()
-            ->result(); // use ->result() to return all completed contracts
+        return
+            $this->shrm->select('contract_details.*, projects.*,contract_details.status as status')
+                ->from('contract_details')
+                ->join('projects', 'contract_details.project_name = projects.id', 'inner')
+                ->where('contract_details.user_id', $user_id)
+                ->where('contract_details.status', 'complete')
+                ->get()
+                ->result(); // use ->result() to return all completed contracts
     }
 
 

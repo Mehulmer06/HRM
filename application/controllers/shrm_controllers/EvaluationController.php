@@ -428,4 +428,325 @@ class EvaluationController extends CI_Controller
         $this->load->view('shrm_views/pages/report/evaluation_report', $data);
     }
 
+
+    public function get_notifications()
+    {
+        header('Content-Type: application/json');
+
+        $userId = $this->session->userdata('user_id');
+        $role = $this->session->userdata('role');
+        $category = $this->session->userdata('category');
+
+        if (!$userId) {
+            echo json_encode(['success' => false, 'message' => 'User not logged in']);
+            return;
+        }
+
+        // User ID formatting based on role
+        if ($role === 'e' && $category === 'e') {
+            $commentUserId = '00' . $userId; // For comments table
+            $evalUserId = $userId; // For evaluation_users table (unsigned int)
+        } else {
+            $commentUserId = $userId;
+            $evalUserId = $userId;
+        }
+
+        try {
+            // Get evaluations where user is assigned OR user is reporting officer
+            $this->shrm->select('e.id, e.title, e.reporting_officer_id');
+            $this->shrm->from('evaluations e');
+            $this->shrm->group_start(); // Start grouping conditions
+            // Either user is assigned to evaluation
+            $this->shrm->join('evaluation_users eu', 'e.id = eu.evaluation_id', 'left');
+            $this->shrm->where('eu.user_id', $evalUserId);
+            $this->shrm->where('eu.deleted_at IS NULL');
+            // OR user is the reporting officer
+            $this->shrm->or_where('e.reporting_officer_id', $evalUserId);
+            $this->shrm->group_end(); // End grouping
+            $this->shrm->where('e.deleted_at IS NULL');
+            $this->shrm->group_by('e.id'); // Group to avoid duplicates
+            $evaluations = $this->shrm->get()->result_array();
+
+            if (empty($evaluations)) {
+                echo json_encode(['success' => true, 'notifications' => []]);
+                return;
+            }
+
+            $evalIds = array_column($evaluations, 'id');
+            $evalTitles = array_column($evaluations, 'title', 'id');
+
+            // Get ONLY UNREAD comments on these evaluations (exclude user's own comments)
+            $this->shrm->select('ec.id, ec.evaluation_id, ec.user_id, ec.comment, ec.created_at');
+            $this->shrm->from('evaluation_comments ec');
+            $this->shrm->where_in('ec.evaluation_id', $evalIds);
+            $this->shrm->where('ec.user_id !=', $commentUserId);
+
+            // IMPORTANT: Only get comments that are NOT read by current user
+            $this->shrm->where('ec.id NOT IN (
+            SELECT comment_id FROM comment_reads 
+            WHERE user_id = "' . $this->shrm->escape_str($commentUserId) . '"
+        )', NULL, FALSE);
+
+            $this->shrm->order_by('ec.created_at', 'DESC');
+            $this->shrm->limit(20);
+            $comments = $this->shrm->get()->result_array();
+
+            $notifications = [];
+            foreach ($comments as $comment) {
+                // Get commenter name
+                $commenterName = 'Unknown User';
+                if (strpos($comment['user_id'], '00') === 0) {
+                    // Admin user - remove 00 prefix and check main user table
+                    $actualUserId = substr($comment['user_id'], 2);
+                    $user = $this->db->select('name')->from('user')->where('id', $actualUserId)->get()->row();
+                    $commenterName = $user ? $user->name : 'Admin User';
+                } else {
+                    // Regular employee - check shrm users table
+                    $user = $this->shrm->select('name')->from('users')->where('id', $comment['user_id'])->get()->row();
+                    $commenterName = $user ? $user->name : 'Employee';
+                }
+
+                $notifications[] = [
+                    'id' => $comment['id'],
+                    'evaluation_id' => $comment['evaluation_id'],
+                    'evaluation_title' => $evalTitles[$comment['evaluation_id']] ?? 'Unknown Evaluation',
+                    'comment_preview' => substr(strip_tags($comment['comment']), 0, 100) . '...',
+                    'commenter_name' => $commenterName,
+                    'created_at' => $comment['created_at'],
+                    'is_unread' => 1 // All returned notifications are unread
+                ];
+            }
+
+            echo json_encode([
+                'success' => true,
+                'notifications' => $notifications,
+                'total' => count($notifications),
+                'debug_info' => [
+                    'user_id' => $userId,
+                    'comment_user_id' => $commentUserId,
+                    'eval_user_id' => $evalUserId,
+                    'evaluations_found' => count($evaluations),
+                    'role' => $role,
+                    'category' => $category,
+                    'only_unread' => true
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => basename($e->getFile())
+            ]);
+        }
+    }
+
+
+    public function get_notification_count()
+    {
+        header('Content-Type: application/json');
+
+        $userId = $this->session->userdata('user_id');
+        $role = $this->session->userdata('role');
+        $category = $this->session->userdata('category');
+
+        if (!$userId) {
+            echo json_encode(['count' => 0]);
+            return;
+        }
+
+        // User ID formatting
+        if ($role === 'e' && $category === 'e') {
+            $commentUserId = '00' . $userId;
+            $evalUserId = $userId;
+        } else {
+            $commentUserId = $userId;
+            $evalUserId = $userId;
+        }
+
+        try {
+            // Get evaluations where user is assigned OR user is reporting officer
+            $this->shrm->select('e.id');
+            $this->shrm->from('evaluations e');
+            $this->shrm->group_start(); // Start grouping conditions
+            // Either user is assigned to evaluation
+            $this->shrm->join('evaluation_users eu', 'e.id = eu.evaluation_id', 'left');
+            $this->shrm->where('eu.user_id', $evalUserId);
+            $this->shrm->where('eu.deleted_at IS NULL');
+            // OR user is the reporting officer
+            $this->shrm->or_where('e.reporting_officer_id', $evalUserId);
+            $this->shrm->group_end(); // End grouping
+            $this->shrm->where('e.deleted_at IS NULL');
+            $this->shrm->group_by('e.id'); // Group to avoid duplicates
+            $evaluations = $this->shrm->get()->result_array();
+
+            if (empty($evaluations)) {
+                echo json_encode(['count' => 0]);
+                return;
+            }
+
+            $evalIds = array_column($evaluations, 'id');
+
+            // Get all comments on user's evaluations (not by user)
+            $this->shrm->select('ec.id');
+            $this->shrm->from('evaluation_comments ec');
+            $this->shrm->where_in('ec.evaluation_id', $evalIds);
+            $this->shrm->where('ec.user_id !=', $commentUserId);
+            $allComments = $this->shrm->get()->result_array();
+
+            if (empty($allComments)) {
+                echo json_encode(['count' => 0]);
+                return;
+            }
+
+            $commentIds = array_column($allComments, 'id');
+
+            // Get read comments
+            $this->shrm->select('comment_id');
+            $this->shrm->from('comment_reads');
+            $this->shrm->where('user_id', $commentUserId);
+            $this->shrm->where_in('comment_id', $commentIds);
+            $readComments = $this->shrm->get()->result_array();
+
+            $readCommentIds = array_column($readComments, 'comment_id');
+            $unreadCount = count($commentIds) - count($readCommentIds);
+
+            echo json_encode([
+                'count' => max(0, $unreadCount),
+                'debug_info' => [
+                    'user_id' => $userId,
+                    'evaluations_found' => count($evaluations),
+                    'total_comments' => count($allComments),
+                    'read_comments' => count($readCommentIds),
+                    'unread_comments' => $unreadCount
+                ]
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode(['count' => 0, 'error' => $e->getMessage()]);
+        }
+    }
+
+
+    public function mark_notification_read()
+    {
+        header('Content-Type: application/json');
+
+        $commentId = $this->input->post('comment_id');
+        $userId = $this->session->userdata('user_id');
+        $role = $this->session->userdata('role');
+        $category = $this->session->userdata('category');
+
+        if (!$userId || !$commentId) {
+            echo json_encode(['success' => false, 'message' => 'Missing required data']);
+            return;
+        }
+
+        // User ID formatting
+        if ($role === 'e' && $category === 'e') {
+            $commentUserId = '00' . $userId;
+        } else {
+            $commentUserId = $userId;
+        }
+
+        try {
+            // Check if already marked as read
+            $this->shrm->select('id');
+            $this->shrm->from('comment_reads');
+            $this->shrm->where('comment_id', $commentId);
+            $this->shrm->where('user_id', $commentUserId);
+            $exists = $this->shrm->get()->row();
+
+            if (!$exists) {
+                // Insert read record
+                $this->shrm->insert('comment_reads', [
+                    'comment_id' => $commentId,
+                    'user_id' => $commentUserId,
+                    'read_at' => date('Y-m-d H:i:s')
+                ]);
+            }
+
+            echo json_encode(['success' => true, 'message' => 'Notification marked as read']);
+
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+
+    public function mark_all_notifications_read()
+    {
+        header('Content-Type: application/json');
+
+        $userId = $this->session->userdata('user_id');
+        $role = $this->session->userdata('role');
+        $category = $this->session->userdata('category');
+
+        if (!$userId) {
+            echo json_encode(['success' => false, 'message' => 'User not logged in']);
+            return;
+        }
+
+        // User ID formatting
+        if ($role === 'e' && $category === 'e') {
+            $commentUserId = '00' . $userId;
+            $evalUserId = $userId;
+        } else {
+            $commentUserId = $userId;
+            $evalUserId = $userId;
+        }
+
+        try {
+            // Get evaluations where user is assigned OR user is reporting officer
+            $this->shrm->select('e.id');
+            $this->shrm->from('evaluations e');
+            $this->shrm->group_start();
+            $this->shrm->join('evaluation_users eu', 'e.id = eu.evaluation_id', 'left');
+            $this->shrm->where('eu.user_id', $evalUserId);
+            $this->shrm->where('eu.deleted_at IS NULL');
+            $this->shrm->or_where('e.reporting_officer_id', $evalUserId);
+            $this->shrm->group_end();
+            $this->shrm->where('e.deleted_at IS NULL');
+            $this->shrm->group_by('e.id');
+            $evaluations = $this->shrm->get()->result_array();
+
+            if (empty($evaluations)) {
+                echo json_encode(['success' => true, 'message' => 'No evaluations found']);
+                return;
+            }
+
+            $evalIds = array_column($evaluations, 'id');
+
+            // Get all unread comments
+            $this->shrm->select('ec.id');
+            $this->shrm->from('evaluation_comments ec');
+            $this->shrm->where_in('ec.evaluation_id', $evalIds);
+            $this->shrm->where('ec.user_id !=', $commentUserId);
+            $this->shrm->where('ec.id NOT IN (
+            SELECT comment_id FROM comment_reads WHERE user_id = "' . $this->shrm->escape_str($commentUserId) . '"
+        )', NULL, FALSE);
+            $unreadComments = $this->shrm->get()->result_array();
+
+            // Mark all as read
+            $markedCount = 0;
+            foreach ($unreadComments as $comment) {
+                $this->shrm->insert('comment_reads', [
+                    'comment_id' => $comment['id'],
+                    'user_id' => $commentUserId,
+                    'read_at' => date('Y-m-d H:i:s')
+                ]);
+                $markedCount++;
+            }
+
+            echo json_encode([
+                'success' => true,
+                'marked_count' => $markedCount,
+                'message' => "Marked {$markedCount} notifications as read"
+            ]);
+
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
 }

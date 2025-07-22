@@ -166,3 +166,9 @@ $route['shrm/finance/store'] = 'shrm_controllers/FinanceController/store';
 $route['shrm/finance/store_other_document'] = 'shrm_controllers/FinanceController/store_other_document';
 
 $route['shrm/leave/pfd/(:num)'] = 'shrm_controllers/LeaveController/leavePDF/$1';
+
+
+$route['work-progress/notifications'] = 'shrm_controllers/EvaluationController/get_notifications';
+$route['work-progress/notifications/count'] = 'shrm_controllers/EvaluationController/get_notification_count';
+$route['work-progress/notifications/mark-read'] = 'shrm_controllers/EvaluationController/mark_notification_read';
+$route['work-progress/notifications/mark-all-read'] = 'shrm_controllers/EvaluationController/mark_all_notifications_read';

@@ -54,7 +54,8 @@ class Evaluation extends CI_Model
 //        return $this->shrm->get()->result();
 //    }
 
-    public function getAllEvaluations($filters = array()) {
+    public function getAllEvaluations($filters = array())
+    {
         $userId = $this->session->userdata('user_id');
         $role = $this->session->userdata('role');
         $category = $this->session->userdata('category');
@@ -305,5 +306,197 @@ class Evaluation extends CI_Model
             'project_counts' => $project_counts,
             'project_details' => $project_details // Enhanced project data
         ];
+    }
+
+
+    public function getUnreadCommentsCount($userId)
+    {
+        try {
+            // Get evaluations where user is assigned
+            $this->shrm->select('e.id');
+            $this->shrm->from('evaluations e');
+            $this->shrm->join('evaluation_users eu', 'e.id = eu.evaluation_id');
+            $this->shrm->where('eu.user_id', str_replace('00', '', $userId)); // Remove 00 prefix for evaluation_users table
+            $this->shrm->where('e.deleted_at IS NULL');
+            $evaluationIds = $this->shrm->get()->result_array();
+
+            if (empty($evaluationIds)) {
+                return 0;
+            }
+
+            $evalIds = array_column($evaluationIds, 'id');
+
+            // Get all comments on these evaluations (excluding user's own comments)
+            $this->shrm->select('ec.id');
+            $this->shrm->from('evaluation_comments ec');
+            $this->shrm->where_in('ec.evaluation_id', $evalIds);
+            $this->shrm->where('ec.user_id !=', $userId);
+            $allComments = $this->shrm->get()->result_array();
+
+            if (empty($allComments)) {
+                return 0;
+            }
+
+            $commentIds = array_column($allComments, 'id');
+
+            // Get read comments
+            $this->shrm->select('comment_id');
+            $this->shrm->from('comment_reads');
+            $this->shrm->where('user_id', $userId);
+            $this->shrm->where_in('comment_id', $commentIds);
+            $readComments = $this->shrm->get()->result_array();
+
+            $readCommentIds = array_column($readComments, 'comment_id');
+
+            // Count unread comments
+            $unreadCount = count($commentIds) - count($readCommentIds);
+
+            return max(0, $unreadCount);
+
+        } catch (Exception $e) {
+            log_message('error', 'Error in getUnreadCommentsCount: ' . $e->getMessage());
+            return 0;
+        }
+    }
+
+    public function getRecentNotifications($userId, $limit = 10)
+    {
+        try {
+            // Get evaluations where user is assigned (remove 00 prefix for evaluation_users lookup)
+            $lookupUserId = str_replace('00', '', $userId);
+
+            $this->shrm->select('e.id, e.title');
+            $this->shrm->from('evaluations e');
+            $this->shrm->join('evaluation_users eu', 'e.id = eu.evaluation_id');
+            $this->shrm->where('eu.user_id', $lookupUserId);
+            $this->shrm->where('e.deleted_at IS NULL');
+            $evaluations = $this->shrm->get()->result_array();
+
+            if (empty($evaluations)) {
+                return [];
+            }
+
+            $evalIds = array_column($evaluations, 'id');
+            $evalTitles = array_column($evaluations, 'title', 'id');
+
+            // Get recent comments (excluding user's own comments)
+            $this->shrm->select('ec.*');
+            $this->shrm->from('evaluation_comments ec');
+            $this->shrm->where_in('ec.evaluation_id', $evalIds);
+            $this->shrm->where('ec.user_id !=', $userId);
+            $this->shrm->order_by('ec.created_at', 'DESC');
+            $this->shrm->limit($limit);
+
+            $comments = $this->shrm->get()->result_array();
+
+            // Process each comment
+            foreach ($comments as &$comment) {
+                // Check if this comment has been read by the user
+                $this->shrm->select('id');
+                $this->shrm->from('comment_reads');
+                $this->shrm->where('comment_id', $comment['id']);
+                $this->shrm->where('user_id', $userId);
+                $isRead = $this->shrm->get()->row();
+
+                $comment['is_unread'] = $isRead ? 0 : 1;
+                $comment['evaluation_title'] = $evalTitles[$comment['evaluation_id']] ?? 'Unknown Evaluation';
+
+                // Get commenter name
+                if (strpos($comment['user_id'], '00') === 0) {
+                    // Admin user - look in main user table
+                    $actualUserId = substr($comment['user_id'], 2);
+                    $user = $this->db->select('name')
+                        ->from('user')
+                        ->where('id', $actualUserId)
+                        ->get()
+                        ->row_array();
+                } else {
+                    // Regular employee - look in shrm users table
+                    $user = $this->shrm->select('name')
+                        ->from('users')
+                        ->where('id', $comment['user_id'])
+                        ->get()
+                        ->row_array();
+                }
+
+                $comment['commenter_name'] = $user ? $user['name'] : 'Unknown User';
+            }
+
+            return $comments;
+
+        } catch (Exception $e) {
+            log_message('error', 'Error in getRecentNotifications: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function markNotificationAsRead($commentId, $userId)
+    {
+        try {
+            // Check if already marked as read
+            $existing = $this->shrm->where(['comment_id' => $commentId, 'user_id' => $userId])
+                ->get('comment_reads')
+                ->row();
+
+            if (!$existing) {
+                $data = [
+                    'comment_id' => $commentId,
+                    'user_id' => $userId,
+                    'read_at' => date('Y-m-d H:i:s')
+                ];
+                return $this->shrm->insert('comment_reads', $data);
+            }
+
+            return true;
+
+        } catch (Exception $e) {
+            log_message('error', 'Error in markNotificationAsRead: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function markAllNotificationsAsRead($userId)
+    {
+        try {
+            // Get evaluations where user is assigned
+            $lookupUserId = str_replace('00', '', $userId);
+
+            $this->shrm->select('e.id');
+            $this->shrm->from('evaluations e');
+            $this->shrm->join('evaluation_users eu', 'e.id = eu.evaluation_id');
+            $this->shrm->where('eu.user_id', $lookupUserId);
+            $this->shrm->where('e.deleted_at IS NULL');
+            $evaluationIds = $this->shrm->get()->result_array();
+
+            if (empty($evaluationIds)) {
+                return true;
+            }
+
+            $evalIds = array_column($evaluationIds, 'id');
+
+            // Get unread comments
+            $this->shrm->select('ec.id');
+            $this->shrm->from('evaluation_comments ec');
+            $this->shrm->where_in('ec.evaluation_id', $evalIds);
+            $this->shrm->where('ec.user_id !=', $userId);
+
+            // Exclude already read comments
+            $this->shrm->where('ec.id NOT IN (
+            SELECT comment_id FROM comment_reads WHERE user_id = "' . $this->shrm->escape_str($userId) . '"
+        )', NULL, FALSE);
+
+            $unreadComments = $this->shrm->get()->result_array();
+
+            // Mark all as read
+            foreach ($unreadComments as $comment) {
+                $this->markNotificationAsRead($comment['id'], $userId);
+            }
+
+            return true;
+
+        } catch (Exception $e) {
+            log_message('error', 'Error in markAllNotificationsAsRead: ' . $e->getMessage());
+            return false;
+        }
     }
 }

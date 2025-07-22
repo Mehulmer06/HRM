@@ -15,7 +15,70 @@
             href="https://cdn.datatables.net/v/bs5/jszip-3.10.1/dt-2.3.2/b-3.2.4/b-html5-3.2.4/b-print-3.2.4/r-3.0.5/datatables.min.css"
             rel="stylesheet" integrity="sha384-rOhuyMBXv6TLUQTpQsGUd5KPW3slZlre5DLAV7bf0pYiIWehVz4nZLupIt4Vp6k8"
             crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"/>
+
+    <style>
+        .notification-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .notification-item.unread {
+            background-color: #e3f2fd;
+            border-left: 3px solid #007bff;
+        }
+
+        /* Notification bell styling to match your header */
+        .notification-bell {
+            position: relative;
+            margin-left: 15px;
+            margin-right: 15px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 18px;
+            padding: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .notification-bell:hover {
+            color: #f0f0f0;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+
 </head>
 
 <body>
@@ -36,6 +99,38 @@
             <i class="fas fa-tachometer-alt me-2"></i>
             Dashboard
         </a>
+
+        <!-- FIXED: Notification Bell - properly integrated with your header structure -->
+        <div class="dropdown">
+            <div class="notification-bell" id="notificationBell" data-bs-toggle="dropdown" aria-expanded="false"
+                 title="Notifications">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge d-none" id="notificationBadge">0</span>
+            </div>
+
+            <div class="dropdown-menu dropdown-menu-end" style="width: 350px; max-height: 400px; overflow-y: auto;">
+                <div class="dropdown-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-bell me-2"></i>Notifications</span>
+                    <button type="button" class="btn btn-sm btn-link p-0 text-primary" onclick="markAllAsRead()">
+                        <small>Mark all read</small>
+                    </button>
+                </div>
+                <div class="dropdown-divider"></div>
+
+                <div id="notificationList">
+                    <div class="text-center p-3">
+                        <small class="text-muted">Click to load notifications</small>
+                    </div>
+                </div>
+
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-center" href="<?= base_url('work-progress') ?>">
+                    <small>View All Evaluations</small>
+                </a>
+            </div>
+        </div>
+
+        <!-- Your existing admin dropdown -->
         <div class="dropdown">
             <div class="admin-dropdown" data-bs-toggle="dropdown">
                 <i class="fas fa-user-shield"></i>
