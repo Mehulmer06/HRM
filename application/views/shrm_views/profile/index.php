@@ -1,5 +1,5 @@
 <?php $this->load->view('shrm_views/includes/header');
-include('./application/views/shrm_views/pages/message.php');?>
+include('./application/views/shrm_views/pages/message.php'); ?>
 <!-- Page Header -->
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-start">
@@ -19,15 +19,16 @@ include('./application/views/shrm_views/pages/message.php');?>
 <div class="detail-card">
     <div class="detail-header">
         <?php if (!empty($profiles->photo)): ?>
-            <img src="<?= base_url('upload/photo/' . $profiles->photo) ?>" alt="Profile" class="detail-photo">
+            <img src="<?= base_url('uploads/photo/' . $profiles->photo) ?>" alt="Profile" class="detail-photo">
         <?php else: ?>
-            <div class="detail-photo" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+            <div class="detail-photo"
+                 style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #6c757d;">
                 <i class="fas fa-user fa-2x"></i>
             </div>
         <?php endif; ?>
         <div class="detail-info">
             <h1><?= !empty($profiles->name) ? ucfirst($profiles->name) : '-' ?></h1>
-            <p><?= (!empty($profiles->designation) ? ucfirst($profiles->designation) : '-') . ' • ' . (!empty($profiles->department) ? ucfirst($profiles->department) : '-') ?></p>
+            <p><?= (!empty($current_contract['designation']) ? ucfirst($current_contract['designation']) : '-') . ' • ' . (!empty($profiles->department) ? ucfirst($profiles->department) : '-') ?></p>
             <?php if (!empty($profiles->status)): ?>
                 <span class="badge bg-success"><?= ucfirst($profiles->status) ?></span>
             <?php else: ?>
@@ -131,7 +132,7 @@ include('./application/views/shrm_views/pages/message.php');?>
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Designation</div>
-                        <div class="info-value"><?= !empty($profiles->designation) ? $profiles->designation : '-' ?></div>
+                        <div class="info-value"><?= !empty($current_contract['designation']) ? $current_contract['designation'] : '-' ?></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Department</div>
@@ -167,14 +168,14 @@ include('./application/views/shrm_views/pages/message.php');?>
                 <div class="info-grid">
                     <div class="info-item">
                         <div class="info-label">Join Date</div>
-                        <div class="info-value"><?= !empty($profiles->join_date) ? date('Y M d', strtotime($profiles->join_date)) : '-' ?></div>
+                        <div class="info-value"><?= !empty($current_contract['join_date']) ? date('Y M d', strtotime($current_contract['join_date'])) : '-' ?></div>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Experience</div>
                         <div class="info-value">
                             <?php
-                            if (!empty($profiles->contract_month)) {
-                                $months = (int)$profiles->contract_month;
+                            if (!empty($current_contract['contract_month'])) {
+                                $months = (int)$current_contract['contract_month'];
                                 $years = floor($months / 12);
                                 $remainingMonths = $months % 12;
 
@@ -194,7 +195,7 @@ include('./application/views/shrm_views/pages/message.php');?>
                     </div>
                     <div class="info-item">
                         <div class="info-label">Work Location</div>
-                        <div class="info-value"><?= !empty($profiles->location) ? $profiles->location : '-' ?></div>
+                        <div class="info-value"><?= !empty($current_contract['location']) ? $current_contract['location'] : '-' ?></div>
                     </div>
                 </div>
             </div>
@@ -215,15 +216,15 @@ include('./application/views/shrm_views/pages/message.php');?>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="info-label">Start Date</div>
-                                <div class="info-value"><?= !empty($profiles->join_date) ? date('Y M d', strtotime($profiles->join_date)) : '-' ?></div>
+                                <div class="info-value"><?= !empty($current_contract['join_date']) ? date('Y M d', strtotime($current_contract['join_date'])) : '-' ?></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="info-label">Project Name</div>
-                                <div class="info-value"><?= !empty($profiles->project_name) ? $profiles->project_name : '-' ?></div>
+                                <div class="info-value"><?= !empty($current_contract['project_name']) ? $current_contract['project_name'] : '-' ?></div>
                             </div>
                             <div class="col-md-4">
                                 <div class="info-label">Salary</div>
-                                <div class="info-value"><?= !empty($profiles->salary) ? '₹' . $profiles->salary . '/month' : '-' ?></div>
+                                <div class="info-value"><?= !empty($current_contract['salary']) ? '₹' . $current_contract['salary'] . '/month' : '-' ?></div>
                             </div>
                         </div>
                     </div>
@@ -293,26 +294,32 @@ include('./application/views/shrm_views/pages/message.php');?>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" value="<?= !empty($profiles->name) ? htmlspecialchars($profiles->name) : '' ?>">
+                            <input type="text" class="form-control"
+                                   value="<?= !empty($profiles->name) ? htmlspecialchars($profiles->name) : '' ?>">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" value="<?= !empty($profiles->email) ? htmlspecialchars($profiles->email) : '' ?>">
+                            <input type="email" class="form-control"
+                                   value="<?= !empty($profiles->email) ? htmlspecialchars($profiles->email) : '' ?>">
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label">Mobile Number</label>
-                            <input type="tel" class="form-control" value="<?= !empty($profiles->phone) ? htmlspecialchars($profiles->phone) : '' ?>">
+                            <input type="tel" class="form-control"
+                                   value="<?= !empty($profiles->phone) ? htmlspecialchars($profiles->phone) : '' ?>">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Employee ID</label>
-                            <input type="text" class="form-control" value="<?= !empty($profiles->employee_id) ? htmlspecialchars($profiles->employee_id) : '' ?>" readonly>
+                            <input type="text" class="form-control"
+                                   value="<?= !empty($profiles->employee_id) ? htmlspecialchars($profiles->employee_id) : '' ?>"
+                                   readonly>
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Address</label>
-                        <textarea class="form-control" rows="3"><?= !empty($profiles->address) ? htmlspecialchars($profiles->address) : '' ?></textarea>
+                        <textarea class="form-control"
+                                  rows="3"><?= !empty($profiles->address) ? htmlspecialchars($profiles->address) : '' ?></textarea>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Profile Photo</label>

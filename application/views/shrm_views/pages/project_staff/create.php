@@ -11,8 +11,8 @@ include('./application/views/shrm_views/pages/message.php');
                 Add New Staff Member
             </h1>
             <nav class="breadcrumb-nav">
-                <a href="<?= base_url('shrm/dashboard')?>">Dashboard</a> /
-                <a href="<?= base_url('project-staff')?>">Project Staff</a> /
+                <a href="<?= base_url('shrm/dashboard') ?>">Dashboard</a> /
+                <a href="<?= base_url('project-staff') ?>">Project Staff</a> /
                 <span class="text-muted">Add New</span>
             </nav>
         </div>
@@ -40,18 +40,45 @@ include('./application/views/shrm_views/pages/message.php');
             <i class="fas fa-user"></i>
             Personal Information
         </h3>
-        <div class="col-md-12">
-            <label for="name" class="form-label">Employee Id *</label>
-            <input type="number" class="form-control <?= form_error('employee_id') ? 'is-invalid' : '' ?>"
-                   id="employee_id" name="employee_id" placeholder="Enter employee id"
-                   value="<?= set_value('employee_id') ?>">
-            <?php if (form_error('employee_id')): ?>
-                <div class="invalid-feedback">
-                    <?= form_error('employee_id') ?>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="employee_id" class="form-label">Employee Id *</label>
+                <input
+                        type="number"
+                        class="form-control <?= form_error('employee_id') ? 'is-invalid' : '' ?>"
+                        id="employee_id"
+                        name="employee_id"
+                        placeholder="Enter employee id"
+                        value="<?= set_value('employee_id') ?>"
+                >
+                <?php if (form_error('employee_id')): ?>
+                    <div class="invalid-feedback">
+                        <?= form_error('employee_id') ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <?php if ($this->session->userdata('role') == 'e' && $this->session->userdata('e_mail') == 'abhishek@inflibnet.ac.in') : ?>
+                <div class="col-md-6">
+                    <label for="ro_flag" class="form-label">RO Flag</label>
+                    <select
+                            class="form-select <?= form_error('ro_flag') ? 'is-invalid' : '' ?>"
+                            id="ro_flag"
+                            name="ro_flag"
+                    >
+                        <option value="">Select RO Flag</option>
+                        <option value="hard" <?= set_select('ro_flag', 'hard') ?>>Hard coder</option>
+                        <option value="medium" <?= set_select('ro_flag', 'medium') ?>>Medium coder</option>
+                        <option value="low" <?= set_select('ro_flag', 'low') ?>>Low coder</option>
+                    </select>
+                    <?php if (form_error('ro_flag')): ?>
+                        <div class="invalid-feedback">
+                            <?= form_error('ro_flag') ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
-            <?php endif; ?>
-
+            <?php endif ?>
         </div>
+
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="name" class="form-label">Full Name *</label>
@@ -210,20 +237,20 @@ include('./application/views/shrm_views/pages/message.php');
             </div>
         </div>
         <div class="row form-row">
-			<div class="col-md-4">
-				<label for="project_name" class="form-label">Assigned Project *</label>
-				<select class="form-select select2" id="project_name" name="project_name">
-					<option value="">Select Project</option>
-					<?php if (!empty($projects)): ?>
-						<?php foreach ($projects as $project): ?>
-							<option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
-						<?php endforeach; ?>
-					<?php endif; ?>
-				</select>
-			</div>
+            <div class="col-md-4">
+                <label for="project_name" class="form-label">Assigned Project *</label>
+                <select class="form-select select2" id="project_name" name="project_name">
+                    <option value="">Select Project</option>
+                    <?php if (!empty($projects)): ?>
+                        <?php foreach ($projects as $project): ?>
+                            <option value="<?= $project['id'] ?>"><?= $project['project_name'] ?></option>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </select>
+            </div>
 
 
-			<div class="col-md-4">
+            <div class="col-md-4">
                 <label for="location" class="form-label">Location *</label>
                 <select class="form-select select2" id="location" name="location">
                     <option value="">Select location</option>
@@ -239,29 +266,6 @@ include('./application/views/shrm_views/pages/message.php');
             </div>
         </div>
     </div>
-
-    <!-- Security Information -->
-    <!--	<div class="form-card">-->
-    <!--		<h3 class="form-section-title">-->
-    <!--			<i class="fas fa-lock"></i>-->
-    <!--			Security Information-->
-    <!--		</h3>-->
-    <!---->
-    <!--		<div class="row form-row">-->
-    <!--			<div class="col-md-6">-->
-    <!--				<label for="password" class="form-label">Password *</label>-->
-    <!--				<input type="password" class="form-control" id="password" name="password"-->
-    <!--					   placeholder="Enter secure password">-->
-    <!--				<div class="form-text">Password must be at least 8 characters long</div>-->
-    <!--			</div>-->
-    <!--			<div class="col-md-6">-->
-    <!--				<label for="confirm_password" class="form-label">Confirm Password *</label>-->
-    <!--				<input type="password" class="form-control" id="confirm_password" name="confirm_password"-->
-    <!--					   placeholder="Confirm password">-->
-    <!--			</div>-->
-    <!--		</div>-->
-    <!--	</div>-->
-
     <!-- Document Upload -->
     <div class="form-card">
         <h3 class="form-section-title">
@@ -313,7 +317,8 @@ include('./application/views/shrm_views/pages/message.php');
             </div>
             <div class="col-md-12">
                 <label for="confirm_password" class="form-label">Assets *</label>
-                <textarea class="form-control" name="assets" id="assets"  placeholder="e.g., Laptop - Dell Latitude, Phone - iPhone 13"></textarea>
+                <textarea class="form-control" name="assets" id="assets"
+                          placeholder="e.g., Laptop - Dell Latitude, Phone - iPhone 13"></textarea>
             </div>
         </div>
     </div>
@@ -390,7 +395,7 @@ include('./application/views/shrm_views/pages/message.php');
                 professional_email: {
                     email: true,
                 },
-                reporting_officer:{
+                reporting_officer: {
                     required: true,
                 },
                 dob: {
@@ -500,7 +505,7 @@ include('./application/views/shrm_views/pages/message.php');
                     // required: "Please enter your address",
                     minlength: "Address must be at least 10 characters long"
                 },
-                reporting_officer:{
+                reporting_officer: {
                     required: "Please select a Reporting Office"
                 },
                 department: {

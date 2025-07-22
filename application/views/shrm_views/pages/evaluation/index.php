@@ -587,8 +587,24 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                     <td>
                                         <div>
                                             <?php
-                                            $names = array_map('trim', explode(',', $eval->assigned_users));
-                                            foreach ($names as $i => $name):
+                                            // Parse the assigned_users field to extract ID and name pairs
+                                            $users = [];
+                                            if (!empty($eval->assigned_users)) {
+                                                $userEntries = explode('|', $eval->assigned_users);
+                                                foreach ($userEntries as $entry) {
+                                                    $parts = explode(':', $entry, 2); // Limit to 2 parts in case name contains ':'
+                                                    if (count($parts) == 2) {
+                                                        $users[] = [
+                                                            'id' => trim($parts[0]),
+                                                            'name' => trim($parts[1])
+                                                        ];
+                                                    }
+                                                }
+                                            }
+
+                                            foreach ($users as $i => $user):
+                                                $name = $user['name'];
+                                                $userId = $user['id'];
                                                 $initial = strtoupper($name[0]);
                                                 $color = dechex(crc32($name) & 0xffffff);
                                                 ?>
@@ -597,7 +613,16 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                                          class="rounded-circle me-2"
                                                          style="width: 30px; height: 30px;"
                                                          alt="<?= htmlspecialchars($name) ?>">
-                                                    <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($names) - 1 ? ',' : '' ?></span>
+                                                    <?php if ($this->session->userdata('role') == 'e') : ?>
+                                                        <span class="staff-name">
+                <a class="text-decoration-none" href="<?= base_url('work-progress/report/' . base_convert($userId * 15394, 10, 36)) ?>"
+                   target="_blank">
+                    <?= htmlspecialchars($name) ?>
+                </a><?= $i < count($users) - 1 ? ',' : '' ?>
+            </span>
+                                                    <?php else: ?>
+                                                        <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($users) - 1 ? ',' : '' ?></span>
+                                                    <?php endif ?>
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
@@ -711,8 +736,24 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                     <td>
                                         <div>
                                             <?php
-                                            $names = array_map('trim', explode(',', $eval->assigned_users));
-                                            foreach ($names as $i => $name):
+                                            // Parse the assigned_users field to extract ID and name pairs
+                                            $users = [];
+                                            if (!empty($eval->assigned_users)) {
+                                                $userEntries = explode('|', $eval->assigned_users);
+                                                foreach ($userEntries as $entry) {
+                                                    $parts = explode(':', $entry, 2); // Limit to 2 parts in case name contains ':'
+                                                    if (count($parts) == 2) {
+                                                        $users[] = [
+                                                            'id' => trim($parts[0]),
+                                                            'name' => trim($parts[1])
+                                                        ];
+                                                    }
+                                                }
+                                            }
+
+                                            foreach ($users as $i => $user):
+                                                $name = $user['name'];
+                                                $userId = $user['id'];
                                                 $initial = strtoupper($name[0]);
                                                 $color = dechex(crc32($name) & 0xffffff);
                                                 ?>
@@ -721,7 +762,16 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                                          class="rounded-circle me-2"
                                                          style="width: 30px; height: 30px;"
                                                          alt="<?= htmlspecialchars($name) ?>">
-                                                    <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($names) - 1 ? ',' : '' ?></span>
+                                                    <?php if ($this->session->userdata('role') == 'e') : ?>
+                                                        <span class="staff-name">
+                <a class="text-decoration-none" href="<?= base_url('work-progress/report/' . base_convert($userId * 15394, 10, 36)) ?>"
+                   target="_blank">
+                    <?= htmlspecialchars($name) ?>
+                </a><?= $i < count($users) - 1 ? ',' : '' ?>
+            </span>
+                                                    <?php else: ?>
+                                                        <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($users) - 1 ? ',' : '' ?></span>
+                                                    <?php endif ?>
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
@@ -838,8 +888,24 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                     <td>
                                         <div>
                                             <?php
-                                            $names = array_map('trim', explode(',', $eval->assigned_users));
-                                            foreach ($names as $i => $name):
+                                            // Parse the assigned_users field to extract ID and name pairs
+                                            $users = [];
+                                            if (!empty($eval->assigned_users)) {
+                                                $userEntries = explode('|', $eval->assigned_users);
+                                                foreach ($userEntries as $entry) {
+                                                    $parts = explode(':', $entry, 2); // Limit to 2 parts in case name contains ':'
+                                                    if (count($parts) == 2) {
+                                                        $users[] = [
+                                                            'id' => trim($parts[0]),
+                                                            'name' => trim($parts[1])
+                                                        ];
+                                                    }
+                                                }
+                                            }
+
+                                            foreach ($users as $i => $user):
+                                                $name = $user['name'];
+                                                $userId = $user['id'];
                                                 $initial = strtoupper($name[0]);
                                                 $color = dechex(crc32($name) & 0xffffff);
                                                 ?>
@@ -848,7 +914,16 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                                          class="rounded-circle me-2"
                                                          style="width: 30px; height: 30px;"
                                                          alt="<?= htmlspecialchars($name) ?>">
-                                                    <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($names) - 1 ? ',' : '' ?></span>
+                                                    <?php if ($this->session->userdata('role') == 'e') : ?>
+                                                        <span class="staff-name">
+                <a class="text-decoration-none" href="<?= base_url('work-progress/report/' . base_convert($userId * 15394, 10, 36)) ?>"
+                   target="_blank">
+                    <?= htmlspecialchars($name) ?>
+                </a><?= $i < count($users) - 1 ? ',' : '' ?>
+            </span>
+                                                    <?php else: ?>
+                                                        <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($users) - 1 ? ',' : '' ?></span>
+                                                    <?php endif ?>
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
@@ -958,8 +1033,24 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                 <td>
                                     <div>
                                         <?php
-                                        $names = array_map('trim', explode(',', $eval->assigned_users));
-                                        foreach ($names as $i => $name):
+                                        // Parse the assigned_users field to extract ID and name pairs
+                                        $users = [];
+                                        if (!empty($eval->assigned_users)) {
+                                            $userEntries = explode('|', $eval->assigned_users);
+                                            foreach ($userEntries as $entry) {
+                                                $parts = explode(':', $entry, 2); // Limit to 2 parts in case name contains ':'
+                                                if (count($parts) == 2) {
+                                                    $users[] = [
+                                                        'id' => trim($parts[0]),
+                                                        'name' => trim($parts[1])
+                                                    ];
+                                                }
+                                            }
+                                        }
+
+                                        foreach ($users as $i => $user):
+                                            $name = $user['name'];
+                                            $userId = $user['id'];
                                             $initial = strtoupper($name[0]);
                                             $color = dechex(crc32($name) & 0xffffff);
                                             ?>
@@ -968,7 +1059,16 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                                                      class="rounded-circle me-2"
                                                      style="width: 30px; height: 30px;"
                                                      alt="<?= htmlspecialchars($name) ?>">
-                                                <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($names) - 1 ? ',' : '' ?></span>
+                                                <?php if ($this->session->userdata('role') == 'e') : ?>
+                                                    <span class="staff-name">
+                <a class="text-decoration-none" href="<?= base_url('work-progress/report/' . base_convert($userId * 15394, 10, 36)) ?>"
+                   target="_blank">
+                    <?= htmlspecialchars($name) ?>
+                </a><?= $i < count($users) - 1 ? ',' : '' ?>
+            </span>
+                                                <?php else: ?>
+                                                    <span class="staff-name"><?= htmlspecialchars($name) ?><?= $i < count($users) - 1 ? ',' : '' ?></span>
+                                                <?php endif ?>
                                             </div>
                                         <?php endforeach; ?>
                                     </div>

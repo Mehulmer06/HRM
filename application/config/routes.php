@@ -85,6 +85,7 @@ $route['work-progress/update_status'] = 'shrm_controllers/EvaluationController/u
 $route['work-progress/comments/(:any)'] = 'shrm_controllers/EvaluationController/comments/$1';
 $route['work-progress/add_comment'] = 'shrm_controllers/EvaluationController/add_comment';
 $route['work-progress/get_comments'] = 'shrm_controllers/EvaluationController/get_comments';
+$route['work-progress/report/(:any)'] = 'shrm_controllers/EvaluationController/report/$1';
 
 $route['note'] = 'shrm_controllers/NoteController/index';
 $route['note/create'] = 'shrm_controllers/NoteController/create';

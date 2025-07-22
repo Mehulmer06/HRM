@@ -38,12 +38,46 @@ include('./application/views/shrm_views/pages/message.php');
     <div class="form-card">
         <h3 class="form-section-title"><i class="fas fa-user"></i> Personal Information</h3>
 
-        <div class="col-md-12">
-            <label for="employee_id" class="form-label">Employee Id *</label>
-            <input type="number" class="form-control" id="employee_id" name="employee_id"
-                   value="<?= set_value('employee_id', !empty($user['employee_id']) ? $user['employee_id'] : '') ?>">
-            <small class="text-danger"><?= form_error('employee_id') ?></small>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="employee_id" class="form-label">Employee Id *</label>
+                <input
+                        type="number"
+                        class="form-control <?= form_error('employee_id') ? 'is-invalid' : '' ?>"
+                        id="employee_id"
+                        name="employee_id"
+                        value="<?= set_value('employee_id', !empty($user['employee_id']) ? $user['employee_id'] : '') ?>"
+                >
+                <?php if (form_error('employee_id')): ?>
+                    <div class="invalid-feedback">
+                        <?= form_error('employee_id') ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($this->session->userdata('role') === 'e'
+                && $this->session->userdata('e_mail') === 'abhishek@inflibnet.ac.in'): ?>
+                <div class="col-md-6">
+                    <label for="ro_flag" class="form-label">RO Flag</label>
+                    <select
+                            class="form-select <?= form_error('ro_flag') ? 'is-invalid' : '' ?>"
+                            id="ro_flag"
+                            name="ro_flag"
+                    >
+                        <option value="">Select RO Flag</option>
+                        <option value="hard"   <?= set_select('ro_flag','hard',   (!empty($user['ro_flag']) && $user['ro_flag']==='hard')   ) ?>>Hard coder</option>
+                        <option value="medium" <?= set_select('ro_flag','medium', (!empty($user['ro_flag']) && $user['ro_flag']==='medium') ) ?>>Medium coder</option>
+                        <option value="low"    <?= set_select('ro_flag','low',    (!empty($user['ro_flag']) && $user['ro_flag']==='low')    ) ?>>Low coder</option>
+                    </select>
+                    <?php if (form_error('ro_flag')): ?>
+                        <div class="invalid-feedback">
+                            <?= form_error('ro_flag') ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
         </div>
+
 
         <div class="row form-row">
             <div class="col-md-6">

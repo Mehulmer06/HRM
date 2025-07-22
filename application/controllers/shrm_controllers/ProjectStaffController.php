@@ -11,9 +11,9 @@ class ProjectStaffController extends CI_Controller
         }
         $this->load->model('shrm_models/ProjectStaff', 'ProjectStaff');
         $this->load->model('shrm_models/User', 'User');
-		$this->load->model('shrm_models/ProjectStaff', 'ProjectStaff');
-		$this->load->model('shrm_models/Project', 'Project');
-		$this->shrm = $this->load->database('shrm', TRUE);
+        $this->load->model('shrm_models/ProjectStaff', 'ProjectStaff');
+        $this->load->model('shrm_models/Project', 'Project');
+        $this->shrm = $this->load->database('shrm', TRUE);
         $this->load->library('upload');
         $this->load->library('form_validation');
     }
@@ -37,7 +37,7 @@ class ProjectStaffController extends CI_Controller
     public function create()
     {
         $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
-		$data['projects'] = $this->Project->getActiveProjects();
+        $data['projects'] = $this->Project->getActiveProjects();
         $this->load->view('shrm_views/pages/project_staff/create', $data);
     }
 
@@ -85,7 +85,7 @@ class ProjectStaffController extends CI_Controller
 
 
             $userData = [
-                'employee_id' => $input['employee_id']??'',
+                'employee_id' => $input['employee_id'] ?? '',
                 'name' => ucfirst($input['name']),
                 'email' => $input['email'],
                 'dob' => $input['dob'],
@@ -97,6 +97,7 @@ class ProjectStaffController extends CI_Controller
                 'category' => $input['sub_role'],
                 'gender' => $input['gender'],
                 'pan_number' => $input['pan'],
+                'ro_flag' => $input['ro_flag'],
                 'phone' => $input['mobile'],
                 'reporting_officer_id' => $reportingOfficerId,
                 'reporting_officer_name' => $reportingOfficerName,
@@ -112,9 +113,9 @@ class ProjectStaffController extends CI_Controller
                 }
 
                 $photoConfig = [
-                    'upload_path'   => $photoUploadPath,
+                    'upload_path' => $photoUploadPath,
                     'allowed_types' => 'jpg|jpeg|png',
-                    'encrypt_name'  => TRUE
+                    'encrypt_name' => TRUE
                 ];
 
                 $this->upload->initialize($photoConfig);
@@ -134,9 +135,9 @@ class ProjectStaffController extends CI_Controller
                 }
 
                 $signatureConfig = [
-                    'upload_path'   => $signatureUploadPath,
+                    'upload_path' => $signatureUploadPath,
                     'allowed_types' => 'jpg|jpeg|png',
-                    'encrypt_name'  => TRUE
+                    'encrypt_name' => TRUE
                 ];
 
                 $this->upload->initialize($signatureConfig);
@@ -166,9 +167,9 @@ class ProjectStaffController extends CI_Controller
                 }
 
                 $offerLetterConfig = [
-                    'upload_path'   => $offerLetterUploadPath,
+                    'upload_path' => $offerLetterUploadPath,
                     'allowed_types' => 'jpg|jpeg|png|pdf',
-                    'encrypt_name'  => TRUE
+                    'encrypt_name' => TRUE
                 ];
 
                 $this->upload->initialize($offerLetterConfig);
@@ -183,7 +184,7 @@ class ProjectStaffController extends CI_Controller
                     throw new Exception('Offer letter upload failed: ' . strip_tags($this->upload->display_errors()));
                 }
             }
-            if(!empty($input['designation']) && !empty($input['contract_months'])) {
+            if (!empty($input['designation']) && !empty($input['contract_months'])) {
                 $contractData = [
                     'user_id' => $userId,
                     'designation' => $input['designation'],
@@ -204,8 +205,8 @@ class ProjectStaffController extends CI_Controller
             }
             $assets = [
                 'user_id' => $userId,
-                'sitting_location' =>$input['sitting_location'],
-                'asset_detail' =>$input['assets'],
+                'sitting_location' => $input['sitting_location'],
+                'asset_detail' => $input['assets'],
                 'created_at' => date('Y-m-d H:i:s'),
                 'status' => 'Y'
             ];
@@ -213,11 +214,11 @@ class ProjectStaffController extends CI_Controller
 
             $template = "shrm_views/pages/email/send_email";
             $input['subject'] = 'IHRMS Login Credentials';
-            $input['reportingOfficerName']=$reportingOfficerName;
-            $input['reportingOfficerDesignation']=$reportingOfficerDesignation;
+            $input['reportingOfficerName'] = $reportingOfficerName;
+            $input['reportingOfficerDesignation'] = $reportingOfficerDesignation;
             $input['password'] = $password;
 
-            $this->sendEmial($input,$template);
+            $this->sendEmial($input, $template);
 
             $this->shrm->trans_commit();
             $this->session->set_flashdata('success', 'User and contract created successfully.');
@@ -238,7 +239,7 @@ class ProjectStaffController extends CI_Controller
                 redirect('project-staff');
             }
             $data['reportingOfficers'] = $this->ProjectStaff->getReportingOfficers();
-			$data['projects'] = $this->Project->getActiveProjects();
+            $data['projects'] = $this->Project->getActiveProjects();
             $data['assets'] = $this->ProjectStaff->get_assets_by_id($id);
             $data['selectedReportingOfficer'] = $this->ProjectStaff->getSelectedReportingOfficer($id);
             $data['contract'] = $this->User->getContractByUserId($id);
@@ -300,11 +301,23 @@ class ProjectStaffController extends CI_Controller
                 'gender' => $input['gender'],
                 'pan_number' => $input['pan'],
                 'phone' => $input['mobile'],
+                'ro_flag' => $input['ro_flag'],
                 'reporting_officer_id' => $reportingOfficerId,
                 'reporting_officer_name' => $reportingOfficerName,
                 'reporting_officer_designation' => $reportingOfficerDesignation,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
+
+
+            if (!empty($input['password'])) {
+                $this->form_validation->set_rules('password', 'Password', 'min_length[6]');
+                $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'matches[password]');
+                if ($this->form_validation->run() == FALSE) {
+                    $this->session->set_flashdata('error', validation_errors());
+                    return redirect('project-staff/edit/' . $userId);
+                }
+                $userData['password'] = md5($input['password']);
+            }
 
 
             if (!empty($_FILES['photo']['name'])) {
@@ -374,6 +387,8 @@ class ProjectStaffController extends CI_Controller
                 }
             }
 
+            $contractExists = $this->ProjectStaff->checkContract($userId); // returns array of rows
+
             $contractData = [
                 'designation' => $input['designation'],
                 'join_date' => $input['join_date'],
@@ -382,17 +397,47 @@ class ProjectStaffController extends CI_Controller
                 'salary' => $input['salary'],
                 'project_name' => $input['project_name'],
                 'updated_at' => date('Y-m-d H:i:s'),
-                'location' => $input['location']
+                'location' => $input['location'],
+                'user_id' => $userId // required for insert if new
             ];
 
             if ($filename !== null) {
                 $contractData['offer_latter'] = $filename;
             }
-            $contractResult = $this->ProjectStaff->updateContract($userId, $contractData);
-            if (!$contractResult) {
-                throw new Exception('Failed to update contract details.');
+
+            if (!empty($contractExists)) {
+                // update existing contract
+                $contractResult = $this->ProjectStaff->updateContract($userId, $contractData);
+            } else {
+                // insert new contract
+                $contractData['created_at'] = date('Y-m-d H:i:s');
+                $contractResult = $this->ProjectStaff->insertContract($contractData);
             }
+
+            if (!$contractResult) {
+                throw new Exception('Failed to save contract details.');
+            }
+            $checkAssete = $this->ProjectStaff->checkAssete($userId);
+            $assets = [
+                'user_id' => $userId,
+                'sitting_location' => $input['sitting_location'],
+                'asset_detail' => $input['assets'],
+                'created_at' => date('Y-m-d H:i:s'),
+                'status' => 'Y'
+            ];
+            if (!empty($checkAssete)) {
+                $contractResult = $this->ProjectStaff->updateAssets($userId, $assets);
+            } else {
+                // insert new contract
+                $contractData['created_at'] = date('Y-m-d H:i:s');
+                $assets = $this->ProjectStaff->insertAssets($assets);
+            }
+            if (!$assets) {
+                throw new Exception('Failed to save contract details.');
+            }
+
             $this->shrm->trans_commit();
+
             $this->session->set_flashdata('success', 'User and contract updated successfully.');
         } catch (\Exception $e) {
             $this->shrm->trans_rollback();
@@ -401,6 +446,7 @@ class ProjectStaffController extends CI_Controller
 
         redirect('project-staff');
     }
+
 
     public function show($id)
     {
@@ -416,7 +462,7 @@ class ProjectStaffController extends CI_Controller
 //                $this->session->set_flashdata('error', 'Error: Contract details not found.');
 //                redirect('project-staff');
 //            }
-			$data['projects'] = $this->Project->getActiveProjects();
+            $data['projects'] = $this->Project->getActiveProjects();
             $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
             $this->load->view('shrm_views/pages/project_staff/show', $data);
         } catch (\Exception $e) {
@@ -452,7 +498,7 @@ class ProjectStaffController extends CI_Controller
             $start_date = $this->input->post('start_date');
             $contract_months = (int)$this->input->post('contract_months');
             $end_date = $this->input->post('end_date');
-            $filename='';
+            $filename = '';
             if (isset($_FILES['offer_latter']) && !empty($_FILES['offer_latter']['name'])) {
                 $uploadPath = FCPATH . 'uploads/offer_latter/';
 
@@ -467,9 +513,9 @@ class ProjectStaffController extends CI_Controller
                 }
 
                 $offerLetterConfig = [
-                    'upload_path'   => $uploadPath,
+                    'upload_path' => $uploadPath,
                     'allowed_types' => 'jpg|jpeg|png|pdf',
-                    'encrypt_name'  => TRUE
+                    'encrypt_name' => TRUE
                 ];
 
                 $this->load->library('upload');
@@ -506,7 +552,8 @@ class ProjectStaffController extends CI_Controller
             redirect('project-staff');
         }
     }
-    public function sendEmial($data,$template)
+
+    public function sendEmial($data, $template)
     {
 
         $this->load->config('email');

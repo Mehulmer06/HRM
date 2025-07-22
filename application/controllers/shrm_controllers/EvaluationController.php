@@ -415,4 +415,17 @@ class EvaluationController extends CI_Controller
         // recover original ID
         return intdiv((int)$decimalString, $secretMultiplier);
     }
+
+
+    public function report($id)
+    {
+        $originalId = $this->decryptId($id);
+        $data['counts'] = $this->Evaluation->getUserCounts($originalId);
+        if (!$data['counts']) {
+            show_404();
+        }
+
+        $this->load->view('shrm_views/pages/report/evaluation_report', $data);
+    }
+
 }
