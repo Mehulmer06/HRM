@@ -10,9 +10,16 @@ class User extends CI_Model
 
     public function get_user_by_email($email)
     {
-        $query = $this->shrm->get_where('users', ['email' => $email]);
+        $this->shrm->from('users');
+        $this->shrm->group_start();
+        $this->shrm->where('email', $email);
+        $this->shrm->or_where('professional_email', $email);
+        $this->shrm->group_end();
+
+        $query = $this->shrm->get();
         return $query->row();
     }
+
 
     public function insertUser($data)
     {
