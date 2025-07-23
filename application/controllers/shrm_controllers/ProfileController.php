@@ -46,32 +46,30 @@ class ProfileController extends CI_Controller
             // Initialize data with phone
             $userData = ['phone' => $phone];
 
-            // Handle photo upload if provided
+            // Handle file upload if exists
+            $fileName = null;
             if (!empty($_FILES['photo']['name'])) {
-                $uploadDir = FCPATH . './upload/photo/';
+                $uploadPath = FCPATH . 'uploads/photo/';
 
-                // Create directory if not exists
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                // Create folder if it doesn't exist
+                if (!is_dir($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
                 }
 
-                $photoConfig = [
-                    'upload_path' => $uploadDir,
-                    'allowed_types' => 'jpg|jpeg|png',
-                    'encrypt_name' => TRUE
-                ];
+                $config['upload_path'] = $uploadPath;
+                $config['allowed_types'] = 'pdf|jpg|jpeg|png';
+                $config['max_size'] = 10240; // 10 MB
+                $config['encrypt_name'] = true;
 
-                $this->load->library('upload', $photoConfig);
+                $this->upload->initialize($config);
 
-                if ($this->upload->do_upload('photo')) {
-                    $photoData = $this->upload->data();
-                    $filename = $photoData['file_name'];
-
-                    // Add to update only if upload succeeds
-                    $userData['photo'] = $filename;
-                } else {
-                    throw new Exception('Photo upload failed: ' . strip_tags($this->upload->display_errors()));
+                if (!$this->upload->do_upload('photo')) {
+                    throw new Exception(strip_tags($this->upload->display_errors()));
                 }
+
+                $uploadData = $this->upload->data();
+                $fileName = $uploadData['file_name'];
+                $userData['photo'] = $fileName;
             }
 
             // Update users table
