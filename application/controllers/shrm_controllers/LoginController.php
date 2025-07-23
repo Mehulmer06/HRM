@@ -61,6 +61,7 @@ class LoginController extends CI_Controller
                     'logged_in' => true,
                     'role' => $user->role,
                     'ro_id' => $user->reporting_officer_id,
+                    'ro_name' => $user->reporting_officer_name,
                     'category' => $user->category,
                 ]);
                 $this->session->set_flashdata('success', 'Login successful! Welcome back.');
