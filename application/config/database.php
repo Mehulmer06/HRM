@@ -118,3 +118,25 @@ $db['shrm'] = array(
     'failover' => array(),
     'save_queries' => TRUE
 );
+
+$db['attendance'] = array(
+    'dsn' => '',
+    'hostname' => '172.16.16.185', // or use IP: 172.16.16.170
+    'username' => 'smart',
+    'password' => '12345', // Enter the actual password
+    'database' => 'eSSLSmartOffice',
+    'dbdriver' => 'sqlsrv', // SQL Server driver
+    'dbprefix' => '',
+    'pconnect' => FALSE,
+    'db_debug' => TRUE,
+    'cache_on' => FALSE,
+    'cachedir' => '',
+    'char_set' => 'utf8',
+    'dbcollat' => 'utf8_general_ci',
+    'swap_pre' => '',
+    'encrypt' => FALSE,
+    'compress' => FALSE,
+    'stricton' => FALSE,
+    'failover' => array(),
+    'save_queries' => TRUE
+);

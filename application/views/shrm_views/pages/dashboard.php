@@ -1,9 +1,92 @@
 <?php $this->load->view('shrm_views/includes/header');
 include('./application/views/shrm_views/pages/message.php');
 ?>
+<style>
+    /* Custom primary color to match your existing theme */
+    .user-profile-card .bg-primary {
+        background: linear-gradient(135deg, #4472C4 0%, #2c5aa0 100%) !important;
+    }
+
+    /* Smooth hover effect */
+    .user-profile-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .user-profile-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Icon transition */
+    .user-profile-card #moreIcon {
+        transition: transform 0.3s ease;
+    }
+
+    /* Optional: Custom border color for profile items */
+    .user-profile-card .border-bottom {
+        border-color: #e9ecef !important;
+    }
+</style>
 
 <h1 class="welcome-title">Welcome to IHRMS Dashboard</h1>
+<?php if ($this->session->userdata('role') == 'employee') : ?>
+    <!-- User Profile Section - Only for Employee Role -->
+    <div class="card mb-4 border-0 shadow-sm user-profile-card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-semibold">User Profile</h6>
+            <a href="<?= base_url('profile') ?>" class="btn btn-outline-light btn-sm">
+                More <i class="fas fa-chevron-down ms-1" id="moreIcon"></i>
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">Name</span>
+                        <span class="fw-semibold"><?php echo $this->session->userdata('user_name') ?? '-'; ?></span>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">Report to</span>
+                        <span class="fw-semibold"><?php echo $this->session->userdata('ro_name') ?? '-'; ?></span>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Additional details that appear when "More" is clicked -->
+            <div class="collapse" id="profileDetails">
+                <hr class="my-3">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">Payroll No</span>
+                            <span class="fw-semibold"><?php echo $this->session->userdata('payroll_no') ?? '1040'; ?></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">Controlling Officer</span>
+                            <span class="fw-semibold"><?php echo $this->session->userdata('controlling_officer') ?? 'Director'; ?></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">Department</span>
+                            <span class="fw-semibold"><?php echo $this->session->userdata('department') ?? 'IT Department'; ?></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="d-flex justify-content-between py-2">
+                            <span class="text-muted">Designation</span>
+                            <span class="fw-semibold"><?php echo $this->session->userdata('designation') ?? 'Senior Developer'; ?></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
 <!-- Modules Grid -->
 <div class="modules-grid">
     <?php $role = $this->session->userdata('role'); ?>
