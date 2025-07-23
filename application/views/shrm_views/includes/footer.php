@@ -232,6 +232,12 @@
         }
     }
 </script>
+<script type="text/javascript">
+    setTimeout(function() {
+        alert("Session Terminated. Please log in again!");
+        window.location.href = '<?= base_url("shrm/logout"); ?>';
+    }, 300000); // 5 minutes = 300,000 ms
+</script>
 </body>
 
 </html>
