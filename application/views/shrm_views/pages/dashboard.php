@@ -187,7 +187,7 @@ include('./application/views/shrm_views/pages/message.php');
             <div class="module-header">
                 <div class="module-info">
                     <i class="fas fa-folder-open icon"></i>
-                    <h3>Project</h3>
+                    <h3>Projectad</h3>
                 </div>
             </div>
             <div class="module-body">
@@ -195,7 +195,35 @@ include('./application/views/shrm_views/pages/message.php');
             </div>
         </div>
 
-    <?php elseif ($role == 'employee') : ?>
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-info">
+                    <i class="fas fa-user-check icon"></i>
+                    <h3>Employee Attendance Report</h3>
+                </div>
+            </div>
+            <div class="module-body">
+                <a href="<?= base_url('employee-attendance-report') ?>" class="module-btn info">Click Here</a>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($role == 'employee') : ?>
+        <!-- 1. Project Man-Power Resource - Show for admin category employees -->
+        <?php if ($this->session->userdata('category') == 'admin') : ?>
+            <div class="module-card">
+                <div class="module-header">
+                    <div class="module-info">
+                        <i class="fas fa-project-diagram icon"></i>
+                        <h3>Project Man-Power Resource</h3>
+                    </div>
+                </div>
+                <div class="module-body">
+                    <a href="<?= base_url('project-staff') ?>" class="module-btn primary">Click Here</a>
+                </div>
+            </div>
+        <?php endif; ?>
+
         <!-- 2. Work Progress/Assessment -->
         <div class="module-card">
             <div class="module-header">
@@ -261,7 +289,7 @@ include('./application/views/shrm_views/pages/message.php');
             </div>
         </div>
 
-        <!-- 1. Holiday List -->
+        <!-- 7. Holiday List -->
         <div class="module-card">
             <div class="module-header">
                 <div class="module-info">
