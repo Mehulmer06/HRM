@@ -81,8 +81,8 @@ class ProjectStaffController extends CI_Controller
             $reportingOfficerId = isset($reportingParts[0]) ? trim($reportingParts[0]) : null;
             $reportingOfficerName = isset($reportingParts[1]) ? trim($reportingParts[1]) : null;
             $reportingOfficerDesignation = isset($reportingParts[2]) ? trim($reportingParts[2]) : null;
-            $password = substr(str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()', 8)), 0, 8);
-
+//            $password = substr(str_shuffle(str_repeat('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()', 8)), 0, 8);
+            $password = '12345678';
 
             $userData = [
                 'employee_id' => $input['employee_id'] ?? '',
@@ -218,7 +218,7 @@ class ProjectStaffController extends CI_Controller
             $input['reportingOfficerDesignation'] = $reportingOfficerDesignation;
             $input['password'] = $password;
 
-            $this->sendEmial($input, $template);
+//            $this->sendEmial($input, $template);
 
             $this->shrm->trans_commit();
             $this->session->set_flashdata('success', 'User and contract created successfully.');

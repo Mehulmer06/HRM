@@ -172,3 +172,5 @@ $route['work-progress/notifications'] = 'shrm_controllers/EvaluationController/g
 $route['work-progress/notifications/count'] = 'shrm_controllers/EvaluationController/get_notification_count';
 $route['work-progress/notifications/mark-read'] = 'shrm_controllers/EvaluationController/mark_notification_read';
 $route['work-progress/notifications/mark-all-read'] = 'shrm_controllers/EvaluationController/mark_all_notifications_read';
+
+$route['employee-attendance-report'] = 'shrm_controllers/EmployeeAttendanceReportController/index';
