@@ -187,7 +187,7 @@ include('./application/views/shrm_views/pages/message.php');
             <div class="module-header">
                 <div class="module-info">
                     <i class="fas fa-folder-open icon"></i>
-                    <h3>Projectad</h3>
+                    <h3>Project</h3>
                 </div>
             </div>
             <div class="module-body">
