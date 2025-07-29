@@ -177,3 +177,6 @@ $route['employee-attendance-report'] = 'shrm_controllers/EmployeeAttendanceRepor
 
 $route['project-staff/renewal-quarter/(:num)'] = 'shrm_controllers/ProjectStaffController/renewQuarter/$1';
 $route['project-staff/edit-quarter/(:num)'] = 'shrm_controllers/ProjectStaffController/editQuarter/$1';
+
+
+$route['employee/import_file'] = 'shrm_controllers/EmployeeController/import_file';
