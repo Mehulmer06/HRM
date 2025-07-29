@@ -136,11 +136,19 @@ include('./application/views/shrm_views/pages/message.php');
             <i class="fas fa-briefcase"></i>
             Professional Information
         </h3>
-        <div class="col-md-12">
-            <label for="professional_email" class="form-label">Professional email *</label>
-            <input type="email" class="form-control" placeholder="enter profession email" name="professional_email"
-                   id="professional_email"/>
-        </div>
+		<div class="row form-row">
+			<div class="col-md-6">
+				<label for="professional_email" class="form-label">Professional email *</label>
+				<input type="email" class="form-control" placeholder="enter profession email" name="professional_email"
+					   id="professional_email"/>
+			</div>
+			<div class="col-md-6">
+				<label for="organization" class="form-label">Organization</label>
+				<input type="text" class="form-control" placeholder="Enter organization name (e.g., Vishwamabhi Security Agency)" name="organization"
+					   id="organization"/>
+			</div>
+
+		</div>
         <div class="row form-row">
             <div class="col-md-6">
                 <label for="department" class="form-label">Stream *</label>

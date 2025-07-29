@@ -317,6 +317,11 @@
                     );
                     ?>
                     <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>"/>
+					<div class="col-md-12">
+						<label for="organization" class="form-label">Organization</label>
+						<input type="text" class="form-control" placeholder="Enter organization name (e.g., Vishwamabhi Security Agency)" name="organization"
+							   id="organization"/>
+					</div>
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="modal_designation" class="form-label">Designation *</label>
@@ -548,6 +553,7 @@
         // jQuery Validation
         $('#addContractForm').validate({
             rules: {
+				organization:"required",
                 modal_designation: "required",
                 start_date: "required",
                 modal_month: "required",
@@ -563,6 +569,7 @@
                 project_name: "required"
             },
             messages: {
+				organization:"please enter organization name",
                 offer_latter: "please upload offer latter",
                 modal_designation: "Please enter a designation",
                 start_date: "Start date is required",

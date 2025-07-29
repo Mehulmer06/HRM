@@ -171,6 +171,7 @@ class ProjectStaffController extends CI_Controller
                 $contractData = [
                     'user_id' => $userId,
                     'designation' => $input['designation'],
+					'organization'=>$input['organization'],
                     'join_date' => $input['join_date'],
                     'end_date' => $input['end_date'],
                     'contract_month' => $input['contract_months'],
@@ -411,6 +412,7 @@ class ProjectStaffController extends CI_Controller
     public function renewContract($id)
     {
         try {
+			$this->form_validation->set_rules('organization', 'organization', 'required');
             $this->form_validation->set_rules('modal_designation', 'Designation', 'required');
             $this->form_validation->set_rules('start_date', 'Start Date', 'required');
             $this->form_validation->set_rules('contract_months', 'Contract Duration', 'required|integer|greater_than[0]');
@@ -431,6 +433,7 @@ class ProjectStaffController extends CI_Controller
 
 
             $designation = $this->input->post('modal_designation');
+			$organization = $this->input->post('organization');
             $start_date = $this->input->post('start_date');
             $contract_months = (int)$this->input->post('contract_months');
             $end_date = $this->input->post('end_date');
@@ -467,6 +470,7 @@ class ProjectStaffController extends CI_Controller
             $data = [
                 'user_id' => $id,
                 'designation' => $designation,
+				'organization' =>$organization,
                 'join_date' => $start_date,
                 'end_date' => $end_date,
                 'contract_month' => $contract_months,
