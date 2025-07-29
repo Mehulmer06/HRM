@@ -596,6 +596,7 @@ class Leave extends CI_Model
         }else{
             $ro_id = $this->session->userdata('user_id');
         }
+
         $this->shrm->select('u.employee_id, u.name, lrd.leave_date, lrd.day_type, lrd.half_type, cd.designation');
         $this->shrm->distinct();
         $this->shrm->from('leave_request_days lrd');

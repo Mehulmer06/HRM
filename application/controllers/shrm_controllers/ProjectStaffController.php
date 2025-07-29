@@ -43,29 +43,12 @@ class ProjectStaffController extends CI_Controller
 
     public function store()
     {
-//		print_r($_POST);exit;
         try {
-//            $this->form_validation->set_rules('employee_id', 'Employee id', 'required');
             $this->form_validation->set_rules('name', 'Name', 'required');
             $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-//            $this->form_validation->set_rules('dob', 'Date of Birth', 'required');
-//            $this->form_validation->set_rules('gender', 'Gender', 'required');
-//            $this->form_validation->set_rules('mobile', 'Mobile', 'required|numeric');
-//            $this->form_validation->set_rules('pan', 'PAN Number', 'required');
-//            $this->form_validation->set_rules('address', 'Address', 'required');
-//            $this->form_validation->set_rules('department', 'Department', 'required');
             $this->form_validation->set_rules('role', 'Role', 'required');
             $this->form_validation->set_rules('sub_role', 'Sub Role', 'required');
             $this->form_validation->set_rules('reporting_officer', 'Reporting Officer', 'required');
-//            $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
-//            $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'required|matches[password]');
-//            $this->form_validation->set_rules('designation', 'Designation', 'required');
-//            $this->form_validation->set_rules('join_date', 'Join Date', 'required');
-//            $this->form_validation->set_rules('end_date', 'End Date', 'required');
-//            $this->form_validation->set_rules('contract_months', 'Contract Months', 'required|numeric');
-//            $this->form_validation->set_rules('salary', 'Salary', 'required|numeric');
-//            $this->form_validation->set_rules('project_name', 'Project Name', 'required');
-//            $this->form_validation->set_rules('location', 'Location', 'required');
 
             if ($this->form_validation->run() == FALSE) {
                 $this->session->set_flashdata('error', validation_errors());
@@ -86,7 +69,7 @@ class ProjectStaffController extends CI_Controller
 
             $userData = [
                 'employee_id' => $input['employee_id'] ?? '',
-                'name' => ucfirst($input['name']),
+                'name' => ucwords(strtolower($input['name'])),
                 'email' => $input['email'],
                 'dob' => $input['dob'],
                 'password' => md5($password),
@@ -212,6 +195,18 @@ class ProjectStaffController extends CI_Controller
             ];
             $assets = $this->ProjectStaff->insertAssets($assets);
 
+            // Guest House
+            if (!empty($input['guest_join_date'])) {
+                $quarter = [
+                    'user_id' => $userId,
+                    'guest_join_date' => $input['guest_join_date'],
+                    'guest_status' => 'active',
+                    'created_at' => date('Y-m-d H:i:s'),
+
+                ];
+                $quarters = $this->ProjectStaff->insertQuarter($quarter);
+            }
+            //Mail
             $template = "shrm_views/pages/email/send_email";
             $input['subject'] = 'IHRMS Login Credentials';
             $input['reportingOfficerName'] = $reportingOfficerName;
@@ -253,25 +248,12 @@ class ProjectStaffController extends CI_Controller
     public function update($userId)
     {
         try {
-//            $this->form_validation->set_rules('employee_id', 'Employee id', 'required');
+            // Form validation
             $this->form_validation->set_rules('name', 'Name', 'required');
             $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-//            $this->form_validation->set_rules('dob', 'Date of Birth', 'required');
-//            $this->form_validation->set_rules('gender', 'Gender', 'required');
-//            $this->form_validation->set_rules('mobile', 'Mobile', 'required|numeric');
-//            $this->form_validation->set_rules('pan', 'PAN Number', 'required');
-//            $this->form_validation->set_rules('address', 'Address', 'required');
-//            $this->form_validation->set_rules('department', 'Department', 'required');
             $this->form_validation->set_rules('role', 'Role', 'required');
             $this->form_validation->set_rules('sub_role', 'Sub Role', 'required');
             $this->form_validation->set_rules('reporting_officer', 'Reporting Officer', 'required');
-//            $this->form_validation->set_rules('designation', 'Designation', 'required');
-//            $this->form_validation->set_rules('join_date', 'Join Date', 'required');
-//            $this->form_validation->set_rules('end_date', 'End Date', 'required');
-//            $this->form_validation->set_rules('contract_months', 'Contract Months', 'required|numeric');
-//            $this->form_validation->set_rules('salary', 'Salary', 'required|numeric');
-//            $this->form_validation->set_rules('project_name', 'Project Name', 'required');
-//            $this->form_validation->set_rules('location', 'Location', 'required');
 
             if ($this->form_validation->run() == FALSE) {
                 $this->session->set_flashdata('error', validation_errors());
@@ -279,36 +261,38 @@ class ProjectStaffController extends CI_Controller
             }
 
             $input = $this->input->post();
-
+            $input = $this->security->xss_clean($input);
 
             $this->shrm->trans_begin();
+
+            // Parse reporting officer data
             $reportingParts = explode(",'.',", $input['reporting_officer']);
             $reportingOfficerId = isset($reportingParts[0]) ? trim($reportingParts[0]) : null;
             $reportingOfficerName = isset($reportingParts[1]) ? trim($reportingParts[1]) : null;
             $reportingOfficerDesignation = isset($reportingParts[2]) ? trim($reportingParts[2]) : null;
 
-
+            // Prepare user data
             $userData = [
-                'employee_id' => $input['employee_id'],
-                'name' => $input['name'],
+                'employee_id' => $input['employee_id'] ?? '',
+                'name' => ucwords(strtolower($input['name'])),
                 'email' => $input['email'],
-                'dob' => $input['dob'],
-                'address' => $input['address'],
-                'department' => $input['department'],
+                'dob' => $input['dob'] ?? null,
+                'address' => $input['address'] ?? '',
+                'department' => $input['department'] ?? '',
                 'role' => $input['role'],
                 'category' => $input['sub_role'],
-                'professional_email' => $input['professional_email'],
-                'gender' => $input['gender'],
-                'pan_number' => $input['pan'],
-                'phone' => $input['mobile'],
-                'ro_flag' => $input['ro_flag'],
+                'professional_email' => $input['professional_email'] ?? '',
+                'gender' => $input['gender'] ?? '',
+                'pan_number' => $input['pan'] ?? '',
+                'phone' => $input['mobile'] ?? '',
+                'ro_flag' => $input['ro_flag'] ?? '',
                 'reporting_officer_id' => $reportingOfficerId,
                 'reporting_officer_name' => $reportingOfficerName,
                 'reporting_officer_designation' => $reportingOfficerDesignation,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
 
-
+            // Handle password update
             if (!empty($input['password'])) {
                 $this->form_validation->set_rules('password', 'Password', 'min_length[6]');
                 $this->form_validation->set_rules('confirm_password', 'Confirm Password', 'matches[password]');
@@ -319,13 +303,19 @@ class ProjectStaffController extends CI_Controller
                 $userData['password'] = md5($input['password']);
             }
 
-
+            // Handle photo upload
             if (!empty($_FILES['photo']['name'])) {
+                $photoUploadPath = FCPATH . 'uploads/photo/';
+                if (!is_dir($photoUploadPath)) {
+                    mkdir($photoUploadPath, 0755, true);
+                }
+
                 $photoConfig = [
-                    'upload_path' => 'uploads/photo/',
+                    'upload_path' => $photoUploadPath,
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
+
                 $this->upload->initialize($photoConfig);
                 if ($this->upload->do_upload('photo')) {
                     $photoData = $this->upload->data();
@@ -335,13 +325,19 @@ class ProjectStaffController extends CI_Controller
                 }
             }
 
-
+            // Handle signature upload
             if (!empty($_FILES['signature']['name'])) {
+                $signatureUploadPath = FCPATH . 'uploads/signature/';
+                if (!is_dir($signatureUploadPath)) {
+                    mkdir($signatureUploadPath, 0755, true);
+                }
+
                 $signatureConfig = [
-                    'upload_path' => 'uploads/signature/',
+                    'upload_path' => $signatureUploadPath,
                     'allowed_types' => 'jpg|jpeg|png',
                     'encrypt_name' => TRUE
                 ];
+
                 $this->upload->initialize($signatureConfig);
                 if ($this->upload->do_upload('signature')) {
                     $signatureData = $this->upload->data();
@@ -351,94 +347,36 @@ class ProjectStaffController extends CI_Controller
                 }
             }
 
-
+            // Update user
             $userUpdate = $this->User->updateUser($userId, $userData);
             if (!$userUpdate) {
                 throw new Exception('Failed to update user.');
             }
-            $filename = null;
-            if (isset($_FILES['offer_latter']) && !empty($_FILES['offer_latter']['name'])) {
-                $uploadPath = FCPATH . 'uploads/offer_latter/';
 
-                // Create directory if it doesn't exist
-                if (!is_dir($uploadPath)) {
-                    mkdir($uploadPath, 0755, true);
-                }
-
-                // Check if directory is writable
-                if (!is_writable($uploadPath)) {
-                    throw new Exception('Upload directory is not writable: ' . $uploadPath);
-                }
-
-                $offerLetterConfig = [
-                    'upload_path' => $uploadPath,
-                    'allowed_types' => 'jpg|jpeg|png|pdf',
-                    'encrypt_name' => TRUE
-                ];
-
-                $this->load->library('upload');
-                $this->upload->initialize($offerLetterConfig);
-
-                if ($this->upload->do_upload('offer_latter')) {
-                    $offerLetterData = $this->upload->data();
-                    $filename = $offerLetterData['file_name'];
-                } else {
-                    throw new Exception('Offer letter upload failed: ' . strip_tags($this->upload->display_errors()));
-                }
-            }
-
-            $contractExists = $this->ProjectStaff->checkContract($userId); // returns array of rows
-
-            $contractData = [
-                'designation' => $input['designation'],
-                'join_date' => $input['join_date'],
-                'end_date' => $input['end_date'],
-                'contract_month' => $input['contract_months'],
-                'salary' => $input['salary'],
-                'project_name' => $input['project_name'],
-                'updated_at' => date('Y-m-d H:i:s'),
-                'location' => $input['location'],
-                'user_id' => $userId // required for insert if new
-            ];
-
-            if ($filename !== null) {
-                $contractData['offer_latter'] = $filename;
-            }
-
-            if (!empty($contractExists)) {
-                // update existing contract
-                $contractResult = $this->ProjectStaff->updateContract($userId, $contractData);
-            } else {
-                // insert new contract
-                $contractData['created_at'] = date('Y-m-d H:i:s');
-                $contractResult = $this->ProjectStaff->insertContract($contractData);
-            }
-
-            if (!$contractResult) {
-                throw new Exception('Failed to save contract details.');
-            }
-            $checkAssete = $this->ProjectStaff->checkAssete($userId);
-            $assets = [
+            // Handle assets data
+            $checkAssets = $this->ProjectStaff->checkAssete($userId);
+            $assetsData = [
                 'user_id' => $userId,
-                'sitting_location' => $input['sitting_location'],
-                'asset_detail' => $input['assets'],
-                'created_at' => date('Y-m-d H:i:s'),
+                'sitting_location' => $input['sitting_location'] ?? '',
+                'asset_detail' => $input['assets'] ?? '',
+                'updated_at' => date('Y-m-d H:i:s'),
                 'status' => 'Y'
             ];
-            if (!empty($checkAssete)) {
-                $contractResult = $this->ProjectStaff->updateAssets($userId, $assets);
+
+            if (!empty($checkAssets)) {
+                $assetsResult = $this->ProjectStaff->updateAssets($userId, $assetsData);
             } else {
-                // insert new contract
-                $contractData['created_at'] = date('Y-m-d H:i:s');
-                $assets = $this->ProjectStaff->insertAssets($assets);
+                $assetsData['created_at'] = date('Y-m-d H:i:s');
+                $assetsResult = $this->ProjectStaff->insertAssets($assetsData);
             }
-            if (!$assets) {
-                throw new Exception('Failed to save contract details.');
+
+            if (!$assetsResult) {
+                throw new Exception('Failed to save asset details.');
             }
 
             $this->shrm->trans_commit();
+            $this->session->set_flashdata('success', 'User updated successfully.');
 
-            $this->session->set_flashdata('success', 'User and contract updated successfully.');
         } catch (\Exception $e) {
             $this->shrm->trans_rollback();
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
@@ -460,6 +398,7 @@ class ProjectStaffController extends CI_Controller
             $data['contract'] = $this->User->getContractByUserId($id);
             $data['projects'] = $this->Project->getActiveProjects();
             $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
+            $data['quarters'] = $this->ProjectStaff->getQuartersDetails($id);
 
 
             $this->load->view('shrm_views/pages/project_staff/show', $data);
@@ -569,6 +508,75 @@ class ProjectStaffController extends CI_Controller
         } else {
             echo 'Email failed.<br>';
             echo $this->email->print_debugger();
+        }
+    }
+
+    public function renewQuarter($userId)
+    {
+        try {
+            $this->form_validation->set_rules('guest_join_date', 'join date', 'required');
+
+            if ($this->form_validation->run() === FALSE) {
+                $this->session->set_flashdata('error', validation_errors());
+                redirect('project-staff/renewal-quarter/' . $userId);
+                return;
+            }
+            $this->shrm->where('user_id', $userId);
+            $this->shrm->where('guest_status !=', 'inactive');
+            $this->shrm->update('guesthouses', [
+                'guest_end_date' => date('Y-m-d H:i:s'),
+                'guest_status' => 'inactive',
+            ]);
+
+            // Guest House
+            $input = $this->input->post();
+            $quarter = [
+                'user_id' => $userId,
+                'guest_join_date' => $input['guest_join_date'],
+                'guest_status' => 'active',
+                'created_at' => date('Y-m-d H:i:s'),
+
+            ];
+            $quarters = $this->ProjectStaff->insertQuarter($quarter);
+            $this->session->set_flashdata('success', 'New Quarter Assign successfully.');
+            redirect('project-staff/show/' . $userId);
+
+        } catch (Exception $e) {
+            $this->session->set_flashdata('error', ' Internal Server error.');
+            redirect('project-staff');
+        }
+
+    }
+
+    public function editQuarter($quarter_id)
+    {
+        try {
+            $this->form_validation->set_rules('guest_end_date', 'End Date', 'required');
+
+            if ($this->form_validation->run() == FALSE) {
+                $this->session->set_flashdata('error', validation_errors());
+                redirect('project-staff/view/' . $this->input->post('user_id'));
+            }
+
+            // Optional: ensure it's active
+            $quarter = $this->shrm->get_where('guesthouses', ['id' => $quarter_id])->row();
+            if (!$quarter || strtolower($quarter->guest_status) !== 'active') {
+                $this->session->set_flashdata('error', 'Only active quarters can be edited.');
+                redirect('project-staff/view/' . $quarter->user_id);
+            }
+
+            $data = [
+                'guest_end_date' => $this->input->post('guest_end_date'),
+                'guest_status' => 'inactive',
+            ];
+
+            $this->shrm->where('id', $quarter_id)->update('guesthouses', $data);
+            $this->session->set_flashdata('success', 'Quarter updated successfully.');
+            redirect('project-staff/show/' . $quarter->user_id);
+
+        } catch (Exception $e) {
+            $this->session->set_flashdata('error', ' Internal Server error.');
+            redirect('project-staff');
         }
     }
 }

@@ -17,9 +17,6 @@ class DashboardController extends CI_Controller
         try {
             $data['out_of_office'] = $this->Leave->get_todays_out_of_office();
             $data['upcoming_leave'] = $this->Leave->get_upcoming_leave();
-//            echo "<pre>";
-//            print_r($data);
-//            exit();
             $this->load->view('shrm_views/pages/dashboard', $data);
         } catch (Exception $e) {
             log_message('error', 'Dashboard loading error: ' . $e->getMessage());

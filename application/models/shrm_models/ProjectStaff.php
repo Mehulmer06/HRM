@@ -10,9 +10,19 @@ class ProjectStaff extends CI_Model
 
     public function getUserList()
     {
-        $query = $this->shrm->get('users');
-        return $query->result();
+        $this->shrm->select('u.*, cd.designation, cd.join_date, cd.end_date, cd.contract_month, cd.project_name, cd.salary, cd.location, cd.status AS contract_status');
+        $this->shrm->from('users u');
+        $this->shrm->join('(SELECT * FROM contract_details cd1
+                        WHERE NOT EXISTS (
+                            SELECT 1 FROM contract_details cd2
+                            WHERE cd2.user_id = cd1.user_id
+                              AND cd2.created_at > cd1.created_at
+                        )) cd', 'cd.user_id = u.id', 'left');
+        $this->shrm->where('u.deleted_at IS NULL');
+        $this->shrm->where('cd.status', 'active'); // Only active contracts
+        return $this->shrm->get()->result();
     }
+
 
     /**
      * Update user
@@ -85,7 +95,7 @@ class ProjectStaff extends CI_Model
         $this->shrm->from('contract_details');
         $this->shrm->join('projects', 'contract_details.project_name = projects.id', 'inner');
         $this->shrm->where('contract_details.user_id', $userId);
-       // $this->shrm->where('contract_details.status', 'active');
+        // $this->shrm->where('contract_details.status', 'active');
         $query = $this->shrm->get();
         return $query->result_array();
 
@@ -101,5 +111,27 @@ class ProjectStaff extends CI_Model
         return $this->shrm->get_where('assets', ['user_id' => $userId])->result();
     }
 
+    public function checkQuarter($userId)
+    {
+        return $this->shrm->get_where('guesthouses', ['user_id' => $userId])->result();
+    }
 
+    public function updateQuarter($userId, $data)
+    {
+        return $this->shrm->where('user_id', $userId)->update('guesthouses', $data);
+    }
+
+    public function insertQuarter($quarter)
+    {
+        return $this->shrm->insert('guesthouses', $quarter);
+    }
+
+    public function getQuartersDetails($userId)
+    {
+        $this->shrm->select('*');
+        $this->shrm->from('guesthouses');
+        $this->shrm->where('user_id', $userId);
+        $query = $this->shrm->get();
+        return $query->result_array();
+    }
 }

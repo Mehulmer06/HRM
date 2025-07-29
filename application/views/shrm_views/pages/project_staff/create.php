@@ -146,6 +146,7 @@ include('./application/views/shrm_views/pages/message.php');
                 <label for="department" class="form-label">Stream *</label>
                 <select class="form-select select2" id="department" name="department">
                     <option value="">Select Department</option>
+                    <option value="Administrator">Administrator</option>
                     <option value="library science">Library Science</option>
                     <option value="computer science">Computer Science</option>
                 </select>
@@ -319,6 +320,19 @@ include('./application/views/shrm_views/pages/message.php');
                 <label for="confirm_password" class="form-label">Assets *</label>
                 <textarea class="form-control" name="assets" id="assets"
                           placeholder="e.g., Laptop - Dell Latitude, Phone - iPhone 13"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-card">
+        <h3 class="form-section-title">
+            <i class="fas fa-home"></i>
+            Quarter Information
+        </h3>
+        <div class="row form-row">
+            <div class="col-md-12">
+                <label for="guest_join_date" class="form-label">Quarter Join Date(if have)</label>
+                <input type="date" class="form-control" id="guest_join_date" name="guest_join_date">
             </div>
         </div>
     </div>

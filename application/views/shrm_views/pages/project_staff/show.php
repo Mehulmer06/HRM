@@ -70,7 +70,7 @@
             </div>
             <div class="info-item">
                 <div class="info-label">Gender</div>
-                <div class="info-value"><?= !empty($user['gender']) ? $user['gender'] : '-' ?></div>
+                <div class="info-value"><?= !empty($user['gender']) ? ucfirst($user['gender']) : '-' ?></div>
             </div>
             <div class="info-item">
                 <div class="info-label">Mobile Number</div>
@@ -418,15 +418,110 @@
         </div>
     </div>
 </div>
+
+
+<!--Quarter History-->
+<div class="contract-section mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3><i class="fas fa-home"></i> Quarter History</h3>
+        <button class="btn btn-primary btn-sm" id="addQuarterBtn" data-bs-toggle="modal" data-bs-target="#quarterModal">
+            <i class="fas fa-plus me-2"></i> Assign New Quarter
+        </button>
+    </div>
+
+    <table id="QuarterHistoryTable" class="table table-striped table-hover mt-3">
+        <thead>
+        <tr>
+            <th>Sr No.</th>
+            <th>Assign Date</th>
+            <th>End Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($quarters as $index => $quarter): ?>
+            <tr>
+                <td><?= $index + 1 ?></td>
+                <td><?= date('Y-m-d', strtotime($quarter['guest_join_date'])) ?></td>
+                <td><?= $quarter['guest_end_date'] ? date('Y-m-d', strtotime($quarter['guest_end_date'])) : 'Till Now' ?></td>
+                <td>
+                    <span class="badge bg-<?= strtolower($quarter['guest_status']) === 'active' ? 'success' : 'secondary' ?>">
+                        <?= ucfirst($quarter['guest_status']) ?>
+                    </span>
+                </td>
+                <td>
+                    <?php if (strtolower($quarter['guest_status']) === 'active'): ?>
+                        <button class="btn btn-warning btn-sm editQuarterBtn"
+                                data-id="<?= $quarter['id'] ?>"
+                                data-join="<?= $quarter['guest_join_date'] ?>"
+                                data-end="<?= $quarter['guest_end_date'] ?>">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    <?php else: ?>
+                        <span class="text-muted">—</span>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Add/Edit Quarter Modal -->
+<div class="modal fade" id="quarterModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="quarterModalTitle">
+                    <i class="fas fa-plus me-2"></i>
+                    Add New Quarter
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="quarterForm" method="POST">
+                    <?php
+                    $csrf = array(
+                        'name' => $this->security->get_csrf_token_name(),
+                        'hash' => $this->security->get_csrf_hash()
+                    );
+                    ?>
+                    <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>"/>
+                    <input type="hidden" id="quarterId" name="quarter_id" value="">
+
+                    <div class="mb-3">
+                        <label for="guest_join_date" class="form-label">Quarter Join Date *</label>
+                        <input type="date" class="form-control" id="guest_join_date" name="guest_join_date" required>
+                    </div>
+
+                    <div class="mb-3" id="endDateRow" style="display: none;">
+                        <label for="guest_end_date" class="form-label">Quarter End Date *</label>
+                        <input type="date" class="form-control" id="guest_end_date" name="guest_end_date">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveQuarterBtn">
+                    <i class="fas fa-save me-2"></i>
+                    Save Quarter
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <?php $this->load->view('shrm_views/includes/footer'); ?>
 <script>
     $(document).ready(function () {
         // Initialize DataTable
-        $('#contractHistoryTable').DataTable({
+        $('#contractHistoryTable,#QuarterHistoryTable').DataTable({
             responsive: true,
             pageLength: 10,
             language: {
-                search: "Search Contracts:",
                 paginate: {
                     first: "First",
                     last: "Last",
@@ -528,5 +623,63 @@
             const today = new Date().toISOString().split('T')[0];
             $joinDateInput.val(today);
         }
+
+        // ADD MODE
+        $('#addQuarterBtn').on('click', function () {
+            $('#quarterForm').trigger('reset');
+            $('#quarterModalTitle').html('<i class="fas fa-plus me-2"></i>Assign New Quarter');
+            $('#quarterForm').attr('action', '<?= base_url("project-staff/renewal-quarter/") . $user["id"]; ?>');
+            $('#quarterId').val('');
+            $('#endDateRow').hide();
+            $('#guest_join_date').prop('disabled', false);
+        });
+
+        // EDIT MODE
+        $('.editQuarterBtn').on('click', function () {
+            let id = $(this).data('id');
+            let join = $(this).data('join');
+            let end = $(this).data('end');
+
+            $('#quarterModalTitle').html('<i class="fas fa-edit me-2"></i>Edit Quarter');
+            $('#quarterForm').attr('action', '<?= base_url("project-staff/edit-quarter/") ?>' + id);
+            $('#quarterId').val(id);
+            $('#guest_join_date').val(join).prop('disabled', true);
+            $('#guest_end_date').val(end);
+            $('#endDateRow').show();
+            $('#quarterModal').modal('show');
+        });
+
+        // jQuery Validation
+        $('#quarterForm').validate({
+            rules: {
+                guest_join_date: "required",
+                guest_end_date: {
+                    required: function () {
+                        return $('#quarterId').val() !== '';
+                    }
+                }
+            },
+            messages: {
+                guest_join_date: "Join date is required",
+                guest_end_date: "End date is required when editing"
+            },
+            errorElement: 'div',
+            errorClass: 'invalid-feedback',
+            highlight: function (element) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element) {
+                $(element).removeClass('is-invalid');
+            },
+            submitHandler: function (form) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('quarterModal'));
+                if (modal) modal.hide();
+                form.submit();
+            }
+        });
+
+        $('#saveQuarterBtn').on('click', function () {
+            $('#quarterForm').submit();
+        });
     });
 </script>
