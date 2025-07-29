@@ -106,14 +106,14 @@ $total_inactive = count($inactive_users);
                                             <p class="staff-name"><a class="text-decoration-none" href="<?= base_url('project-staff/show/' . $user->id); ?>"><?php echo htmlspecialchars($user->name); ?>
                                                 </a></p>
                                             <p class="staff-department">
-                                                <?php echo !empty($user->role) ? ucfirst(htmlspecialchars($user->role)) : 'N/A'; ?>
+                                                <?php echo !empty($user->designation) ? ucfirst(htmlspecialchars($user->designation)) : 'N/A'; ?>
                                             </p>
                                         </div>
                                     </div>
                                 </td>
                                 <td><?php echo !empty($user->phone) ? htmlspecialchars($user->phone) : 'N/A'; ?></td>
                                 <td><?php echo htmlspecialchars($user->email); ?></td>
-                                <td><?php echo !empty($user->department) ? htmlspecialchars($user->department) : 'Not Assigned'; ?>
+                                <td><?php echo !empty($user->department) ? ucwords(htmlspecialchars($user->department)) : 'Not Assigned'; ?>
                                 </td>
                                 <td><span class="status-badge status-active">Active</span></td>
                                 <td>

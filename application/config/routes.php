@@ -174,3 +174,6 @@ $route['work-progress/notifications/mark-read'] = 'shrm_controllers/EvaluationCo
 $route['work-progress/notifications/mark-all-read'] = 'shrm_controllers/EvaluationController/mark_all_notifications_read';
 
 $route['employee-attendance-report'] = 'shrm_controllers/EmployeeAttendanceReportController/index';
+
+$route['project-staff/renewal-quarter/(:num)'] = 'shrm_controllers/ProjectStaffController/renewQuarter/$1';
+$route['project-staff/edit-quarter/(:num)'] = 'shrm_controllers/ProjectStaffController/editQuarter/$1';
