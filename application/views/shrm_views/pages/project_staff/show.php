@@ -263,7 +263,7 @@
                 <th>Monthly Salary</th>
                 <th>Project</th>
                 <th>Status</th>
-                <!-- <th>Actions</th> -->
+				<th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -286,6 +286,23 @@
                                 <span style="color: #6c757d;">-</span>
                             <?php endif; ?>
                         </td>
+						<td>
+							<button class="action-btn btn-edit"
+									data-id="<?= $contract['contractId'] ?>"
+									data-organization="<?= htmlspecialchars($contract['organization'] ?? '', ENT_QUOTES) ?>"
+									data-designation="<?= htmlspecialchars($contract['designation'] ?? '', ENT_QUOTES) ?>"
+									data-start="<?= date('Y-m-d', strtotime($contract['join_date']))??'' ?>"
+									data-end="<?= date('Y-m-d', strtotime($contract['end_date']))??'' ?>"
+									data-months="<?= $contract['contract_month']??'' ?>"
+									data-salary="<?= $contract['salary']??'' ?>"
+									data-location="<?= $contract['location']??'' ?>"
+									data-project="<?= $contract['contractProjectId']??'' ?>"
+									data-status="<?= $contract['status']??'' ?>"
+									data-offer-letter="<?= !empty($contract['offer_latter']) ? base_url('uploads/offer_latter/' . $contract['offer_latter']) : '' ?>"
+									title="Edit">
+								<i class="fas fa-edit"></i>
+							</button>
+						</td>
                     </tr>
                 <?php endforeach; ?>
 
@@ -308,8 +325,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="addContractForm" action="<?= base_url('project-staff/renewal-contract/') . $user['id']; ?>"
-                      method="POST" enctype="multipart/form-data">
+                <form id="addContractForm" method="POST" enctype="multipart/form-data">
                     <?php
                     $csrf = array(
                         'name' => $this->security->get_csrf_token_name(),
@@ -317,6 +333,7 @@
                     );
                     ?>
                     <input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>"/>
+					<input type="hidden" name="contract_id" id="contract_id" value="">
 					<div class="col-md-12">
 						<label for="organization" class="form-label">Organization</label>
 						<input type="text" class="form-control" placeholder="Enter organization name (e.g., Vishwamabhi Security Agency)" name="organization"
@@ -408,6 +425,7 @@
                             <label for="offer_latter" class="form-label">offer latter *</label>
                             <input type="file" class="form-control" id="offer_latter" name="offer_latter"
                                    accept="application/pdf">
+							<div id="existingOfferLetterPreview" class="mt-2"></div>
                         </div>
                     </div>
                 </form>
@@ -550,86 +568,122 @@
             }
         });
 
-        // jQuery Validation
-        $('#addContractForm').validate({
-            rules: {
-				organization:"required",
-                modal_designation: "required",
-                start_date: "required",
-                modal_month: "required",
-                end_date: "required",
-                location: "required",
-                // offer_latter: "required",
-                salary: {
-                    required: true,
-                    number: true,
-                    min: 0
-                },
-                status: "required",
-                project_name: "required"
-            },
-            messages: {
-				organization:"please enter organization name",
-                offer_latter: "please upload offer latter",
-                modal_designation: "Please enter a designation",
-                start_date: "Start date is required",
-                modal_month: "Please select a month",
-                end_date: "End date is required",
-                location: "Please select a location",
-                salary: {
-                    required: "Salary is required",
-                    number: "Enter a valid number",
-                    min: "Salary must be positive"
-                },
-                status: "Please select a status",
-                project_name: "Please select a project",
 
-            },
-            errorElement: 'div',
-            errorClass: 'invalid-feedback',
-            highlight: function (element) {
-                $(element).addClass('is-invalid');
-            },
-            unhighlight: function (element) {
-                $(element).removeClass('is-invalid');
-            },
-            submitHandler: function (form) {
-                // Form passed validation - now submit
-                const modal = bootstrap.Modal.getInstance(document.getElementById('addContractModal'));
-                modal.hide();
-                form.submit();
-            }
-        });
+		// Set today's date as default if empty
+		const $joinDateInput = $('#modal_start_date');
+		if (!$joinDateInput.val()) {
+			const today = new Date().toISOString().split('T')[0];
+			$joinDateInput.val(today);
+		}
 
-        // Save button click triggers form submit
-        $('#saveContractBtn').on('click', function () {
-            $('#addContractForm').submit();
-        });
+		// Calculate End Date
+		$('#modal_start_date, #contract_months').on('change input', function () {
+			const joinDate = $('#modal_start_date').val();
+			const contractMonths = $('#contract_months').val();
+			if (joinDate && contractMonths) {
+				const startDate = new Date(joinDate);
+				const endDate = new Date(startDate.setMonth(startDate.getMonth() + parseInt(contractMonths)));
+				$('#modal_end_date').val(endDate.toISOString().split('T')[0]);
+			} else {
+				$('#modal_end_date').val('');
+			}
+		});
 
+		// Reset form for Add
+		$('[data-bs-target="#addContractModal"]').on('click', function () {
+			$('#addContractForm')[0].reset();
+			$('#contract_id').val('');
+			$('#addContractModal .modal-title').html('<i class="fas fa-plus me-2"></i> Add New Contract');
+			$('#addContractForm').attr('action', '<?= base_url("project-staff/renewal-contract/") . $user["id"]; ?>');
 
-        // Auto-calculate contract end date
-        $('#modal_start_date, #contract_months').on('change input', function () {
-            const joinDate = $('#modal_start_date').val();
-            const contractMonths = $('#contract_months').val();
+		});
 
-            if (joinDate && contractMonths) {
-                const startDate = new Date(joinDate);
-                const endDate = new Date(startDate);
-                endDate.setMonth(startDate.getMonth() + parseInt(contractMonths));
+		// Edit contract
+		$(document).on('click', '.btn-edit', function () {
+			const btn = $(this);
+			//console.log(btn.data('offer-letter'))
+			$('#contract_id').val(btn.data('id'));
+			$('#organization').val(btn.data('organization'));
+			$('#modal_designation').val(btn.data('designation'));
+			$('#modal_start_date').val(btn.data('start'));
+			$('#contract_months').val(btn.data('months'));
+			$('#modal_end_date').val(btn.data('end'));
+			$('#modal_salary').val(btn.data('salary'));
+			$('#location').val(btn.data('location'));
+			$('#project_name').val(btn.data('project'));
+			$('#modal_status').val(btn.data('status'));
+			//$('#offer_latter').val(btn.data('offer-letter'))
 
-                const formattedEndDate = endDate.toISOString().split('T')[0];
-                $('#modal_end_date').val(formattedEndDate);
-            } else {
-                $('#modal_end_date').val('');
-            }
-        });
+			const offerLetterUrl = btn.data('offer-letter');
+			if (offerLetterUrl) {
+				$('#existingOfferLetterPreview').html(`
+					<div class="mt-2">
+						<i class="fas fa-file-pdf text-danger me-1"></i>
+						<a href="${offerLetterUrl}" target="_blank" class="text-danger" style="text-decoration: none;">
+							 offer letter
+						</a>
+					</div>
+    			`);
+			} else {
+				$('#existingOfferLetterPreview').html('');
+			}
 
-        // Auto-set join date to today if empty
-        const $joinDateInput = $('#modal_start_date');
-        if (!$joinDateInput.val()) {
-            const today = new Date().toISOString().split('T')[0];
-            $joinDateInput.val(today);
-        }
+			$('#offer_latter').val(''); // clear input
+
+			$('#addContractForm').attr('action', '<?= base_url('project-staff/renewal-contract/') . $user['id']; ?>');
+			$('#addContractModal .modal-title').html('<i class="fas fa-edit me-2"></i> Edit Contract');
+
+			const modal = new bootstrap.Modal(document.getElementById('addContractModal'));
+			modal.show();
+		});
+
+		// jQuery Validate
+		$('#addContractForm').validate({
+			rules: {
+				organization: "required",
+				modal_designation: "required",
+				start_date: "required",
+				contract_months: "required",
+				end_date: "required",
+				location: "required",
+				salary: {
+					required: true,
+					number: true,
+					min: 0
+				},
+				project_name: "required"
+			},
+			messages: {
+				organization: "Please enter organization name",
+				modal_designation: "Please select designation",
+				start_date: "Start date is required",
+				contract_months: "Please enter contract months",
+				end_date: "End date is required",
+				location: "Please select location",
+				salary: {
+					required: "Please enter salary",
+					number: "Invalid number",
+					min: "Cannot be negative"
+				},
+				project_name: "Please select project"
+			},
+			errorElement: 'div',
+			errorClass: 'invalid-feedback',
+			highlight: function (element) {
+				$(element).addClass('is-invalid');
+			},
+			unhighlight: function (element) {
+				$(element).removeClass('is-invalid');
+			},
+			submitHandler: function (form) {
+				form.submit();
+			}
+		});
+
+		// Submit button
+		$('#saveContractBtn').on('click', function () {
+			$('#addContractForm').submit();
+		});
 
         // ADD MODE
         $('#addQuarterBtn').on('click', function () {
