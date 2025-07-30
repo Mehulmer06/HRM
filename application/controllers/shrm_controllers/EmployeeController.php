@@ -57,7 +57,7 @@ class EmployeeController extends CI_Controller
                     }
                     $cells[$col] = $val;
                 }
-                $letters = range('A', 'Q');
+                $letters = range('A', 'R');  // Extended to include column R
                 $rowData = [];
                 foreach ($letters as $letter) {
                     $rowData[] = $cells[$letter] ?? '';
@@ -83,7 +83,7 @@ class EmployeeController extends CI_Controller
         foreach ($rows as $rowIndex => $row) {
             try {
                 // sanitize and pad
-                $row = array_pad($row, 17, '');
+                $row = array_pad($row, 18, '');  // Extended to 18 columns (A-R)
                 $row = array_map(fn($c) => xss_clean(trim($c)), $row);
                 if (count(array_filter($row, fn($v) => $v !== '')) === 0) continue;
 
@@ -93,7 +93,7 @@ class EmployeeController extends CI_Controller
                     $gender, $mobile, $pan, $address,
                     $profEmail, $stream, $reportingOfficerName,
                     $designation, $joinRaw, $duration,
-                    $salary, $project, $location
+                    $salary, $project, $location, $organization
                     ) = $row;
 
                 // Log current row data being processed
@@ -180,6 +180,7 @@ class EmployeeController extends CI_Controller
                     'project_name' => $projectId,
                     'salary' => is_numeric($salary) ? (int)$salary : null,
                     'location' => $location,
+                    'organization' => $organization,
                     'status' => 'active',
                 ];
                 $this->shrm->insert('contract_details', $contractData);
@@ -207,6 +208,7 @@ class EmployeeController extends CI_Controller
                 fwrite($fpLog, "  Salary: {$salary}\n");
                 fwrite($fpLog, "  Project: {$project}\n");
                 fwrite($fpLog, "  Location: {$location}\n");
+                fwrite($fpLog, "  Organization: {$organization}\n");
                 fwrite($fpLog, "  Raw Row Data: " . json_encode($row) . "\n\n");
 
                 $errors++;
