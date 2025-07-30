@@ -427,16 +427,19 @@ class ProjectStaffController extends CI_Controller
                 return;
             }
 
-            $this->shrm->where('user_id', $id);
-            $this->shrm->where('status !=', 'complete');
-            $this->shrm->update('contract_details', ['status' => 'complete']);
-
-
             $designation = $this->input->post('modal_designation');
 			$organization = $this->input->post('organization');
             $start_date = $this->input->post('start_date');
             $contract_months = (int)$this->input->post('contract_months');
             $end_date = $this->input->post('end_date');
+			$contract_id = $this->input->post('contract_id');
+
+			if(empty($contract_id)){
+				$this->shrm->where('user_id', $id);
+				$this->shrm->where('status !=', 'complete');
+				$this->shrm->update('contract_details', ['status' => 'complete']);
+			}
+
             $filename = '';
             if (isset($_FILES['offer_latter']) && !empty($_FILES['offer_latter']['name'])) {
                 $uploadPath = FCPATH . 'uploads/offer_latter/';
@@ -474,18 +477,24 @@ class ProjectStaffController extends CI_Controller
                 'join_date' => $start_date,
                 'end_date' => $end_date,
                 'contract_month' => $contract_months,
-                'offer_latter' => $filename,
                 'salary' => $this->input->post('salary'),
                 'location' => $this->input->post('location'),
                 'project_name' => $this->input->post('project_name'),
                 'status' => 'active',
                 'created_at' => date('Y-m-d H:i:s')
             ];
+			if (!empty($filename)) {
+				$data['offer_latter'] = $filename;
+			}
 
-
-            $this->shrm->insert('contract_details', $data);
-
-            $this->session->set_flashdata('success', 'New contract added successfully.');
+			if(!empty($contract_id)){
+				$this->shrm->where('id', $contract_id);
+				$this->shrm->update('contract_details', $data);
+				$this->session->set_flashdata('success', 'Contract updated successfully.');
+			}else{
+				$this->shrm->insert('contract_details', $data);
+				$this->session->set_flashdata('success', 'New contract added successfully.');
+			}
             redirect('project-staff/show/' . $id);
         } catch (Exception $e) {
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
