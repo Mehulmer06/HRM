@@ -12,17 +12,13 @@ class ProjectStaff extends CI_Model
     {
         $this->shrm->select('u.*, cd.designation, cd.join_date, cd.end_date, cd.contract_month, cd.project_name, cd.salary, cd.location, cd.status AS contract_status');
         $this->shrm->from('users u');
-        $this->shrm->join('(SELECT * FROM contract_details cd1
-                        WHERE NOT EXISTS (
-                            SELECT 1 FROM contract_details cd2
-                            WHERE cd2.user_id = cd1.user_id
-                              AND cd2.created_at > cd1.created_at
-                        )) cd', 'cd.user_id = u.id', 'left');
-        $this->shrm->where('u.deleted_at IS NULL');
-        $this->shrm->where('cd.status', 'active'); // Only active contracts
+        $this->shrm->join('contract_details cd', "cd.user_id = u.id 
+        AND cd.status = 'active' 
+        AND cd.deleted_at IS NULL 
+        AND NOW() BETWEEN cd.join_date AND cd.end_date", 'left');
+
         return $this->shrm->get()->result();
     }
-
 
     /**
      * Update user
