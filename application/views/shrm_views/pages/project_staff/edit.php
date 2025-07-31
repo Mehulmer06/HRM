@@ -297,23 +297,42 @@ include('./application/views/shrm_views/pages/message.php');
     <div class="form-card">
         <h3 class="form-section-title">
             <i class="fas fa-desktop"></i>
-            Assets Information
+			Assets & Network Information
         </h3>
         <div class="row form-row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <label for="sitting_location" class="form-label">Sitting Location</label>
                 <input type="text" class="form-control" id="sitting_location" name="sitting_location"
                        placeholder="e.g., Ground Floor - Room 101, 1st Floor - Cabin A2"
                        value="<?= set_value('sitting_location', !empty($assets['sitting_location']) ? $assets['sitting_location'] : '') ?>">
             </div>
+			<div class="col-md-6">
+				<label for="assets" class="form-label">Assets</label>
+				<textarea class="form-control" name="assets" id="assets" rows="3"
+						  placeholder="e.g., Laptop - Dell Latitude, Phone - iPhone 13"><?= set_value('assets', !empty($assets['asset_detail']) ? $assets['asset_detail'] : '') ?></textarea>
+			</div>
         </div>
-        <div class="row form-row">
-            <div class="col-md-12">
-                <label for="assets" class="form-label">Assets</label>
-                <textarea class="form-control" name="assets" id="assets" rows="3"
-                          placeholder="e.g., Laptop - Dell Latitude, Phone - iPhone 13"><?= set_value('assets', !empty($assets['asset_detail']) ? $assets['asset_detail'] : '') ?></textarea>
-            </div>
-        </div>
+		<div class="row form-row">
+			<div class="col-md-6">
+				<label for="ip_address" class="form-label">IP Address</label>
+				<input type="text" class="form-control" id="ip_address" name="ip_address"
+					   placeholder="e.g., 192.168.1.100" value="<?= set_value('ip_address',!empty($assets['ip_address'])? $assets['ip_address'] :'')?>">
+			</div>
+			<div class="col-md-6">
+				<label for="connection_type" class="form-label">Internet Connection</label>
+				<select class="form-select" id="connection_type" name="connection_type">
+					<option value="" disabled selected>Select Internet Connection</option>
+					<option value="lan" <?= set_select('internet_connection', 'lan', (!empty($assets['connection_type']) && $assets['connection_type'] == 'lan')) ?>>LAN</option>
+					<option value="wifi" <?= set_select('internet_connection', 'wifi', (!empty($assets['connection_type']) && $assets['connection_type'] == 'wifi')) ?>>WiFi</option>
+				</select>
+			</div>
+		</div>
+		<div class="row form-row">
+			<div class="col-md-12">
+				<label for="antivirus" class="form-label">Antivirus</label>
+				<input type="text" class="form-control" id="antivirus" name="antivirus" placeholder="e.g., Quick Heal, Kaspersky, Norton" value="<?= set_value('antivirus',!empty($assets['antivirus'])? $assets['antivirus'] :'')?>">
+			</div>
+		</div>
     </div>
 
     <!-- Submit -->

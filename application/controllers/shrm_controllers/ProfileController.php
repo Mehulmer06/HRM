@@ -18,7 +18,7 @@ class ProfileController extends CI_Controller
         $data['profiles'] = $this->User->get_by_user($user_id);
         $data['contract_history'] = $this->User->contract_history($user_id);
         $data['current_contract'] = $this->User->getContractByUserId($user_id);
-
+        $data['assetsDetails'] = $this->User->getAssetsByUserId($user_id);
         return $this->load->view('shrm_views/profile/index', $data);
     }
 
@@ -26,6 +26,7 @@ class ProfileController extends CI_Controller
     {
         $user_id = $this->session->userdata('user_id');
         $data['users'] = $this->User->get_phone_by_user_id($user_id);
+		$data['assets'] = $this->User->getAssetsByUserId($user_id);
         return $this->load->view('shrm_views/profile/change_password', $data);
     }
 
@@ -122,6 +123,58 @@ class ProfileController extends CI_Controller
             redirect('change-password');
         }
     }
+	public function update_network()
+	{
+		try {
+			// Load form validation library
+			$this->load->library('form_validation');
+
+			// Set validation rules
+			$this->form_validation->set_rules('sitting_location', 'Sitting Location', 'required|trim');
+			$this->form_validation->set_rules('assets', 'Assets', 'required|trim');
+			$this->form_validation->set_rules('ip_address', 'IP Address', 'trim|valid_ip');
+			$this->form_validation->set_rules('connection_type', 'Internet Connection', 'required|trim');
+			$this->form_validation->set_rules('antivirus', 'Antivirus', 'trim');
+
+			if ($this->form_validation->run() == FALSE) {
+				$this->session->set_flashdata('error', validation_errors());
+				redirect('change-password'); // Adjust redirect if needed
+			}
+
+			$userId = $this->session->userdata('user_id');
+
+			// Prepare data
+			$data = [
+				'user_id' => $userId,
+				'sitting_location' => $this->input->post('sitting_location', true),
+				'asset_detail' => $this->input->post('assets', true),
+				'ip_address' => $this->input->post('ip_address', true),
+				'connection_type' => $this->input->post('connection_type', true),
+				'antivirus' => $this->input->post('antivirus', true),
+				'status' => 'Y',
+				'updated_at' => date('Y-m-d H:i:s')
+			];
+
+			// Check if record exists for update or insert
+			$existing = $this->shrm->get_where('assets', ['user_id' => $userId])->row();
+
+			if ($existing) {
+				$this->shrm->where('user_id', $userId)->update('assets', $data);
+			} else {
+				$data['created_at'] = date('Y-m-d H:i:s');
+				$this->shrm->insert('assets', $data);
+			}
+
+			$this->session->set_flashdata('success', 'Network & assets updated successfully.');
+			redirect('change-password'); // Or wherever appropriate
+
+		} catch (Exception $e) {
+			log_message('error', $e->getMessage());
+			$this->session->set_flashdata('error', 'Something went wrong. Please try again.');
+			redirect('change-password');
+		}
+	}
+
 
 }
 

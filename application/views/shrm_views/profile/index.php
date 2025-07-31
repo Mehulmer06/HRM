@@ -199,7 +199,38 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                     </div>
                 </div>
             </div>
+			<!--Assets & Network-->
+			<div class="form-card">
+				<h3 class="form-section-title">
+					<i class="fas fa-network-wired"></i>
+					Assets & Network Information
+				</h3>
+
+				<div class="info-grid">
+					<div class="info-item">
+						<div class="info-label">Sitting Location</div>
+						<div class="info-value"><?= !empty($assetsDetails['sitting_location']) ? $assetsDetails['sitting_location'] : '-' ?></div>
+					</div>
+					<div class="info-item">
+						<div class="info-label">Assets Details</div>
+						<div class="info-value"><?= !empty($assetsDetails['asset_detail']) ? $assetsDetails['asset_detail'] : '-' ?></div>
+					</div>
+					<div class="info-item">
+						<div class="info-label">IP Address</div>
+						<div class="info-value"><?= !empty($assetsDetails['ip_address']) ? $assetsDetails['ip_address'] : '-' ?></div>
+					</div>
+					<div class="info-item">
+						<div class="info-label">Internet Connection</div>
+						<div class="info-value"><?= !empty($assetsDetails['connection_type']) ? $assetsDetails['connection_type'] : '-' ?></div>
+					</div>
+					<div class="info-item">
+						<div class="info-label">Antivirus</div>
+						<div class="info-value"><?= !empty($assetsDetails['antivirus']) ? $assetsDetails['antivirus'] : '-' ?></div>
+					</div>
+				</div>
+			</div>
         </div>
+	</div>
 
         <!-- Contracts Tab -->
         <div class="tab-pane fade" id="contracts" role="tabpanel">

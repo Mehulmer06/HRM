@@ -16,17 +16,28 @@ include('./application/views/shrm_views/pages/message.php'); ?>
     <!-- Settings Navigation -->
     <div class="col-lg-3">
         <div class="form-card">
-            <div class="list-group list-group-flush">
-                <a href="#" class="list-group-item list-group-item-action active" data-section="account">
-                    <i class="fas fa-user-cog me-2"></i>
-                    Account Settings
-                </a>
-                <a href="#" class="list-group-item list-group-item-action" data-section="security">
-                    <i class="fas fa-shield-alt me-2"></i>
-                    Security
-                </a>
-            </div>
-        </div>
+			<div class="list-group list-group-flush">
+				<a href="#" class="list-group-item list-group-item-action active"
+				   data-section="account"
+				   style="background-color: #3498db; border-color: #4472C4; color: #fff;">
+					<i class="fas fa-user-cog me-2" style="color: #fff;"></i>
+					Account Settings
+				</a>
+
+				<a href="#" class="list-group-item list-group-item-action"
+				   data-section="security">
+					<i class="fas fa-shield-alt me-2"></i>
+					Security
+				</a>
+
+				<a href="#" class="list-group-item list-group-item-action"
+				   data-section="network">
+					<i class="fas fa-network-wired me-2"></i>
+					Network
+				</a>
+			</div>
+
+		</div>
     </div>
     <!-- Settings Content -->
     <div class="col-lg-9">
@@ -96,7 +107,7 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                     Change Password
                 </h3>
 
-                <form id="changePasswordForm" action="<?= base_url('change-update') ?>" method="post">
+                <form id="changePasswordForm" action="<?= base_url('update-password') ?>" method="post">
                     <?php
                     $csrf = array(
                         'name' => $this->security->get_csrf_token_name(),
@@ -125,6 +136,59 @@ include('./application/views/shrm_views/pages/message.php'); ?>
                 </form>
             </div>
         </div>
+		<!--Network Management-->
+		<div class="settings-section d-none" id="network">
+			<div class="form-card">
+				<h3 class="form-section-title">
+					<i class="fas fa-network-wired"></i>
+					Network Information
+				</h3>
+
+				<form id="changeNetworkForm" action="<?= base_url('update-network') ?>" method="post">
+					<?php
+					$csrf = array(
+						'name' => $this->security->get_csrf_token_name(),
+						'hash' => $this->security->get_csrf_hash()
+					);
+					?>
+					<input type="hidden" name="<?= $csrf['name']; ?>" value="<?= $csrf['hash']; ?>"/>
+					<div class="row form-row">
+						<div class="col-md-6">
+							<label for="sitting_location" class="form-label">Sitting Location *</label>
+							<input type="text" class="form-control" id="sitting_location" name="sitting_location"
+								   placeholder="e.g., Ground Floor - Room 101, 1st Floor - Cabin A2" value="<?= set_value('sitting_location', !empty($assets['sitting_location']) ? $assets['sitting_location'] : '') ?>">
+						</div>
+						<div class="col-md-6">
+							<label for="confirm_password" class="form-label">Assets *</label>
+							<textarea class="form-control" name="assets" id="assets"
+									  placeholder="e.g., Phone -Landline,Computer - HP Desktop, Laptop - Dell Latitude"><?= set_value('assets', !empty($assets['asset_detail']) ? $assets['asset_detail'] : '') ?></textarea>
+						</div>
+					</div>
+					<div class="row form-row">
+						<div class="col-md-6">
+							<label for="ip_address" class="form-label">IP Address</label>
+							<input type="text" class="form-control" id="ip_address" name="ip_address"
+								   placeholder="e.g., 192.168.1.100" value="<?= set_value('ip_address',!empty($assets['ip_address'])? $assets['ip_address'] :'')?>">
+						</div>
+						<div class="col-md-6">
+							<label for="connection_type" class="form-label">Internet Connection</label>
+							<select class="form-select" id="connection_type" name="connection_type">
+								<option value="" disabled selected>Select Internet Connection</option>
+								<option value="lan" <?= set_select('internet_connection', 'lan', (!empty($assets['connection_type']) && $assets['connection_type'] == 'lan')) ?>>LAN</option>
+								<option value="wifi" <?= set_select('internet_connection', 'wifi', (!empty($assets['connection_type']) && $assets['connection_type'] == 'wifi')) ?>>WiFi</option>
+							</select>
+						</div>
+					</div>
+					<div class="row form-row">
+						<div class="col-md-12">
+							<label for="antivirus" class="form-label">Antivirus</label>
+							<input type="text" class="form-control" id="antivirus" name="antivirus" placeholder="e.g., Quick Heal, Kaspersky, Norton" value="<?= set_value('antivirus',!empty($assets['antivirus'])? $assets['antivirus'] :'')?>">
+						</div>
+					</div>
+					<button type="submit" class="btn btn-primary mt-3">Update Network</button>
+				</form>
+			</div>
+		</div>
     </div>
 </div>
 
@@ -231,16 +295,82 @@ include('./application/views/shrm_views/pages/message.php'); ?>
         const navItems = document.querySelectorAll('.list-group-item[data-section]');
         const sections = document.querySelectorAll('.settings-section');
 
-        navItems.forEach(item => {
-            item.addEventListener('click', function (e) {
-                e.preventDefault();
-                navItems.forEach(nav => nav.classList.remove('active'));
-                sections.forEach(section => section.classList.add('d-none'));
+		navItems.forEach(item => {
+			item.addEventListener('click', function (e) {
+				e.preventDefault();
 
-                this.classList.add('active');
-                const sectionId = this.getAttribute('data-section');
-                document.getElementById(sectionId).classList.remove('d-none');
-            });
-        });
+				navItems.forEach(nav => {
+					nav.classList.remove('active');
+					nav.removeAttribute('style');
+					nav.querySelector('i').removeAttribute('style');
+				});
+
+				sections.forEach(section => section.classList.add('d-none'));
+
+				this.classList.add('active');
+				this.setAttribute('style', 'background-color: #3498db; border-color: #4472C4; color: #fff;');
+				this.querySelector('i').setAttribute('style', 'color: #fff;');
+
+				const sectionId = this.getAttribute('data-section');
+				document.getElementById(sectionId).classList.remove('d-none');
+			});
+		});
+
+		// Network Validation
+		$('#changeNetworkForm').validate({
+			errorClass: "text-danger",
+			errorElement: "div",
+
+			rules: {
+				sitting_location: {
+					required: true
+				},
+				assets: {
+					required: true
+				},
+				ip_address: {
+					required: true,
+					ipv4: true // optional but validates IP if filled
+				},
+				connection_type: {
+					required: true
+				},
+				antivirus: {
+					required: true
+				}
+			},
+
+			messages: {
+				sitting_location: {
+					required: "Please enter the sitting location."
+				},
+				assets: {
+					required: "Please enter the assets details."
+				},
+				ip_address: {
+					required:"Please enter the IP address.",
+					ipv4: "Please enter a valid IP address."
+				},
+				connection_type: {
+					required: "Please select an internet connection type."
+				},
+				antivirus:{
+					required: "Please enter the  antivirus."
+				}
+			},
+
+			highlight: function (element) {
+				$(element).addClass("is-invalid").removeClass("is-valid");
+			},
+
+			unhighlight: function (element) {
+				$(element).removeClass("is-invalid").addClass("is-valid");
+			}
+		});
+
+		// Optional: Add custom method for IPv4 validation
+		$.validator.addMethod("ipv4", function (value, element) {
+			return this.optional(element) || /^(25[0-5]|2[0-4]\d|[01]?\d\d?)\.((25[0-5]|2[0-4]\d|[01]?\d\d?)\.){2}(25[0-5]|2[0-4]\d|[01]?\d\d?)$/.test(value);
+		}, "Please enter a valid IPv4 address.");
     });
 </script>
