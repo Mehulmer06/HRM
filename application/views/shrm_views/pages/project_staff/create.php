@@ -201,26 +201,37 @@ include('./application/views/shrm_views/pages/message.php');
                 <label for="designation" class="form-label">Designation *</label>
                 <select class="form-select select2" id="designation" name="designation">
                     <option value="">Select Designation</option>
+                    <option value="Electrician">Electrician</option>
+                    <option value="Staff Car Driver">Staff Car Driver</option>
+                    <option value="Helper">Helper</option>
+                    <option value="Jr. Project Consultant">Jr. Project Consultant</option>
+                    <option value="Project Consultant">Project Consultant</option>
+                    <option value="Project Officer">Project Officer</option>
+                    <option value="Sr. Project Officer">Sr. Project Officer</option>
+                    <option value="Sr. Project Associate">Sr. Project Associate</option>
+                    <option value="IT Consultant">IT Consultant</option>
+                    <option value="Project Assistant">Project Assistant</option>
+                    <option value="Jr. IT Consultant">Jr. IT Consultant</option>
+                    <option value="Project Associate">Project Associate</option>
+                    <option value="Admin Assistant">Admin Assistant</option>
+                    <option value="Management Trainee">Management Trainee</option>
+                    <option value="Admin Associate">Admin Associate</option>
+                    <option value="Programmer">Programmer</option>
+                    <option value="Professional Assistant">Professional Assistant</option>
+                    <option value="Security Gaurd">Security Gaurd</option>
+                    <option value="Software Developer">Software Developer</option>
+                    <option value="Library Associate">Library Associate</option>
+                    <option value="PS to Director">PS to Director</option>
+                    <option value="Assistant">Assistant</option>
+                    <option value="Sr. Software Developer">Sr. Software Developer</option>
+                    <option value="Helper - Daily wages">Helper - Daily wages</option>
                     <option value="Consultant">Consultant</option>
                     <option value="Executive">Executive</option>
-                    <option value="IT Consultant">IT Consultant</option>
-                    <option value="Jr. IT Consultant">Jr. IT Consultant</option>
-                    <option value="Jr. Project Consultant">Jr. Project Consultant</option>
-                    <option value="Library Associate">Library Associate</option>
-                    <option value="Professional Assistant">Professional Assistant</option>
-                    <option value="Programmer">Programmer</option>
-                    <option value="Project Assistant">Project Assistant</option>
-                    <option value="Project Associate">Project Associate</option>
-                    <option value="Project Consultant">Project Consultant</option>
-                    <option value="Project Consultant (IT)">Project Consultant (IT)</option>
-                    <option value="Project Officer">Project Officer</option>
-                    <option value="Senior Executive">Sr. Executive</option>
-                    <option value="Sr. Project Associate">Sr. Project Associate</option>
-                    <option value="Sr. Project Consultant">Sr. Project Consultant</option>
-                    <option value="Sr. Project Officer">Sr. Project Officer</option>
-                    <option value="Sr. Software Developer">Sr. Software Developer</option>
-                    <option value="Software Developer">Software Developer</option>
+                    <option value="Sr. Executive">Sr. Executive</option>
+                    <option value="MTS - Daily wages">MTS - Daily wages</option>
+                    <option value="Library Officer">Library Officer</option>
                 </select>
+
 
             </div>
             <div class="col-md-6">

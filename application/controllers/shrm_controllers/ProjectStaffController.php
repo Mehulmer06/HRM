@@ -21,6 +21,7 @@ class ProjectStaffController extends CI_Controller
     public function index()
     {
         $data['users'] = $this->ProjectStaff->getUserList();
+
         $this->load->view('shrm_views/pages/project_staff/index', $data);
     }
 

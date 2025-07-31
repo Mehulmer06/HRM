@@ -104,12 +104,12 @@ include('./application/views/shrm_views/pages/message.php');
                 <label for="gender" class="form-label">Gender</label>
                 <select class="form-select select2" id="gender" name="gender">
                     <option value="">Select Gender</option>
-                    <option value="male" <?= set_select('gender', 'male', (!empty($user['gender']) && $user['gender'] == 'male')) ?>>Male
+                    <option value="Male" <?= set_select('gender', 'Male', (!empty($user['gender']) && $user['gender'] == 'Male')) ?>>Male
                     </option>
-                    <option value="female" <?= set_select('gender', 'female', (!empty($user['gender']) && $user['gender'] == 'female')) ?>>
+                    <option value="Female" <?= set_select('gender', 'Female', (!empty($user['gender']) && $user['gender'] == 'Female')) ?>>
                         Female
                     </option>
-                    <option value="other" <?= set_select('gender', 'other', (!empty($user['gender']) && $user['gender'] == 'other')) ?>>Other
+                    <option value="Other" <?= set_select('gender', 'Other', (!empty($user['gender']) && $user['gender'] == 'Other')) ?>>Other
                     </option>
                 </select>
             </div>
