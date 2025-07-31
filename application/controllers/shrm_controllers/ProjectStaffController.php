@@ -192,6 +192,9 @@ class ProjectStaffController extends CI_Controller
                 'user_id' => $userId,
                 'sitting_location' => $input['sitting_location'],
                 'asset_detail' => $input['assets'],
+				'ip_address' => $input['ip_address'],
+				'connection_type' => $input['connection_type'],
+				'antivirus' => $input['antivirus'],
                 'created_at' => date('Y-m-d H:i:s'),
                 'status' => 'Y'
             ];
@@ -361,6 +364,9 @@ class ProjectStaffController extends CI_Controller
                 'user_id' => $userId,
                 'sitting_location' => $input['sitting_location'] ?? '',
                 'asset_detail' => $input['assets'] ?? '',
+				'ip_address' => $input['ip_address']??'',
+				'connection_type' => $input['connection_type']??'',
+				'antivirus' => $input['antivirus']??'',
                 'updated_at' => date('Y-m-d H:i:s'),
                 'status' => 'Y'
             ];
@@ -375,7 +381,6 @@ class ProjectStaffController extends CI_Controller
             if (!$assetsResult) {
                 throw new Exception('Failed to save asset details.');
             }
-
             $this->shrm->trans_commit();
             $this->session->set_flashdata('success', 'User updated successfully.');
 
@@ -401,8 +406,7 @@ class ProjectStaffController extends CI_Controller
             $data['projects'] = $this->Project->getActiveProjects();
             $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
             $data['quarters'] = $this->ProjectStaff->getQuartersDetails($id);
-
-
+			$data['assetsDetails'] = $this->User->getAssetsByUserId($id);
             $this->load->view('shrm_views/pages/project_staff/show', $data);
         } catch (\Exception $e) {
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());

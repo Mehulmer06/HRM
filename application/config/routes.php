@@ -143,7 +143,8 @@ $route['profile'] = 'shrm_controllers/ProfileController/index';
 $route['profile/update'] = 'shrm_controllers/ProfileController/update';
 $route['update-phone'] = 'shrm_controllers/ProfileController/update_phone';
 $route['change-password'] = 'shrm_controllers/ProfileController/changePassword';
-$route['change-update'] = 'shrm_controllers/ProfileController/update_password';
+$route['update-password'] = 'shrm_controllers/ProfileController/update_password';
+$route['update-network']  = 'shrm_controllers/ProfileController/update_network';
 
 // Activity Module Routes
 $route['activity'] = 'shrm_controllers/ActivityController/index';

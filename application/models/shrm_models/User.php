@@ -43,8 +43,15 @@ class User extends CI_Model
         $query = $this->shrm->get();
         return $query->row_array();
     }
+	public function getAssetsByUserId($userId) {
+		$this->shrm->where('user_id', $userId);
+		$this->shrm->where('status', 'Y');
+		$query = $this->shrm->get('assets');
+		return $query->row_array();
+	}
 
-    public function updateUser($userId, $data)
+
+	public function updateUser($userId, $data)
     {
         $this->shrm->where('id', $userId);
         return $this->shrm->update('users', $data);
