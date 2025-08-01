@@ -186,32 +186,34 @@ include('./application/views/shrm_views/pages/message.php');
         </div>
 
         <div class="row form-row">
-            <div class="col-md-6">
+            <div class="col-md-6 d-none">
                 <label for="role" class="form-label">Role/Position *</label>
                 <select class="form-select select2" id="role" name="role">
                     <option value="">Select Role</option>
+					<option value="employee" selected>Employee</option>
                     <?php
-                    $roles = ['employee', 'viswambi'];
+                    /*$roles = ['employee', 'viswambi'];
                     foreach ($roles as $role): ?>
                         <option value="<?= $role ?>" <?= set_select('role', $role, (!empty($user['role']) && $user['role'] == $role)) ?>>
                             <?= ucfirst($role) ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php endforeach;*/ ?>
                 </select>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 d-none">
                 <label for="sub_role" class="form-label">Sub Role *</label>
                 <select class="form-select select2" id="sub_role" name="sub_role">
                     <option value="">Select Sub Role</option>
+					<option value="employee" selected>Employee</option>
                     <?php
-                    $sub_roles = ['admin', 'employee'];
+                    /*$sub_roles = ['admin', 'employee'];
                     foreach ($sub_roles as $sub): ?>
                         <option
                                 value="<?= $sub ?>" <?= set_select('sub_role', $sub, (!empty($user['category']) && $user['category'] == $sub)) ?>>
                             <?= ucfirst(str_replace('_', ' ', $sub)) ?>
                         </option>
-                    <?php endforeach; ?>
+                    <?php endforeach;*/ ?>
                 </select>
             </div>
         </div>
