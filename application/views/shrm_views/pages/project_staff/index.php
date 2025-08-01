@@ -14,7 +14,7 @@ include('./application/views/shrm_views/pages/message.php');
                 <a href="<?= base_url('dashboard') ?>">Dashboard</a> / <span class="text-muted">Project Staff</span>
             </nav>
         </div>
-        <a href="<?= base_url('project-staff/create') ?>" class="create-btn">
+        <a href="<?= base_url('project-staff/create') ?>" class="create-btn d-none">
             <i class="fas fa-plus"></i>
             Add New Staff
         </a>
@@ -262,98 +262,98 @@ $total_inactive = count($inactive_users);
 				'>',
 
 			buttons: [
-				{
-					extend: 'copyHtml5',
-					text: '<i class="fas fa-copy" style="color:#fff;"></i>',
-					titleAttr: 'Copy',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#6c757d',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#5a6268');
-						}, function () {
-							$(this).css('background-color', '#6c757d');
-						});
-					}
-				},
-				{
-					extend: 'excelHtml5',
-					text: '<i class="fas fa-file-excel" style="color:#fff;"></i>',
-					titleAttr: 'Export to Excel',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#28a745',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#218838');
-						}, function () {
-							$(this).css('background-color', '#28a745');
-						});
-					}
-				},
-				{
-					extend: 'pdfHtml5',
-					text: '<i class="fas fa-file-pdf" style="color:#fff;"></i>',
-					titleAttr: 'Export to PDF',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#dc3545',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#c82333');
-						}, function () {
-							$(this).css('background-color', '#dc3545');
-						});
-					}
-				},
-				{
-					extend: 'print',
-					text: '<i class="fas fa-print" style="color:#fff;"></i>',
-					titleAttr: 'Print',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#007bff',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#0069d9');
-						}, function () {
-							$(this).css('background-color', '#007bff');
-						});
-					}
-				}
+				// {
+				// 	extend: 'copyHtml5',
+				// 	text: '<i class="fas fa-copy" style="color:#fff;"></i>',
+				// 	titleAttr: 'Copy',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#6c757d',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#5a6268');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#6c757d');
+				// 		});
+				// 	}
+				// },
+				// {
+				// 	extend: 'excelHtml5',
+				// 	text: '<i class="fas fa-file-excel" style="color:#fff;"></i>',
+				// 	titleAttr: 'Export to Excel',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#28a745',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#218838');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#28a745');
+				// 		});
+				// 	}
+				// },
+				// {
+				// 	extend: 'pdfHtml5',
+				// 	text: '<i class="fas fa-file-pdf" style="color:#fff;"></i>',
+				// 	titleAttr: 'Export to PDF',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#dc3545',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#c82333');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#dc3545');
+				// 		});
+				// 	}
+				// },
+				// {
+				// 	extend: 'print',
+				// 	text: '<i class="fas fa-print" style="color:#fff;"></i>',
+				// 	titleAttr: 'Print',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#007bff',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#0069d9');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#007bff');
+				// 		});
+				// 	}
+				// }
 			],
 
 			language: {
@@ -397,98 +397,98 @@ $total_inactive = count($inactive_users);
 				'>',
 
 			buttons: [
-				{
-					extend: 'copyHtml5',
-					text: '<i class="fas fa-copy" style="color:#fff;"></i>',
-					titleAttr: 'Copy',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#6c757d',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#5a6268');
-						}, function () {
-							$(this).css('background-color', '#6c757d');
-						});
-					}
-				},
-				{
-					extend: 'excelHtml5',
-					text: '<i class="fas fa-file-excel" style="color:#fff;"></i>',
-					titleAttr: 'Export to Excel',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#28a745',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#218838');
-						}, function () {
-							$(this).css('background-color', '#28a745');
-						});
-					}
-				},
-				{
-					extend: 'pdfHtml5',
-					text: '<i class="fas fa-file-pdf" style="color:#fff;"></i>',
-					titleAttr: 'Export to PDF',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#dc3545',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#c82333');
-						}, function () {
-							$(this).css('background-color', '#dc3545');
-						});
-					}
-				},
-				{
-					extend: 'print',
-					text: '<i class="fas fa-print" style="color:#fff;"></i>',
-					titleAttr: 'Print',
-					className: '',
-					init: function(api, node, config) {
-						$(node).css({
-							'background-color': '#007bff',
-							'border': 'none',
-							'padding': '8px 12px',
-							'border-radius': '6px',
-							'margin-right': '6px',
-							'font-size': '16px',
-							'color': '#fff',
-							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
-							'transition': 'background 0.3s'
-						}).hover(function () {
-							$(this).css('background-color', '#0069d9');
-						}, function () {
-							$(this).css('background-color', '#007bff');
-						});
-					}
-				}
+				// {
+				// 	extend: 'copyHtml5',
+				// 	text: '<i class="fas fa-copy" style="color:#fff;"></i>',
+				// 	titleAttr: 'Copy',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#6c757d',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#5a6268');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#6c757d');
+				// 		});
+				// 	}
+				// },
+				// {
+				// 	extend: 'excelHtml5',
+				// 	text: '<i class="fas fa-file-excel" style="color:#fff;"></i>',
+				// 	titleAttr: 'Export to Excel',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#28a745',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#218838');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#28a745');
+				// 		});
+				// 	}
+				// },
+				// {
+				// 	extend: 'pdfHtml5',
+				// 	text: '<i class="fas fa-file-pdf" style="color:#fff;"></i>',
+				// 	titleAttr: 'Export to PDF',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#dc3545',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#c82333');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#dc3545');
+				// 		});
+				// 	}
+				// },
+				// {
+				// 	extend: 'print',
+				// 	text: '<i class="fas fa-print" style="color:#fff;"></i>',
+				// 	titleAttr: 'Print',
+				// 	className: '',
+				// 	init: function(api, node, config) {
+				// 		$(node).css({
+				// 			'background-color': '#007bff',
+				// 			'border': 'none',
+				// 			'padding': '8px 12px',
+				// 			'border-radius': '6px',
+				// 			'margin-right': '6px',
+				// 			'font-size': '16px',
+				// 			'color': '#fff',
+				// 			'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+				// 			'transition': 'background 0.3s'
+				// 		}).hover(function () {
+				// 			$(this).css('background-color', '#0069d9');
+				// 		}, function () {
+				// 			$(this).css('background-color', '#007bff');
+				// 		});
+				// 	}
+				// }
 			],
 
 			language: {

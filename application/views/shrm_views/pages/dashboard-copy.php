@@ -34,7 +34,7 @@ include('./application/views/shrm_views/pages/message.php');
     <div class="card mb-4 border-0 shadow-sm user-profile-card">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h6 class="mb-0 fw-semibold">User Profile</h6>
-            <a href="<?= base_url('profile') ?>" class="btn btn-outline-light btn-sm d-none">
+            <a href="<?= base_url('profile') ?>" class="btn btn-outline-light btn-sm">
                 More <i class="fas fa-chevron-down ms-1" id="moreIcon"></i>
             </a>
         </div>
@@ -233,7 +233,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn secondary">Click Here</a>
+                <a href="<?= base_url('work-progress') ?>" class="module-btn secondary">Click Here</a>
             </div>
         </div>
 
@@ -246,7 +246,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn success">Click Here</a>
+                <a href="<?= base_url('shrm/finance') ?>" class="module-btn success">Click Here</a>
             </div>
         </div>
 
@@ -259,7 +259,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn success">Click Here</a>
+                <a href="<?= base_url('leave') ?>" class="module-btn success">Click Here</a>
             </div>
         </div>
 
@@ -272,7 +272,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn info">Click Here</a>
+                <a href="<?= base_url('note') ?>" class="module-btn info">Click Here</a>
             </div>
         </div>
 
@@ -285,7 +285,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn warning">Click Here</a>
+                <a href="<?= base_url('request-issue') ?>" class="module-btn warning">Click Here</a>
             </div>
         </div>
 
@@ -298,7 +298,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn primary">Click Here</a>
+                <a href="<?= base_url('holiday') ?>" class="module-btn primary">Click Here</a>
             </div>
         </div>
     <?php elseif ($role == 'viswambi') : ?>

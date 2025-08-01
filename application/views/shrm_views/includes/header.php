@@ -134,9 +134,9 @@
             </div>
             <ul class="dropdown-menu dropdown-menu-end">
                 <?php if ($this->session->userdata('role') !== 'e') : ?>
-                    <li><a class="dropdown-item" href="<?= base_url('profile') ?>"><i class="fas fa-user me-2"></i>Profile</a>
+                    <li><a class="dropdown-item d-none" href="<?= base_url('profile') ?>"><i class="fas fa-user me-2"></i>Profile</a>
                     </li>
-                    <li><a class="dropdown-item" href="<?= base_url('change-password') ?>"><i
+                    <li><a class="dropdown-item d-none" href="<?= base_url('change-password') ?>"><i
                                     class="fas fa-cog me-2"></i>Settings</a></li>
                     <li>
                         <hr class="dropdown-divider">
