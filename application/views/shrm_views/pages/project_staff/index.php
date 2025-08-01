@@ -235,43 +235,269 @@ $total_inactive = count($inactive_users);
     // Initialize DataTables
     $(document).ready(function () {
         // Active Staff Table
-        $('#activeStaffTable').DataTable({
-            "processing": true,
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "lengthChange": true,
-            "pageLength": 10,
-            "language": {
-                "search": "Search Staff:",
-                "lengthMenu": "Show _MENU_ staff per page",
-                "info": "Showing _START_ to _END_ of _TOTAL_ staff members",
-                "emptyTable": "No active staff members found",
-                "zeroRecords": "No matching staff members found"
-            },
-        });
+		$('#activeStaffTable').DataTable({
+			processing: true,
+			paging: true,
+			searching: true,
+			ordering: true,
+			info: true,
+			autoWidth: false,
+			responsive: true,
+			lengthChange: true,
 
-        // Inactive Staff Table
+			lengthMenu: [
+				[10, 25, 50, 100, -1],
+				[10, 25, 50, 100, "All"]
+			],
+
+			dom:
+				'<"row align-items-center mb-3"' +
+				'<"col-md-6 d-flex gap-2 align-items-center"lB>' +
+				'<"col-md-6 text-md-end mt-2 mt-md-0"f>' +
+				'>' +
+				'<"row"<"col-12"tr>>' +
+				'<"row align-items-center mt-3"' +
+				'<"col-md-6"i>' +
+				'<"col-md-6 d-flex justify-content-end"p>' +  <!-- ✅ Fixed this line -->
+				'>',
+
+			buttons: [
+				{
+					extend: 'copyHtml5',
+					text: '<i class="fas fa-copy" style="color:#fff;"></i>',
+					titleAttr: 'Copy',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#6c757d',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#5a6268');
+						}, function () {
+							$(this).css('background-color', '#6c757d');
+						});
+					}
+				},
+				{
+					extend: 'excelHtml5',
+					text: '<i class="fas fa-file-excel" style="color:#fff;"></i>',
+					titleAttr: 'Export to Excel',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#28a745',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#218838');
+						}, function () {
+							$(this).css('background-color', '#28a745');
+						});
+					}
+				},
+				{
+					extend: 'pdfHtml5',
+					text: '<i class="fas fa-file-pdf" style="color:#fff;"></i>',
+					titleAttr: 'Export to PDF',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#dc3545',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#c82333');
+						}, function () {
+							$(this).css('background-color', '#dc3545');
+						});
+					}
+				},
+				{
+					extend: 'print',
+					text: '<i class="fas fa-print" style="color:#fff;"></i>',
+					titleAttr: 'Print',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#007bff',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#0069d9');
+						}, function () {
+							$(this).css('background-color', '#007bff');
+						});
+					}
+				}
+			],
+
+			language: {
+				search: "Search Staff:",
+				lengthMenu: "Show _MENU_ staff per page",
+				info: "Showing _START_ to _END_ of _TOTAL_ staff members",
+				emptyTable: "No active staff members found",
+				zeroRecords: "No matching staff members found"
+			}
+		});
+
+
+
+
+
+		// Inactive Staff Table
         $('#inactiveStaffTable').DataTable({
-            "processing": true,
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "lengthChange": true,
-            "pageLength": 10,
-            "language": {
-                "search": "Search Staff:",
-                "lengthMenu": "Show _MENU_ staff per page",
-                "info": "Showing _START_ to _END_ of _TOTAL_ staff members",
-                "emptyTable": "No inactive staff members found",
-                "zeroRecords": "No matching staff members found"
-            },
+			processing: true,
+			paging: true,
+			searching: true,
+			ordering: true,
+			info: true,
+			autoWidth: false,
+			responsive: true,
+			lengthChange: true,
+
+			lengthMenu: [
+				[10, 25, 50, 100, -1],
+				[10, 25, 50, 100, "All"]
+			],
+
+			dom:
+				'<"row align-items-center mb-3"' +
+				'<"col-md-6 d-flex gap-2 align-items-center"lB>' +
+				'<"col-md-6 text-md-end mt-2 mt-md-0"f>' +
+				'>' +
+				'<"row"<"col-12"tr>>' +
+				'<"row align-items-center mt-3"' +
+				'<"col-md-6"i>' +
+				'<"col-md-6 d-flex justify-content-end"p>' +  <!-- ✅ Fixed this line -->
+				'>',
+
+			buttons: [
+				{
+					extend: 'copyHtml5',
+					text: '<i class="fas fa-copy" style="color:#fff;"></i>',
+					titleAttr: 'Copy',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#6c757d',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#5a6268');
+						}, function () {
+							$(this).css('background-color', '#6c757d');
+						});
+					}
+				},
+				{
+					extend: 'excelHtml5',
+					text: '<i class="fas fa-file-excel" style="color:#fff;"></i>',
+					titleAttr: 'Export to Excel',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#28a745',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#218838');
+						}, function () {
+							$(this).css('background-color', '#28a745');
+						});
+					}
+				},
+				{
+					extend: 'pdfHtml5',
+					text: '<i class="fas fa-file-pdf" style="color:#fff;"></i>',
+					titleAttr: 'Export to PDF',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#dc3545',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#c82333');
+						}, function () {
+							$(this).css('background-color', '#dc3545');
+						});
+					}
+				},
+				{
+					extend: 'print',
+					text: '<i class="fas fa-print" style="color:#fff;"></i>',
+					titleAttr: 'Print',
+					className: '',
+					init: function(api, node, config) {
+						$(node).css({
+							'background-color': '#007bff',
+							'border': 'none',
+							'padding': '8px 12px',
+							'border-radius': '6px',
+							'margin-right': '6px',
+							'font-size': '16px',
+							'color': '#fff',
+							'box-shadow': '0 2px 6px rgba(0,0,0,0.1)',
+							'transition': 'background 0.3s'
+						}).hover(function () {
+							$(this).css('background-color', '#0069d9');
+						}, function () {
+							$(this).css('background-color', '#007bff');
+						});
+					}
+				}
+			],
+
+			language: {
+				search: "Search Staff:",
+				lengthMenu: "Show _MENU_ staff per page",
+				info: "Showing _START_ to _END_ of _TOTAL_ staff members",
+				emptyTable: "No active staff members found",
+				zeroRecords: "No matching staff members found"
+			}
         });
 
         // Tab switching with table refresh
