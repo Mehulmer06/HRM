@@ -11,7 +11,7 @@ include('./application/views/shrm_views/pages/message.php');
                 Project Staff Management
             </h1>
             <nav class="breadcrumb-nav">
-                <a href="<?= base_url('dashboard') ?>">Dashboard</a> / <span class="text-muted">Project Staff</span>
+                <a href="<?= base_url('shrm/dashboard') ?>">Dashboard</a> / <span class="text-muted">Project Staff</span>
             </nav>
         </div>
         <a href="<?= base_url('project-staff/create') ?>" class="create-btn d-none">

@@ -9,7 +9,7 @@
                 Staff Details
             </h1>
             <nav class="breadcrumb-nav">
-                <a href="<?= base_url('dashboard'); ?>">Dashboard</a> /
+                <a href="<?= base_url('shrm/dashboard'); ?>">Dashboard</a> /
                 <a href="<?= base_url('project-staff'); ?>">Project Staff</a> /
                 <span class="text-muted"><?= !empty($user['name']) ? $user['name'] : '-' ?></span>
             </nav>
