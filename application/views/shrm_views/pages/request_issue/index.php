@@ -20,7 +20,7 @@ include('./application/views/shrm_views/pages/message.php');
         </div>
     </div>
 </div>
-
+<?php if ($this->session->userdata('role') == 'employee') : ?>
 <!-- Request Form Card -->
 <div class="form-card">
     <div class="form-section-title">
@@ -53,30 +53,36 @@ include('./application/views/shrm_views/pages/message.php');
                 // Assuming $users['contract_users'] and $users['admin_user'] are passed to the view
                 $contract_users = $users['contract_users'];
                 $admin_user = $users['admin_user'];
+                $network_user = $users['network_user'];
                 ?>
 
                 <select class="form-select <?= form_error('submitted_to') ? 'is-invalid' : '' ?>" name="submitted_to"
                         id="submitted_to">
                     <option value="">Select Submitted</option>
 
-                    <!-- Contract-based Users -->
                     <?php foreach ($contract_users as $user): ?>
-
-                        <?php
-                        $displayName = stripos($user->name, 'viswambi') !== false
-                            ? 'Admin Vishwabi – Administrator'
-                            : $user->name . (!empty($user->designation) ? ' – ' . $user->designation : '');
-                        ?>
-                        <option value="<?= $user->id ?>" <?= set_select('submitted_to', $user->id) ?>>
-                            <?= htmlspecialchars($displayName) ?>
-                        </option>
-
+                        <?php if (isset($user->role) && strtolower($user->role) === 'viswambi'): ?>
+                            <?php
+                            $displayName = 'Admin Vishwabi – Administrator';
+                            ?>
+                            <option value="<?= $user->id ?>" <?= set_select('submitted_to', $user->id) ?>>
+                                <?= htmlspecialchars($displayName) ?>
+                            </option>
+                        <?php endif; ?>
                     <?php endforeach; ?>
+
 
                     <!-- Special Admin User from separate DB -->
                     <?php if ($admin_user && $admin_user->e_mail != $session_email): ?>
                         <option value="<?= "00" . $admin_user->id ?>" <?= set_select('submitted_to', $admin_user->e_mail) ?>>
                             Admin Inflibnet – Administrator
+                        </option>
+                    <?php endif; ?>
+
+                    <!-- Special Network User from separate DB -->
+                    <?php if ($network_user && $network_user->e_mail != $session_email): ?>
+                        <option value="<?= "00" . $network_user->id ?>" <?= set_select('submitted_to', $network_user->e_mail) ?>>
+                            Network
                         </option>
                     <?php endif; ?>
 
@@ -112,7 +118,7 @@ include('./application/views/shrm_views/pages/message.php');
         </div>
     </form>
 </div>
-
+<?php endif  ?>
 <!-- Request/Issue Tabs -->
 <div class="staff-tabs">
     <ul class="nav nav-tabs" id="requestTabs" role="tablist">

@@ -17,8 +17,15 @@ class ProjectStaff extends CI_Model
         AND cd.deleted_at IS NULL 
         AND NOW() BETWEEN cd.join_date AND cd.end_date", 'left');
 
+        // Check session role
+        if ($this->session->userdata('role') === 'employee') {
+            $user_id = $this->session->userdata('user_id');
+            $this->shrm->where('u.id', $user_id);
+        }
+
         return $this->shrm->get()->result();
     }
+
 
     /**
      * Update user
