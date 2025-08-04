@@ -63,10 +63,10 @@ $route['shrm/test'] = 'shrm_controllers/DashboardController/test';
 $route['project-staff'] = 'shrm_controllers/ProjectStaffController/index';
 $route['project-staff/create'] = 'shrm_controllers/ProjectStaffController/create';
 $route['project-staff/store'] = 'shrm_controllers/ProjectStaffController/store';
-$route['project-staff/edit/(:num)'] = 'shrm_controllers/ProjectStaffController/edit/$1';
+$route['project-staff/edit/(:any)'] = 'shrm_controllers/ProjectStaffController/edit/$1';
 $route['project-staff/update/(:num)'] = 'shrm_controllers/ProjectStaffController/update/$1';
 $route['project-staff/toggle-status'] = 'shrm_controllers/ProjectStaffController/toggle_status';
-$route['project-staff/show/(:num)'] = 'shrm_controllers/ProjectStaffController/show/$1';
+$route['project-staff/show/(:any)'] = 'shrm_controllers/ProjectStaffController/show/$1';
 $route['project-staff/renewal-contract/(:num)'] = 'shrm_controllers/ProjectStaffController/renewContract/$1';
 
 

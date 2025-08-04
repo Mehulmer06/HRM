@@ -87,7 +87,7 @@
                 </label>
                 <div class="input-wrapper">
                     <input type="password" class="form-control" name="password" id="password"
-                           placeholder="Enter your password" required value="Test@123">
+                           placeholder="Enter your password" required>
                     <div class="error-message">Password is required</div>
                 </div>
             </div>

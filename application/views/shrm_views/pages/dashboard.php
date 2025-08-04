@@ -228,7 +228,7 @@ include('./application/views/shrm_views/pages/message.php');
 
     <?php if ($role == 'employee') : ?>
         <!-- 1. Project Man-Power Resource - Show for admin category employees -->
-        <?php if ($this->session->userdata('category') == 'employee') : ?>
+        <?php if ($this->session->userdata('category') == 'employee' || $this->session->userdata('category') == 'admin') : ?>
             <div class="module-card">
                 <div class="module-header">
                     <div class="module-info">

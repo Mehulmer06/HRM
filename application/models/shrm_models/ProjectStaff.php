@@ -18,7 +18,7 @@ class ProjectStaff extends CI_Model
         AND NOW() BETWEEN cd.join_date AND cd.end_date", 'left');
 
         // Check session role
-        if ($this->session->userdata('role') === 'employee') {
+        if ($this->session->userdata('role') === 'employee' && $this->session->userdata('category') !== 'admin') {
             $user_id = $this->session->userdata('user_id');
             $this->shrm->where('u.id', $user_id);
         }
