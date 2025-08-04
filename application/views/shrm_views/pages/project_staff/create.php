@@ -713,31 +713,35 @@ include('./application/views/shrm_views/pages/message.php');
         });
 
 
-        // Auto-calculate contract end date
-        $('#join_date, #contract_months').on('change input', function () {
-            const joinDate = $('#join_date').val();
-            const contractMonths = $('#contract_months').val();
+		// Auto-calculate contract end date
+		$('#join_date, #contract_months').on('change input', function () {
+			const joinDate = $('#join_date').val();
+			const contractMonths = $('#contract_months').val();
 
-            if (joinDate && contractMonths) {
-                const startDate = new Date(joinDate);
-                const endDate = new Date(startDate);
-                endDate.setMonth(startDate.getMonth() + parseInt(contractMonths));
+			if (joinDate && contractMonths) {
+				const startDate = new Date(joinDate);
+				const endDate = new Date(startDate);
+				endDate.setMonth(startDate.getMonth() + parseInt(contractMonths));
 
-                const formattedEndDate = endDate.toISOString().split('T')[0];
-                $('#end_date').val(formattedEndDate);
-            } else {
-                $('#end_date').val('');
-            }
-        });
+				// Subtract 1 day to make it end the day before
+				endDate.setDate(endDate.getDate() - 1);
 
-        // Auto-set join date to today if empty
-        const $joinDateInput = $('#join_date');
-        if (!$joinDateInput.val()) {
-            const today = new Date().toISOString().split('T')[0];
-            $joinDateInput.val(today);
-        }
+				const formattedEndDate = endDate.toISOString().split('T')[0];
+				$('#end_date').val(formattedEndDate);
+			} else {
+				$('#end_date').val('');
+			}
+		});
 
-        // Reset form handler
+		// Auto-set join date to today if empty
+		const $joinDateInput = $('#join_date');
+		if (!$joinDateInput.val()) {
+			const today = new Date().toISOString().split('T')[0];
+			$joinDateInput.val(today);
+		}
+
+
+		// Reset form handler
         $('button[type="reset"]').on('click', function () {
             // Reset Select2 elements
             $('.select2').val(null).trigger('change');
