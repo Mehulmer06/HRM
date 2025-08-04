@@ -230,9 +230,16 @@ class ProjectStaffController extends CI_Controller
         redirect('project-staff');
     }
 
-    public function edit($id)
+    public function edit($encryptedId)
     {
         try {
+            $id = $this->decryptId($encryptedId);
+            if ($id === null) {
+                $this->session->set_flashdata('error', 'Invalid user ID.');
+                redirect('project-staff');
+                return;
+            }
+
             $data['user'] = $this->User->getUserById($id);
             if (!$data['user']) {
                 $this->session->set_flashdata('error', 'Error: ' . 'USer not found.');
@@ -393,9 +400,15 @@ class ProjectStaffController extends CI_Controller
     }
 
 
-    public function show($id)
+    public function show($encryptedId)
     {
         try {
+            $id = $this->decryptId($encryptedId);
+            if ($id === null) {
+                $this->session->set_flashdata('error', 'Invalid user ID.');
+                redirect('project-staff');
+                return;
+            }
             $data['user'] = $this->User->getUserById($id);
             if (!$data['user']) {
                 $this->session->set_flashdata('error', 'Error: User not found.');
@@ -596,5 +609,27 @@ class ProjectStaffController extends CI_Controller
             $this->session->set_flashdata('error', ' Internal Server error.');
             redirect('project-staff');
         }
+    }
+
+    protected function decryptId(string $encodedId): ?int
+    {
+        $secretMultiplier = 15395;
+
+        // base-36 → decimal string
+        $decimalString = base_convert($encodedId, 36, 10);
+
+        // must be all digits and divisible by our multiplier
+        if (!ctype_digit($decimalString) || ((int)$decimalString) % $secretMultiplier !== 0) {
+            return null;
+        }
+
+        // recover original ID
+        return intdiv((int)$decimalString, $secretMultiplier);
+    }
+
+    protected function encryptId(int $id): string
+    {
+        $secretMultiplier = 15395;
+        return base_convert($id * $secretMultiplier, 10, 36);
     }
 }

@@ -14,10 +14,12 @@ include('./application/views/shrm_views/pages/message.php');
                 <a href="<?= base_url('shrm/dashboard') ?>">Dashboard</a> / <span class="text-muted">Project Staff</span>
             </nav>
         </div>
+        <?php if ($this->session->userdata('role') == 'e' || $this->session->userdata('category') == 'admin') : ?>
         <a href="<?= base_url('project-staff/create') ?>" class="create-btn ">
             <i class="fas fa-plus"></i>
             Add New Staff
         </a>
+        <?php endif  ?>
     </div>
 </div>
 
@@ -103,7 +105,8 @@ $total_inactive = count($inactive_users);
                                         <img src="<?php echo $avatar_url; ?>" class="staff-photo me-3"
                                              alt="<?php echo htmlspecialchars($user->name); ?>">
                                         <div>
-                                            <p class="staff-name"><a class="text-decoration-none" href="<?= base_url('project-staff/show/' . $user->id); ?>"><?php echo htmlspecialchars($user->name); ?>
+                                            <p class="staff-name"><a class="text-decoration-none" href="<?= base_url('project-staff/show/' . base_convert($user->id * 15395, 10, 36)) ?>
+"><?php echo htmlspecialchars($user->name); ?>
                                                 </a></p>
                                             <p class="staff-department">
                                                 <?php echo !empty($user->designation) ? ucfirst(htmlspecialchars($user->designation)) : 'N/A'; ?>
@@ -118,16 +121,16 @@ $total_inactive = count($inactive_users);
                                 <td><span class="status-badge status-active">Active</span></td>
                                 <td>
 
-                                    <button class="action-btn btn-edit" data-action="edit"
+                                    <a href="<?= base_url('project-staff/edit/' . base_convert($user->id * 15395, 10, 36)) ?>" class="btn btn-sm btn-edit" data-action="edit"
                                             data-id="<?php echo $user->id; ?>" title="Edit">
                                         <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="action-btn btn-toggle" data-id="<?php echo $user->id; ?>"
-                                            data-status="deactivate"
-                                            data-name="<?php echo htmlspecialchars($user->name); ?>"
-                                            title="Deactivate">
-                                        <i class="fas fa-user-times"></i>
-                                    </button>
+                                    </a>
+<!--                                    <button class="action-btn btn-toggle" data-id="--><?php //echo $user->id; ?><!--"-->
+<!--                                            data-status="deactivate"-->
+<!--                                            data-name="--><?php //echo htmlspecialchars($user->name); ?><!--"-->
+<!--                                            title="Deactivate">-->
+<!--                                        <i class="fas fa-user-times"></i>-->
+<!--                                    </button>-->
                                 </td>
                             </tr>
                         <?php endforeach; ?>
