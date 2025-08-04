@@ -598,17 +598,16 @@
             ]
         });
 
-        // Set default start date to today
-        $('#modal_start_date').val(new Date().toISOString().split('T')[0]);
+		// Set default start date to today
+		$('#modal_start_date').val(new Date().toISOString().split('T')[0]);
 
-        // Salary tooltip formatting
-        $('#modal_salary').on('input', function () {
-            let value = parseFloat(this.value);
-            if (!isNaN(value)) {
-                $(this).attr('title', `₹${value.toLocaleString('en-IN')}`);
-            }
-        });
-
+		// Salary tooltip formatting
+		$('#modal_salary').on('input', function () {
+			let value = parseFloat(this.value);
+			if (!isNaN(value)) {
+				$(this).attr('title', `₹${value.toLocaleString('en-IN')}`);
+			}
+		});
 
 		// Set today's date as default if empty
 		const $joinDateInput = $('#modal_start_date');
@@ -617,18 +616,24 @@
 			$joinDateInput.val(today);
 		}
 
-		// Calculate End Date
+		// Calculate End Date (exclusive)
 		$('#modal_start_date, #contract_months').on('change input', function () {
 			const joinDate = $('#modal_start_date').val();
-			const contractMonths = $('#contract_months').val();
+			const contractMonths = parseInt($('#contract_months').val());
+
 			if (joinDate && contractMonths) {
 				const startDate = new Date(joinDate);
-				const endDate = new Date(startDate.setMonth(startDate.getMonth() + parseInt(contractMonths)));
+				const endDate = new Date(startDate); // Clone the date
+
+				endDate.setMonth(endDate.getMonth() + contractMonths);
+				endDate.setDate(endDate.getDate() - 1); // Subtract 1 day to make it exclusive
+
 				$('#modal_end_date').val(endDate.toISOString().split('T')[0]);
 			} else {
 				$('#modal_end_date').val('');
 			}
 		});
+
 
 		// Reset form for Add
 		$('[data-bs-target="#addContractModal"]').on('click', function () {
