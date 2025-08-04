@@ -43,15 +43,17 @@ class User extends CI_Model
         $query = $this->shrm->get();
         return $query->row_array();
     }
-	public function getAssetsByUserId($userId) {
-		$this->shrm->where('user_id', $userId);
-		$this->shrm->where('status', 'Y');
-		$query = $this->shrm->get('assets');
-		return $query->row_array();
-	}
+
+    public function getAssetsByUserId($userId)
+    {
+        $this->shrm->where('user_id', $userId);
+        $this->shrm->where('status', 'Y');
+        $query = $this->shrm->get('assets');
+        return $query->row_array();
+    }
 
 
-	public function updateUser($userId, $data)
+    public function updateUser($userId, $data)
     {
         $this->shrm->where('id', $userId);
         return $this->shrm->update('users', $data);
@@ -112,10 +114,23 @@ class User extends CI_Model
             ->get()
             ->row();
 
+        $network_user = $this->db
+            ->select('*')
+            ->from('user')
+            ->where('role', 'e')
+            ->where('category', 'e')
+            ->like('e_mail', 'mohit')
+            ->where('is_active', 'y')
+            ->where('is_deleted', 'n')
+            ->limit(1)
+            ->get()
+            ->row();
+
         // === Combine and return both ===
         return [
             'contract_users' => $contract_users,
-            'admin_user' => $admin_user
+            'admin_user' => $admin_user,
+            'network_user' => $network_user
         ];
     }
 
@@ -167,6 +182,15 @@ class User extends CI_Model
                 ->where('contract_details.status', 'complete')
                 ->get()
                 ->result(); // use ->result() to return all completed contracts
+    }
+    public function get_user_by_request($user_id){
+        return $this->shrm
+            ->select('name as Username')
+            ->where('id', $user_id)
+            ->where('status', 'Y')
+            ->get('users')
+            ->row();
+
     }
 
 

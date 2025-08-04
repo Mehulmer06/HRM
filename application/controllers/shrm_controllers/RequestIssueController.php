@@ -74,6 +74,9 @@ class RequestIssueController extends CI_Controller
             $role = $this->session->userdata('role');
             $category = $this->session->userdata('category');
 
+            $submitted_to = $this->input->post('submitted_to', true);
+            $title  =  $this->input->post('title', true);
+            $description = $this->input->post('description', false);
             // Prefix user_id if both role and category are 'e'
             if (($role === 'e' && $category === 'e') || $role === 'a') {
                 $user_id = '00' . $user_id;
@@ -82,9 +85,9 @@ class RequestIssueController extends CI_Controller
             // Prepare insert data
             $data = [
                 'user_id' => $user_id,
-                'title' => $this->input->post('title', true),
-                'submitted_to' => $this->input->post('submitted_to', true),
-                'description' => $this->input->post('description', false), // allow HTML
+                'title' => $title,
+                'submitted_to' => $submitted_to,
+                'description' =>$description, // allow HTML
                 'document' => $fileName,
                 'request_date' => date('Y-m-d H:i:s'),
                 'status' => 'in_progress',
@@ -93,6 +96,19 @@ class RequestIssueController extends CI_Controller
 
             // Insert into DB
             $this->shrm->insert('request_issues', $data);
+            $user =  $this->User->get_user_by_request($user_id);
+            if($submitted_to==='0024'){
+                $data = [
+                    'email'=>'mohit@inflibnet.ac.in',
+                    'subject' =>$title,
+                    'description' => $description,
+                    'document' => $fileName??'',
+                    'user_name'  => isset($user->Username) ? $user->Username : 'Unknown User'
+                ];
+                $template = "shrm_views/pages/email/system_issue_notification";
+                $this->sendEmial($data,$template);
+            }
+
 
             $this->session->set_flashdata('success', 'Request submitted successfully!');
             redirect('request-issue');
@@ -223,5 +239,30 @@ class RequestIssueController extends CI_Controller
 
         $updated = $this->requestIssue->updateStatus($id, ['status' => $status]);
         echo json_encode(['success' => $updated]);
+    }
+    public function sendEmial($data,$template)
+    {
+
+        $this->load->config('email');
+        $this->load->library('email');
+
+        $this->email->from('no-reply@myapp.com', 'MyApp');
+        $this->email->to($data['email']);
+        $this->email->cc('manoj1@inflibnet.ac.in, gaurav1@inflibnet.ac.in');
+        $this->email->subject($data['subject']);
+
+        $message = $this->load->view($template, $data, TRUE);
+        $this->email->message($message);
+
+        if (!empty($data['document']) && file_exists(FCPATH . 'uploads/request_issue' . $data['document'])) {
+            $this->email->attach(FCPATH . 'uploads/request_issue' . $data['document']);
+        }
+
+        if ($this->email->send()) {
+            echo 'Email sent successfully!';
+        } else {
+            echo 'Email failed.<br>';
+            echo $this->email->print_debugger();
+        }
     }
 }

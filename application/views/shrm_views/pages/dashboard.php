@@ -89,9 +89,27 @@ include('./application/views/shrm_views/pages/message.php');
 <?php endif; ?>
 <!-- Modules Grid -->
 <div class="modules-grid">
-    <?php $role = $this->session->userdata('role'); ?>
+    <?php $role = $this->session->userdata('role');
+    $email = $this->session->userdata('e_mail');?>
 
-    <?php if ($role == 'e' || $role == 'a') : ?>
+    <?php if ($this->session->userdata('e_mail') == 'mohit@inflibnet.ac.in') : ?>
+        <!-- Only show Request/Issue for mohit@inflibnet.ac.in -->
+        <div class="module-card">
+            <div class="module-header">
+                <div class="module-info">
+                    <i class="fas fa-clipboard-list icon"></i>
+                    <h3>Request/Issue</h3>
+                </div>
+            </div>
+            <div class="module-body">
+                <a href="" class="module-btn warning">Click Here</a>
+            </div>
+        </div>
+    <?php endif ?>
+
+
+
+    <?php if (($role == 'e' || $role == 'a')  && $email != "mohit@inflibnet.ac.in") : ?>
         <!-- 1. Project Man Power Resource -->
         <div class="module-card">
             <div class="module-header">
@@ -114,7 +132,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('work-progress') ?>" class="module-btn secondary">Click Here</a>
+                <a href="" class="module-btn secondary">Click Here</a>
             </div>
         </div>
 
@@ -127,7 +145,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('note') ?>" class="module-btn info">Click Here</a>
+                <a href="" class="module-btn info">Click Here</a>
             </div>
         </div>
 
@@ -140,7 +158,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('leave') ?>" class="module-btn success">Click Here</a>
+                <a href="" class="module-btn success">Click Here</a>
             </div>
         </div>
 
@@ -153,7 +171,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('request-issue') ?>" class="module-btn warning">Click Here</a>
+                <a href="" class="module-btn warning">Click Here</a>
             </div>
         </div>
 
@@ -166,7 +184,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('shrm/finance') ?>" class="module-btn success">Click Here</a>
+                <a href="" class="module-btn success">Click Here</a>
             </div>
         </div>
 
@@ -210,7 +228,7 @@ include('./application/views/shrm_views/pages/message.php');
 
     <?php if ($role == 'employee') : ?>
         <!-- 1. Project Man-Power Resource - Show for admin category employees -->
-        <?php if ($this->session->userdata('category') == 'admin') : ?>
+        <?php if ($this->session->userdata('category') == 'employee') : ?>
             <div class="module-card">
                 <div class="module-header">
                     <div class="module-info">
@@ -233,7 +251,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn secondary">Click Here</a>
+                <a href="" class="module-btn secondary">Click Here</a>
             </div>
         </div>
 
@@ -246,7 +264,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn success">Click Here</a>
+                <a href="" class="module-btn success">Click Here</a>
             </div>
         </div>
 
@@ -259,7 +277,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn success">Click Here</a>
+                <a href="" class="module-btn success">Click Here</a>
             </div>
         </div>
 
@@ -272,7 +290,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn info">Click Here</a>
+                <a href="" class="module-btn info">Click Here</a>
             </div>
         </div>
 
@@ -285,7 +303,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn warning">Click Here</a>
+                <a href="" class="module-btn warning">Click Here</a>
             </div>
         </div>
 
@@ -298,7 +316,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="#" class="module-btn primary">Click Here</a>
+                <a href="" class="module-btn primary">Click Here</a>
             </div>
         </div>
     <?php elseif ($role == 'viswambi') : ?>
@@ -324,7 +342,7 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('note') ?>" class="module-btn info">Click Here</a>
+                <a href="" class="module-btn info">Click Here</a>
             </div>
         </div>
 
@@ -337,14 +355,14 @@ include('./application/views/shrm_views/pages/message.php');
                 </div>
             </div>
             <div class="module-body">
-                <a href="<?= base_url('request-issue') ?>" class="module-btn warning">Click Here</a>
+                <a href="" class="module-btn warning">Click Here</a>
             </div>
         </div>
     <?php endif; ?>
 
 </div>
 
-<?php if ($this->session->userdata('role') == 'e' || $this->session->userdata('role') == 'employee') : ?>
+<?php if (($this->session->userdata('role') == 'e' || $this->session->userdata('role') == 'employee' ) && $email != "mohit@inflibnet.ac.in") : ?>
     <!-- Leave Tabs Section -->
     <div class="staff-tabs">
         <div class="page-header">

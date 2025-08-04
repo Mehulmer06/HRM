@@ -14,7 +14,7 @@ include('./application/views/shrm_views/pages/message.php');
                 <a href="<?= base_url('shrm/dashboard') ?>">Dashboard</a> / <span class="text-muted">Project Staff</span>
             </nav>
         </div>
-        <a href="<?= base_url('project-staff/create') ?>" class="create-btn d-none">
+        <a href="<?= base_url('project-staff/create') ?>" class="create-btn ">
             <i class="fas fa-plus"></i>
             Add New Staff
         </a>
