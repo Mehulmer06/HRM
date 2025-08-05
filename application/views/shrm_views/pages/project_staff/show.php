@@ -36,7 +36,7 @@
         <?php endif; ?>
         <div class="detail-info">
             <h1><?= !empty($user['name']) ? $user['name'] : '-' ?></h1>
-            <p><?= (!empty($contract['designation']) ? $contract['designation'] : '-') . ' • ' . (!empty($user['department']) ? $user['department'] : '-') ?></p>
+            <p><?= (!empty($contract['designation']) ? $contract['designation'] : '-') . ' • ' . (!empty(ucwords($user['department'])) ? ucwords($user['department']) : '-') ?></p>
             <div class="mt-2">
                 <span class="status-badge status-<?= ($user['status'] ?? '') === 'Y' ? 'active' : 'inactive' ?>">
                     <?= ($user['status'] ?? '') === 'Y' ? 'Active' : 'Inactive' ?>
@@ -105,7 +105,7 @@
         <div class="info-grid">
             <div class="info-item">
                 <div class="info-label">Department</div>
-                <div class="info-value"><?= !empty($user['department']) ? $user['department'] : '-' ?></div>
+                <div class="info-value"><?= !empty(ucwords($user['department'])) ? ucwords($user['department']) : '-' ?></div>
             </div>
             <div class="info-item">
                 <div class="info-label">Current Designation</div>
@@ -128,24 +128,30 @@
             <div class="info-item">
                 <div class="info-label">Years of Service</div>
                 <div class="info-value">
-                    <?php
-                    if (!empty($contract['contract_month'])) {
-                        $months = (int)$contract['contract_month'];
-                        $years = floor($months / 12);
-                        $remainingMonths = $months % 12;
+					<?php
+					//echo $experienceCalculation[0]['join_date'];
+					if (!empty($experienceCalculation[0]['join_date'])) {
+						$joinDate = new DateTime($experienceCalculation[0]['join_date']);
+						$today = new DateTime(); // today's date
 
-                        $parts = [];
-                        if ($years > 0) {
-                            $parts[] = $years . ' ' . ($years === 1 ? 'Year' : 'Years');
-                        }
-                        if ($remainingMonths > 0) {
-                            $parts[] = $remainingMonths . ' ' . ($remainingMonths === 1 ? 'Month' : 'Months');
-                        }
-                        echo !empty($parts) ? implode(' ', $parts) : '-';
-                    } else {
-                        echo '-';
-                    }
-                    ?>
+						$interval = $joinDate->diff($today); // get the difference
+
+						$years = $interval->y;
+						$months = $interval->m;
+
+						$parts = [];
+						if ($years > 0) {
+							$parts[] = $years . ' ' . ($years === 1 ? 'Year' : 'Years');
+						}
+						if ($months > 0) {
+							$parts[] = $months . ' ' . ($months === 1 ? 'Month' : 'Months');
+						}
+
+						echo !empty($parts) ? implode(' ', $parts) : 'Less than a month';
+					} else {
+						echo '-';
+					}
+					?>
                 </div>
             </div>
         </div>
@@ -260,7 +266,7 @@
 		</div>
 		<div class="info-item">
 			<div class="info-label">Internet Connection</div>
-			<div class="info-value"><?= !empty($assetsDetails['connection_type']) ? $assetsDetails['connection_type'] : '-' ?></div>
+			<div class="info-value"><?= !empty(ucfirst($assetsDetails['connection_type'])) ? ucfirst($assetsDetails['connection_type']) : '-' ?></div>
 		</div>
 		<div class="info-item">
 			<div class="info-label">Antivirus</div>
@@ -367,8 +373,12 @@
 					<input type="hidden" name="contract_id" id="contract_id" value="">
 					<div class="col-md-12">
 						<label for="organization" class="form-label">Organization</label>
-						<input type="text" class="form-control" placeholder="Enter organization name (e.g., Vishwamabhi Security Agency)" name="organization"
-							   id="organization"/>
+						<select class="form-select" name="organization" id="organization">
+							<option>Select Organization</option>
+							<option value="Bhakti Management Services Private Limited">Bhakti Management Services Private Limited</option>
+							<option value="Viswambi Security Agency Pvt.Ltd">Viswambi Security Agency Pvt.Ltd</option>
+						</select>
+
 					</div>
                     <div class="row mb-3">
                         <div class="col-md-6">

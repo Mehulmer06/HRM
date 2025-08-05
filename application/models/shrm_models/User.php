@@ -43,6 +43,15 @@ class User extends CI_Model
         $query = $this->shrm->get();
         return $query->row_array();
     }
+	public function experienceCalculation($userId){
+		$this->shrm->select('contract_details.*, projects.*, contract_details.status as status');
+		$this->shrm->from('contract_details');
+		$this->shrm->join('projects', 'contract_details.project_name = projects.id', 'inner');
+		$this->shrm->where('contract_details.user_id', $userId);
+		$this->shrm->limit(1);
+		$query = $this->shrm->get();
+		return $query->result_array();
+	}
 
     public function getAssetsByUserId($userId)
     {
