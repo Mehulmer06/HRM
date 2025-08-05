@@ -94,11 +94,12 @@ class ProjectStaff extends CI_Model
 
     public function getContractDetails($userId)
     {
-        $this->shrm->select('contract_details.*, contract_details.project_name as contractProjectId,contract_details.id as contractId ,projects.*,contract_details.status as status');
+        $this->shrm->select('contract_details.*, contract_details.project_name as contractProjectId,contract_details.id as contractId ,contract_details.join_date,projects.*,contract_details.status as status');
         $this->shrm->from('contract_details');
         $this->shrm->join('projects', 'contract_details.project_name = projects.id', 'inner');
         $this->shrm->where('contract_details.user_id', $userId);
         // $this->shrm->where('contract_details.status', 'active');
+		$this->shrm->order_by('contract_details.join_date', 'ASC');
         $query = $this->shrm->get();
         return $query->result_array();
 

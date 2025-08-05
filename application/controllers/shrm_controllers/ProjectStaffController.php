@@ -416,6 +416,8 @@ class ProjectStaffController extends CI_Controller
             }
 
             $data['contract'] = $this->User->getContractByUserId($id);
+			$data['experienceCalculation'] = $this->User->experienceCalculation($id);
+			//print_r($data['experienceCalculation']);exit;
             $data['projects'] = $this->Project->getActiveProjects();
             $data['contractList'] = $this->ProjectStaff->getContractDetails($id);
             $data['quarters'] = $this->ProjectStaff->getQuartersDetails($id);
