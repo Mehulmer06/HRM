@@ -144,7 +144,7 @@
 							$parts[] = $years . ' ' . ($years === 1 ? 'Year' : 'Years');
 						}
 						if ($months > 0) {
-							$parts[] = $months . ' ' . ($months === 1 ? 'Month' : 'Months');
+							$parts[] = $months . '' . ($months === 1 ? 'Month' : 'Months');
 						}
 
 						echo !empty($parts) ? implode(' ', $parts) : 'Less than a month';
@@ -266,8 +266,17 @@
 		</div>
 		<div class="info-item">
 			<div class="info-label">Internet Connection</div>
-			<div class="info-value"><?= !empty(ucfirst($assetsDetails['connection_type'])) ? ucfirst($assetsDetails['connection_type']) : '-' ?></div>
+			<div class="info-value">
+				<?php
+				if (is_array($assetsDetails) && !empty($assetsDetails['connection_type'])) {
+					echo ucfirst($assetsDetails['connection_type']);
+				} else {
+					echo '-';
+				}
+				?>
+			</div>
 		</div>
+
 		<div class="info-item">
 			<div class="info-label">Antivirus</div>
 			<div class="info-value"><?= !empty($assetsDetails['antivirus']) ? $assetsDetails['antivirus'] : '-' ?></div>
@@ -376,7 +385,7 @@
 						<select class="form-select" name="organization" id="organization">
 							<option>Select Organization</option>
 							<option value="Bhakti Management Services Private Limited">Bhakti Management Services Private Limited</option>
-							<option value="Viswambi Security Agency Pvt.Ltd">Viswambi Security Agency Pvt.Ltd</option>
+							<option value="Viswambi Security Agency Pvt. Ltd">Viswambi Security Agency Pvt. Ltd</option>
 						</select>
 
 					</div>
