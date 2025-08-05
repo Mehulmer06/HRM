@@ -429,6 +429,7 @@ class ProjectStaffController extends CI_Controller
 
     public function renewContract($id)
     {
+        $encId = $this->encryptId($id);
         try {
 			$this->form_validation->set_rules('organization', 'organization', 'required');
             $this->form_validation->set_rules('modal_designation', 'Designation', 'required');
@@ -441,7 +442,7 @@ class ProjectStaffController extends CI_Controller
 
             if ($this->form_validation->run() === FALSE) {
                 $this->session->set_flashdata('error', validation_errors());
-                redirect('project-staff/renewal-contract/' . $id);
+                redirect('project-staff/renewal-contract/' . $encId);
                 return;
             }
 
@@ -498,7 +499,7 @@ class ProjectStaffController extends CI_Controller
                 'salary' => $this->input->post('salary'),
                 'location' => $this->input->post('location'),
                 'project_name' => $this->input->post('project_name'),
-                'status' => 'active',
+//                'status' => 'active',
                 'created_at' => date('Y-m-d H:i:s')
             ];
 			if (!empty($filename)) {
@@ -510,10 +511,11 @@ class ProjectStaffController extends CI_Controller
 				$this->shrm->update('contract_details', $data);
 				$this->session->set_flashdata('success', 'Contract updated successfully.');
 			}else{
+                $data['status'] = 'active';
 				$this->shrm->insert('contract_details', $data);
 				$this->session->set_flashdata('success', 'New contract added successfully.');
 			}
-            redirect('project-staff/show/' . $id);
+            redirect('project-staff/show/' . $encId);
         } catch (Exception $e) {
             $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
             redirect('project-staff');
@@ -545,11 +547,12 @@ class ProjectStaffController extends CI_Controller
     public function renewQuarter($userId)
     {
         try {
+            $encId = $this->encryptId($userId);
             $this->form_validation->set_rules('guest_join_date', 'join date', 'required');
 
             if ($this->form_validation->run() === FALSE) {
                 $this->session->set_flashdata('error', validation_errors());
-                redirect('project-staff/renewal-quarter/' . $userId);
+                redirect('project-staff/renewal-quarter/' . $encId);
                 return;
             }
             $this->shrm->where('user_id', $userId);
@@ -570,7 +573,7 @@ class ProjectStaffController extends CI_Controller
             ];
             $quarters = $this->ProjectStaff->insertQuarter($quarter);
             $this->session->set_flashdata('success', 'New Quarter Assign successfully.');
-            redirect('project-staff/show/' . $userId);
+            redirect('project-staff/show/' . $encId);
 
         } catch (Exception $e) {
             $this->session->set_flashdata('error', ' Internal Server error.');
