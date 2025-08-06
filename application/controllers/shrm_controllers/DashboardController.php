@@ -17,7 +17,13 @@ class DashboardController extends CI_Controller
         try {
             $data['out_of_office'] = $this->Leave->get_todays_out_of_office();
             $data['upcoming_leave'] = $this->Leave->get_upcoming_leave();
-            $this->load->view('shrm_views/pages/dashboard', $data);
+
+			if($this->session->userdata('user_id')==8){
+				$this->load->view('shrm_views/pages/dashboard-copy', $data);
+			}else{
+				$this->load->view('shrm_views/pages/dashboard', $data);
+			}
+
         } catch (Exception $e) {
             log_message('error', 'Dashboard loading error: ' . $e->getMessage());
             $this->session->set_flashdata('error', 'Unable to load the dashboard. Please try again later.');
